@@ -1,14 +1,25 @@
-import { useState } from 'react'
-import './App.css'
+import './App.css';
+import { Route, Routes } from 'react-router-dom';
+import { publicRoutes } from './routes';
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      
-    </>
-  )
+    return (
+        <>
+            <Routes>
+                {publicRoutes.map(({ layout, component, path }, index) => {
+                    const Layout = layout;
+                    const Component = component;
+                    return (
+                        <Route
+                            key={index}
+                            path={path}
+                            element={<Layout childen={<Component />} />}
+                        />
+                    );
+                })}
+            </Routes>
+        </>
+    );
 }
 
-export default App
+export default App;
