@@ -7,7 +7,10 @@ export const coursesApi = createApi({
         getCourses: build.query<Course, void>({
             query: () => 'courses',
         }),
+        getCourseID: build.query<Course, number>({
+            query: (id) => `course`,
+        }),
     }),
 });
 
-export const { useGetCoursesQuery } = coursesApi;
+export const { useGetCoursesQuery, useGetCourseIDQuery } = coursesApi;

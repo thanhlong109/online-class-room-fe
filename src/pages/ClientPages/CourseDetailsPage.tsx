@@ -1,7 +1,19 @@
-import React from 'react';
+import { Skeleton } from 'antd';
+import CourseSection from '../../components/CourseSection/CourseSection';
+import { useGetCourseIDQuery } from '../../services';
 
 const CourseDetailsPage = () => {
-    return <div>CourseDetails</div>;
+    const { data, isLoading } = useGetCourseIDQuery(7);
+
+    return (
+        <>
+            <div>
+                CourseDetails
+                {isLoading && <Skeleton active />}
+                {!isLoading && <CourseSection courseSections={data?.tracks} />}
+            </div>
+        </>
+    );
 };
 
 export default CourseDetailsPage;
