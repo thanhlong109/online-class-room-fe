@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import { secondsToTimeString, FormatType } from '../../utils/TimeFormater';
 
 interface Props {
     steps: TrackSteps;
@@ -6,7 +6,7 @@ interface Props {
 
 const CourseStep = ({ steps }: Props) => {
     const { step, position } = steps;
-    const formattedTime = dayjs().set('minute', step.duration).format('HH:mm');
+    const formattedTime = secondsToTimeString(step.duration, FormatType.MM_SS);
     return (
         <>
             <div className="flex h-[48px] items-center justify-between pl-[48px] pr-[30px] text-sm shadow-sm">
