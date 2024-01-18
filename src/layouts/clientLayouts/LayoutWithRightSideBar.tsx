@@ -3,14 +3,20 @@ import SideBar from './SideBar';
 
 const LayoutWithRightSideBar = ({ childen }: any) => {
     return (
-        <div>
-            <Header />
+        <>
             <div>
-                <div>{childen}</div>
-                <SideBar />
+                <Header />
+                <div className="flex">
+                    <div className="flex-1">
+                        {childen}
+                        <Footer />
+                    </div>
+                    <div className="relative w-1/4 min-w-[275px]">
+                        <SideBar />
+                    </div>
+                </div>
             </div>
-            <Footer />
-        </div>
+        </>
     );
 };
 

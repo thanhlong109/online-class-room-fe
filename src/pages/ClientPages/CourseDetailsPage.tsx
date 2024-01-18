@@ -71,7 +71,10 @@ const CourseDetailsPage = () => {
                                     <div className="mt-4">
                                         {isLoading && <Skeleton active />}
                                         {!isLoading && (
-                                            <CourseSection courseSections={data?.tracks} />
+                                            <CourseSection
+                                                active={false}
+                                                courseSections={data?.tracks}
+                                            />
                                         )}
                                     </div>
                                 </div>

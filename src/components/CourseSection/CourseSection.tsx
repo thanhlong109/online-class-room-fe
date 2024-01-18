@@ -1,15 +1,16 @@
 import CourseSectionItem from './CourseSectionItem';
 interface Props {
     courseSections: Tracks[] | undefined;
+    active: boolean | undefined;
 }
 
-const CourseSection = ({ courseSections }: Props) => {
+const CourseSection = ({ courseSections, active }: Props) => {
     return (
         <>
-            <div className="flex flex-col border-[1px] border-[#d1d7dc]">
+            <div className="flex w-full flex-col border-[1px] border-[#d1d7dc]">
                 {courseSections &&
                     courseSections.map((track, index) => (
-                        <CourseSectionItem key={index} track={track} />
+                        <CourseSectionItem active={active} key={index} track={track} />
                     ))}
             </div>
         </>

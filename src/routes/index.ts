@@ -1,5 +1,5 @@
-import { DefaultLayout } from '../layouts/clientLayouts';
-import { CourseDetailsPage, HomePage } from '../pages/ClientPages';
+import { DefaultLayout, LayoutWithRightSideBar } from '../layouts/clientLayouts';
+import { CourseDetailsPage, HomePage, LearningCoursePage } from '../pages/ClientPages';
 
 interface RouteProps {
     path: string;
@@ -12,7 +12,9 @@ const publicRoutes: RouteProps[] = [
     { path: '/courses/:id', component: CourseDetailsPage, layout: DefaultLayout },
 ];
 
-const privateRoutes: RouteProps[] = [];
+const privateRoutes: RouteProps[] = [
+    { path: '/learn/:id', component: LearningCoursePage, layout: LayoutWithRightSideBar },
+];
 
 const adminRoutes: RouteProps[] = [];
 
