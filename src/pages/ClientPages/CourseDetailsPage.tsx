@@ -36,8 +36,8 @@ const CourseDetailsPage = () => {
                 <div>
                     <CourseBanner />
                     <div className="container">
-                        <div className="flex max-w-[1290px] gap-10">
-                            <div className="flex flex-1 flex-col gap-10 py-10">
+                        <div className="flex max-w-[1290px] flex-col gap-10 md:flex-row">
+                            <div className="order-3 flex flex-1 flex-col gap-10 py-10 md:order-1">
                                 <div className=" border-[1px] border-[#d1d7dc] px-4 pb-4 pt-6">
                                     <h1 className="text-2xl font-bold text-[#2d2f31]">
                                         Bạn sẽ học được:
@@ -101,7 +101,7 @@ const CourseDetailsPage = () => {
                                     <h1 className="mb-4 text-2xl font-bold text-[#2d2f31]">
                                         5 course rating - 47 ratings
                                     </h1>
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                         <RatingCourseItem />
                                         <RatingCourseItem />
                                         <RatingCourseItem />
@@ -109,7 +109,7 @@ const CourseDetailsPage = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="mt-[-100px]">
+                            <div className="order-2 m-auto mt-[-10px] md:mt-[-100px]">
                                 <CourseCardPreview />
                             </div>
                         </div>

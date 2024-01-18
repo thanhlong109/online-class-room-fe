@@ -16,7 +16,7 @@ const CourseSectionItem = ({ track }: TracksProps) => {
     track.track_steps.map((trackStep) => {
         totalMinute += trackStep.step.duration;
     });
-    const formattedTime = secondsToTimeString(totalMinute, FormatType.HH_MM, ['giờ', 'phút']);
+    const formattedTime = secondsToTimeString(totalMinute, FormatType.HH_MM, ['h', 'm']);
     return (
         <>
             <div className="w-full border-[1px] border-[#d1d7dc]">
@@ -31,7 +31,7 @@ const CourseSectionItem = ({ track }: TracksProps) => {
                         {track.position} - {track.title}
                     </span>
                     <span>
-                        {track.track_steps.length} bài học . {formattedTime}
+                        {track.track_steps.length} bài . {formattedTime}
                     </span>
                 </div>
                 <div>

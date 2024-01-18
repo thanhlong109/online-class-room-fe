@@ -13,7 +13,7 @@ const CourseStep = ({ steps }: Props) => {
                 <span>
                     {position}. {step.title}
                 </span>
-                <span>{formattedTime}</span>
+                <span className="min-w-10">{formattedTime}</span>
             </div>
         </>
     );
