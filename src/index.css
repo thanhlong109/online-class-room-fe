@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.MuiTabs-scroller .MuiTabs-indicator {
+    display: none;
+}
