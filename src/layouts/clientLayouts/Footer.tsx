@@ -6,7 +6,7 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 
 const Footer = () => {
   return (
-    <div className="h-full py-10 bg-black">
+    <div className="h-full py-10 bg-black mt-4">
       <div className="flex justify-center">
         <div className="space-y-6">
           <div className="flex justify-start space-x-5 text-white">
