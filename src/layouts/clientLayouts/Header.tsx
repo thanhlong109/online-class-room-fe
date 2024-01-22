@@ -45,7 +45,7 @@ function Header() {
   };
 
   return (
-    <header className="bg-gradient-to-b from-white via-gray-200 to-white p-6 flex justify-around items-center border-b-2 max-w-[100vw] h-auto">
+    <header className="bg-white shadow-[0_3px_10px_rgb(0,0,0,0.2)] p-6 flex justify-around items-center border-b-2 max-w-[100vw] h-auto mb-4">
       <h1>
         <Link to={"/"} className="text-[#333] text-sm">
           LM ONLINE SYSTEM
@@ -57,9 +57,9 @@ function Header() {
         defaultSelectedKeys={[selected]}
         style={menuStyle}
       ></Menu>
-      <button className="bg-gray-500 border-2 px-5 py-2 text-white rounded-3xl">
+      <button className="bg-gray-500 border-2 px-5 py-2 text-white rounded-3xl text-center">
         <Link to={"/login"} className=" text-sm">
-          Login
+          Sign In
         </Link>
       </button>
     </header>
