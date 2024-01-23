@@ -83,7 +83,10 @@ const ManageProfilePage = () => {
 
     return (
         <>
-            <Paper elevation={1} className="container flex min-h-[80vh] max-w-[1000px]">
+            <Paper
+                elevation={1}
+                className="container flex min-h-[80vh] max-w-[1000px] flex-col md:flex-row"
+            >
                 <div className="py-4">
                     <div className="mb-4">
                         <Avatar
@@ -112,8 +115,8 @@ const ManageProfilePage = () => {
                         })}
                     </MenuList>
                 </div>
-                <div className="mx-2 border-l-[1px] border-l-[#d1d7dc]"></div>
-                <div className="ml-10 flex-1 pb-12 pt-4">{menuSelected.component}</div>
+                <div className="mx-2 border-t-[1px] border-t-[#d1d7dc] md:border-l-[1px] md:border-l-[#d1d7dc]"></div>
+                <div className="flex-1 pb-12 pt-4 md:ml-10">{menuSelected.component}</div>
             </Paper>
         </>
     );
