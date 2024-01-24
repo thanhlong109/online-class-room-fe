@@ -5,6 +5,7 @@ import {
     LearningCoursePage,
     ManageProfilePage,
 } from '../pages/ClientPages';
+import TestApiPage from '../pages/ClientPages/TestApiPage';
 
 interface RouteProps {
     path: string;
@@ -15,6 +16,7 @@ interface RouteProps {
 const publicRoutes: RouteProps[] = [
     { path: '/', component: HomePage, layout: DefaultLayout },
     { path: '/courses/:id', component: CourseDetailsPage, layout: DefaultLayout },
+    { path: '/testApi', component: TestApiPage, layout: DefaultLayout },
 ];
 
 const privateRoutes: RouteProps[] = [
