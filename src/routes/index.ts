@@ -1,10 +1,12 @@
 import { DefaultLayout, LayoutWithRightSideBar } from '../layouts/clientLayouts';
+import LoginLayout from '../layouts/clientLayouts/LoginLayout';
 import {
     CourseDetailsPage,
     HomePage,
     LearningCoursePage,
     ManageProfilePage,
 } from '../pages/ClientPages';
+import LoginPage from '../pages/auth/login/LoginPage';
 import TestApiPage from '../pages/ClientPages/TestApiPage';
 
 interface RouteProps {
@@ -16,6 +18,7 @@ interface RouteProps {
 const publicRoutes: RouteProps[] = [
     { path: '/', component: HomePage, layout: DefaultLayout },
     { path: '/courses/:id', component: CourseDetailsPage, layout: DefaultLayout },
+    { path: '/login', component: LoginPage, layout: LoginLayout },
     { path: '/testApi', component: TestApiPage, layout: DefaultLayout },
 ];
 
