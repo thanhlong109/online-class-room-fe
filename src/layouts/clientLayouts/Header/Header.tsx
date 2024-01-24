@@ -1,12 +1,12 @@
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Button, IconButton, styled } from '@mui/material';
 import { Avatar, Badge, Divider, Drawer, Input, Popover, Tooltip, Typography } from 'antd';
 import { Link } from 'react-router-dom';
-import { NotificationPopover, FavoritePopover, MyLearningPopover } from './Components';
+import { FavoritePopover, MyLearningPopover } from './Components';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from 'react';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import { Notification } from '../../../components';
 
 function Header() {
     const StyledSearch = styled(Input.Search)({
@@ -88,13 +88,7 @@ function Header() {
                             </Popover>
                         </div>
                         <div className="cursor-pointer">
-                            <Popover content={<NotificationPopover />} trigger="hover">
-                                <IconButton>
-                                    <Badge count="2" color="#a435f0">
-                                        <NotificationsNoneIcon />
-                                    </Badge>
-                                </IconButton>
-                            </Popover>
+                            <Notification />
                         </div>
                         <div>
                             <Tooltip title="Quản lý tài khoản">
@@ -114,13 +108,7 @@ function Header() {
                                 <h2 className="text-lg font-bold">Hi, Long Nguyen</h2>
                                 <p className="text-sm">Chào mừng trở lại</p>
                             </div>
-                            <Popover content={<NotificationPopover />} trigger="hover">
-                                <IconButton>
-                                    <Badge count="2" color="#a435f0">
-                                        <NotificationsNoneIcon />
-                                    </Badge>
-                                </IconButton>
-                            </Popover>
+                            <Notification />
                         </div>
                     }
                     closeIcon={<KeyboardDoubleArrowLeftIcon />}
