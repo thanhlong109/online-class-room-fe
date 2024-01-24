@@ -23,21 +23,23 @@ const CourseCard = () => {
     return (
         <>
             <Popover content={<CourseCardHover />} trigger="hover">
-                <img src="https://img-b.udemycdn.com/course/480x270/5544072_edc7_5.jpg" />
-                <h2 className="font-bold">Mastering Game Feel in Unity: Where Code Meets Fun!</h2>
-                <div className="flex items-center gap-1 text-sm">
-                    <span className=" font-bold">{starRating}</span>
-                    <StyledRating
-                        name="half-rating-read"
-                        defaultValue={starRating}
-                        precision={0.1}
-                        emptyIcon={<StarIcon fontSize="inherit" />}
-                        size="small"
-                        readOnly
-                    />
-                    <span>({tototalRating})</span>
+                <div className="flex flex-col gap-2">
+                    <img src="https://img-b.udemycdn.com/course/480x270/5544072_edc7_5.jpg" />
+                    <h2 className="font-bold normal-case">Lập trình game với unity</h2>
+                    <div className="flex items-center gap-1 text-sm">
+                        <span className=" font-mediuminde">{starRating}</span>
+                        <StyledRating
+                            name="half-rating-read"
+                            defaultValue={starRating}
+                            precision={0.1}
+                            emptyIcon={<StarIcon fontSize="inherit" />}
+                            size="small"
+                            readOnly
+                        />
+                        <span>({tototalRating})</span>
+                    </div>
+                    <div className="font-medium">{price}đ</div>
                 </div>
-                <div className="font-bold">{price}đ</div>
             </Popover>
         </>
     );

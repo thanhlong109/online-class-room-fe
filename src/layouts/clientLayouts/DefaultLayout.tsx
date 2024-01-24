@@ -4,7 +4,7 @@ const DefaultLayout = ({ childen }: any) => {
     return (
         <div>
             <Header />
-            <div className="py-4">{childen}</div>
+            <div className="mt-4 py-4">{childen}</div>
             <Footer />
         </div>
     );
