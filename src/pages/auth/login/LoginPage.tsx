@@ -1,87 +1,149 @@
-import { Formik, Form, Field } from 'formik';
-// import React from "react";
-// import { useNavigate } from "react-router-dom";
-import * as Yup from 'yup';
-
-import { MyInput, MyInputPassword } from './MyInput';
-import { Button } from 'antd';
+import { Button, Input } from 'antd';
 import MyCarouselLogin from './MyCarouselLogin';
-import { ERROR_MESSAGES, LOGIN_PAGE_TEXT } from '../../../utils/messages';
-import { GoogleOutlined } from '@ant-design/icons';
-// import { useState } from 'react';
-// import { Link } from 'react-router-dom';
+import { EyeInvisibleOutlined, EyeTwoTone, GoogleOutlined } from '@ant-design/icons';
+import { useAppDispatch } from '../../../hooks/appHook';
+import { LoginRequest, useLoginUserMutation } from '../../../services/auth.services';
+import { useEffect, useState } from 'react';
+import { AuthState, setUser } from '../../../slices/authSlice';
+import {
+    checkEmailValidaion,
+    checkEmptyValidation,
+    checkPasswordValidation,
+} from '../../../utils/Validation';
+import { useNavigate } from 'react-router-dom';
 
-export interface FormValues {
-    email: string;
-    password: string;
+const initFromData: LoginRequest = {
+    accountEmail: '',
+    accountPassword: '',
+};
+
+interface validationProps {
+    isError: boolean;
+    errorMessage: string;
 }
 
+const initialValidation: validationProps = {
+    errorMessage: '',
+    isError: false,
+};
+
 function LoginPage() {
-    const initialValues = {
-        email: '',
-        password: '',
+    const useDispach = useAppDispatch();
+    const [formData, setFormData] = useState(initFromData);
+    const [emailValidation, setEmailValidation] = useState(initialValidation);
+    const [passwordValidation, setPasswordValidation] = useState(initialValidation);
+    const [errorMessage, setErrorMessage] = useState('');
+    const nagigate = useNavigate();
+    const [
+        loginUser,
+        {
+            data: loginData,
+            isLoading: isLoginLoading,
+            isSuccess: isLoginSuccess,
+            isError: isLoginError,
+        },
+    ] = useLoginUserMutation();
+
+    useEffect(() => {
+        if (isLoginError) {
+            setErrorMessage('Địa chỉ email hoặc mật khẩu không đúng!');
+        }
+    }, [isLoginError]);
+    useEffect(() => {
+        if (isLoginSuccess) {
+            setErrorMessage('');
+            const userData: AuthState = {
+                accessToken: loginData.jwtToken,
+                refreshToken: loginData.jwtRefreshToken,
+            };
+            useDispach(setUser(userData));
+            nagigate('/');
+        }
+    }, [isLoginSuccess]);
+
+    const handleOnSubmit = async () => {
+        console.log(formData);
+        await loginUser(formData);
+    };
+    const handleOnEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { isError, message } = checkEmailValidaion(e.target.value);
+        setEmailValidation({ isError: isError, errorMessage: message });
+        setFormData({ ...formData, accountEmail: e.target.value });
+    };
+    const handleOnPassworldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { isError, message } = checkEmptyValidation(
+            e.target.value,
+            'Mật khẩu không được để trống',
+        );
+        setPasswordValidation({ isError: isError, errorMessage: message });
+        setFormData({ ...formData, accountPassword: e.target.value });
     };
 
-    const loginText = LOGIN_PAGE_TEXT;
-    const validate = ERROR_MESSAGES;
-    const validationSchema = Yup.object().shape({
-        email: Yup.string().email(validate.email.invalid).required(validate.email.required),
-        password: Yup.string()
-            .min(6, validate.password.length)
-            .required(validate.password.required),
-    });
-    // const navigate = useNavigate();
-    // const handleSubmit = async (values: FormValues) => {};
-    // const [showRegister, setShowRegister] = useState(false);
-    // const handleToggleClick = () => {
-    //     setShowRegister((prevShowRegister) => !prevShowRegister);
-    // };
-
     return (
-        <div className="bg-greenHome flex">
+        <div className="flex bg-greenHome">
             <div className="w-full bg-white sm:w-[30%] sm:rounded-br-xl sm:rounded-tr-xl md:h-screen">
-                <Formik
-                    initialValues={initialValues}
-                    validationSchema={validationSchema}
-                    onSubmit={() => {}}
-                >
-                    <Form className="mt-8 flex flex-col items-center justify-center space-y-4">
-                        <section className="w-[70%] space-y-5 ">
-                            <div className="mb-12 ml-1 mt-[40%] ">
-                                <h1 className="text-3xl">{loginText.title}</h1>
-                                <p className="sm:max-xl:text-md text-grayLine mt-2 text-base">
-                                    {loginText.description}
-                                </p>
-                            </div>
-
-                            <Field
-                                name="email"
-                                component={MyInput}
-                                placeholder={loginText.emailPlaceholder}
+                <form className="mt-8 flex flex-col items-center justify-center space-y-5">
+                    <section className="w-[70%] space-y-5 ">
+                        <div className="mb-12 ml-1 mt-[40%] ">
+                            <h1 className="text-3xl">Đăng nhập</h1>
+                            <p className="sm:max-xl:text-md mt-2 text-base text-grayLine">
+                                Mừng trở lại!. Vui lòng điền thông tin bên dưới để tiếp tục
+                            </p>
+                        </div>
+                        <div>
+                            <Input
+                                onChange={handleOnEmailChange}
+                                allowClear
+                                size="large"
+                                className="px-5 py-3"
+                                placeholder="Nhập địa chỉ Email"
+                                status={emailValidation.isError ? 'error' : undefined}
                             />
-                            <Field
-                                name="password"
-                                component={MyInputPassword}
-                                placeholder={loginText.passwordPlaceholder}
+                            <p className="ml-2 mt-1 text-sm text-red-500">
+                                {emailValidation.errorMessage}
+                            </p>
+                        </div>
+                        <div>
+                            <Input.Password
+                                value={formData.accountPassword}
+                                onChange={handleOnPassworldChange}
+                                size="large"
+                                status={passwordValidation.isError ? 'error' : undefined}
+                                placeholder="Nhập mật khẩu"
+                                className="px-5 py-3"
+                                iconRender={(visible) =>
+                                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                                }
                             />
-                        </section>
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            className="text-md bg-greenHome h-11 w-[70%] font-bold"
-                        >
-                            {loginText.loginButton}
-                        </Button>
-                        <div>Or</div>
-                        <Button
-                            type="default"
-                            className=" flex h-11 w-[70%] items-center justify-center space-x-2 text-lg"
-                        >
-                            <GoogleOutlined style={{ fontSize: '24px', color: 'red' }} />
-                            <span className="text-black">Google</span>
-                        </Button>
-                    </Form>
-                </Formik>
+                            <p className="ml-2 mt-1 text-sm text-red-500">
+                                {passwordValidation.errorMessage}
+                            </p>
+                        </div>
+                    </section>
+                    <p className="ml-2 text-sm text-red-500">{errorMessage}</p>
+                    <Button
+                        disabled={
+                            emailValidation.isError ||
+                            passwordValidation.isError ||
+                            formData.accountEmail.length == 0 ||
+                            formData.accountPassword.length == 0
+                        }
+                        onClick={handleOnSubmit}
+                        loading={isLoginLoading}
+                        type="primary"
+                        className="text-md  h-11 w-[70%] bg-greenHome font-bold"
+                    >
+                        Đăng nhập
+                    </Button>
+                    <div>Or</div>
+                    <Button
+                        type="default"
+                        className=" flex h-11 w-[70%] items-center justify-center space-x-2 text-lg"
+                    >
+                        <GoogleOutlined style={{ fontSize: '24px', color: 'red' }} />
+                        <span className="text-black">Google</span>
+                    </Button>
+                </form>
             </div>
             <div className="hidden sm:block sm:w-[70%]">
                 <img src="" alt="logo" className="absolute right-1 w-[100px]" />
