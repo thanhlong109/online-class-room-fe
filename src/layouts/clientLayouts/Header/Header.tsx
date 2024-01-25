@@ -1,14 +1,31 @@
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Button, IconButton, styled } from '@mui/material';
-import { Avatar, Badge, Divider, Drawer, Input, Popover, Tooltip, Typography } from 'antd';
+import { Badge, Divider, Drawer, Input, Popover, Tooltip, Typography } from 'antd';
 import { Link } from 'react-router-dom';
-import { FavoritePopover, MyLearningPopover } from './Components';
+import { FavoritePopover, MyLearningPopover, UserAvatar } from './Components';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import { Notification } from '../../../components';
+import { useGetUserInfoQuery } from '../../../services/auth.services';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../store';
+import { setUserInfo } from '../../../slices/userSlice';
+import { loadUser } from '../../../slices/authSlice';
 
 function Header() {
+    //load user data
+    const dispatch = useDispatch();
+    const { data, isSuccess } = useGetUserInfoQuery();
+    const isLogin = useSelector((state: RootState) => state.auth.isLogin);
+    useEffect(() => {
+        if (isSuccess && data) {
+            dispatch(loadUser());
+            dispatch(setUserInfo({ ...data }));
+        }
+    }, [data]);
+
+    //
     const StyledSearch = styled(Input.Search)({
         '.ant-input-wrapper': {
             '.ant-input-affix-wrapper.ant-input-affix-wrapper-lg.css-dev-only-do-not-override-i1mju1.ant-input-outlined':
@@ -29,13 +46,6 @@ function Header() {
                 },
         },
     });
-    const avatar = (
-        <Avatar
-            className="h-[64px] w-[64px] cursor-pointer md:h-[48px] md:w-[48px]"
-            src="https://th.bing.com/th/id/R.5266058a828ed6ebc41ebc1dbe344a5c?rik=X53L0kwXMclm0A&riu=http%3a%2f%2fpm1.narvii.com%2f6450%2feeb45dc9a19f5010f252727a17a57d18ea13e333_hq.jpg&ehk=NARaFueHSa3xaawZTf4XLLejOP6kf7zYsJol8UvZpXg%3d&risl=&pid=ImgRaw&r=0"
-            size={'large'}
-        />
-    );
 
     const [open, setOpen] = useState(false);
 
@@ -90,20 +100,46 @@ function Header() {
                         <div className="cursor-pointer">
                             <Notification />
                         </div>
-                        <div>
-                            <Tooltip title="Quản lý tài khoản">
-                                <Link to={'/user/12'}>{avatar}</Link>
-                            </Tooltip>
-                        </div>
+                        {!isLogin && (
+                            <div className="flex gap-3">
+                                <Button
+                                    variant="outlined"
+                                    className="!border-[#2d2f31] !text-sm !font-bold !text-[#2d2f31] hover:!bg-[#0000000a]"
+                                >
+                                    Đăng ký
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    className=" !border-[#2d2f31] !bg-[#2d2f31] !text-sm !font-bold !shadow-none hover:!bg-[#747474]"
+                                >
+                                    <Link to={'/login'}>Đăng nhập</Link>
+                                </Button>
+                            </div>
+                        )}
+                        {isLogin && (
+                            <div>
+                                <Tooltip title="Quản lý tài khoản">
+                                    <Link to={'/user/12'}>
+                                        <UserAvatar className="h-[64px] w-[64px] cursor-pointer md:h-[48px] md:w-[48px]" />
+                                    </Link>
+                                </Tooltip>
+                            </div>
+                        )}
                     </div>
                 </div>
             </header>
+
             <div>
                 <Drawer
                     placement="left"
                     title={
                         <div className="flex items-center gap-2">
-                            {avatar}
+                            <Button onClick={handleOpenMenuToggle}>
+                                <Link to={'/user/12'}>
+                                    <UserAvatar className="h-[64px] w-[64px] cursor-pointer md:h-[48px] md:w-[48px]" />
+                                </Link>
+                            </Button>
+
                             <div>
                                 <h2 className="text-lg font-bold">Hi, Long Nguyen</h2>
                                 <p className="text-sm">Chào mừng trở lại</p>

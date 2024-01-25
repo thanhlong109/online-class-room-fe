@@ -10,28 +10,21 @@ import {
 } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import dayjs from 'dayjs';
-import { useState } from 'react';
-
-interface FormData {
-    firstName: string;
-    lastName: string;
-    email: string;
-    sex: string;
-    birthdate: dayjs.Dayjs | null;
-    biography: string;
-}
-const initialData: FormData = {
-    biography: '',
-    birthdate: null,
-    email: '',
-    firstName: '',
-    lastName: '',
-    sex: 'female',
-};
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../store';
+import { UserInfo } from '../../../../slices/userSlice';
 
 const Profile = () => {
-    const [formData, setFormData] = useState(initialData);
-
+    const email = useSelector((state: RootState) => state.auth.email);
+    const [date, setDate] = useState<dayjs.Dayjs | null>(
+        dayjs(useSelector((state: RootState) => state.user.birthDate)),
+    );
+    const userLoaded = useSelector((state: RootState) => state.user);
+    const [formData, setFormData] = useState<UserInfo>(userLoaded);
+    useEffect(() => {
+        setFormData(userLoaded);
+    }, [userLoaded]);
     const handleOnGenderChange = (e: RadioChangeEvent) => {
         setFormData({ ...formData, sex: e.target.value });
     };
@@ -39,9 +32,6 @@ const Profile = () => {
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     ) => {
         setFormData({ ...formData, biography: e.target.value });
-    };
-    const handleOnEmailChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setFormData({ ...formData, email: e.target.value });
     };
     const handleOnFirstNameChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -53,8 +43,14 @@ const Profile = () => {
     ) => {
         setFormData({ ...formData, lastName: e.target.value });
     };
+    const handleOnPhoneNumberChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
+        setFormData({ ...formData, phoneNumber: e.target.value });
+    };
     const handleOnBirthdateChange: DatePickerProps['onChange'] = (date, dateString) => {
-        setFormData({ ...formData, birthdate: date });
+        setDate(date);
+        setFormData({ ...formData, birthDate: dateString });
     };
     const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -75,7 +71,7 @@ const Profile = () => {
                                 required
                                 placeholder="Nhập họ của bạn"
                                 allowClear
-                                value={formData.firstName}
+                                value={formData.firstName ? formData.firstName : ''}
                                 onChange={handleOnFirstNameChange}
                             />
                         </div>
@@ -85,7 +81,7 @@ const Profile = () => {
                                 required
                                 placeholder="Nhập tên của bạn"
                                 allowClear
-                                value={formData.lastName}
+                                value={formData.lastName ? formData.lastName : ''}
                                 onChange={handleOnLastNameChange}
                             />
                         </div>
@@ -94,32 +90,48 @@ const Profile = () => {
                         <div>
                             <Typography.Title level={5}>Giới tính</Typography.Title>
                             <Radio.Group onChange={handleOnGenderChange} value={formData.sex}>
-                                <Radio required value={'female'}>
+                                <Radio required value={'nữ'}>
                                     Nữ
                                 </Radio>
-                                <Radio required value={'male'}>
+                                <Radio required value={'nam'}>
                                     Nam
+                                </Radio>
+                                <Radio required value={'khác'}>
+                                    Khác
                                 </Radio>
                             </Radio.Group>
                         </div>
                         <div>
                             <Typography.Title level={5}>Ngày sinh</Typography.Title>
                             <DatePicker
-                                value={formData.birthdate}
+                                allowClear={false}
+                                value={date}
                                 onChange={handleOnBirthdateChange}
                             />
                         </div>
                     </div>
-                    <div>
-                        <Typography.Title level={5}>Email</Typography.Title>
-                        <Input
-                            placeholder="Nhập địa chỉ email của bạn"
-                            allowClear
-                            required
-                            type="email"
-                            value={formData.email}
-                            onChange={handleOnEmailChange}
-                        />
+                    <div className="grid grid-cols-2 gap-6">
+                        <div>
+                            <Typography.Title level={5}>Email</Typography.Title>
+                            <Input
+                                placeholder="Nhập địa chỉ email của bạn"
+                                allowClear
+                                type="email"
+                                readOnly
+                                value={email ? email : ''}
+                            />
+                        </div>
+                        <div>
+                            <Typography.Title level={5}>Số điện thoại</Typography.Title>
+                            <Input
+                                placeholder="Nhập số điện thoại của bạn"
+                                allowClear
+                                required
+                                type="email"
+                                value={formData.phoneNumber ? formData.phoneNumber : ''}
+                                onChange={handleOnPhoneNumberChange}
+                            />
+                        </div>
                     </div>
 
                     <div>
@@ -127,7 +139,7 @@ const Profile = () => {
                         <TextArea
                             showCount
                             maxLength={100}
-                            value={formData.biography}
+                            value={formData.biography ? formData.biography : ''}
                             onChange={handleOnBiographyChange}
                             placeholder="Thêm tiểu sử của bạn"
                         />

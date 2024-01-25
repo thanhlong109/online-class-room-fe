@@ -1,13 +1,13 @@
 import { InboxOutlined } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import { Divider, Typography } from 'antd';
-import type { UploadFile, UploadProps } from 'antd';
-import { message, Upload } from 'antd';
+import type { UploadProps } from 'antd';
+import { Upload } from 'antd';
 import { useState } from 'react';
 
 const { Dragger } = Upload;
 
-const UserAvatar = () => {
+const UploadAvatar = () => {
     const [img, setImg] = useState('https://img-c.udemycdn.com/user/200_H/anonymous_3.png');
     const props: UploadProps = {
         name: 'file',
@@ -71,4 +71,4 @@ const UserAvatar = () => {
     );
 };
 
-export default UserAvatar;
+export default UploadAvatar;

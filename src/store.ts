@@ -3,11 +3,13 @@ import { coursesApi } from './services/course.services';
 import { authApi } from './services/auth.services';
 import { setupListeners } from '@reduxjs/toolkit/query/react';
 import authSlice from './slices/authSlice';
+import userSlice from './slices/userSlice';
 
 //gennerate store
 export const store = configureStore({
     reducer: {
         auth: authSlice.reducer,
+        user: userSlice.reducer,
         [coursesApi.reducerPath]: coursesApi.reducer,
         [authApi.reducerPath]: authApi.reducer,
     },

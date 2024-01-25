@@ -4,12 +4,8 @@ import { EyeInvisibleOutlined, EyeTwoTone, GoogleOutlined } from '@ant-design/ic
 import { useAppDispatch } from '../../../hooks/appHook';
 import { LoginRequest, useLoginUserMutation } from '../../../services/auth.services';
 import { useEffect, useState } from 'react';
-import { AuthState, setUser } from '../../../slices/authSlice';
-import {
-    checkEmailValidaion,
-    checkEmptyValidation,
-    checkPasswordValidation,
-} from '../../../utils/Validation';
+import { AuthToken, setUser } from '../../../slices/authSlice';
+import { checkEmailValidaion, checkEmptyValidation } from '../../../utils/Validation';
 import { useNavigate } from 'react-router-dom';
 
 const initFromData: LoginRequest = {
@@ -52,9 +48,11 @@ function LoginPage() {
     useEffect(() => {
         if (isLoginSuccess) {
             setErrorMessage('');
-            const userData: AuthState = {
+            const userData: AuthToken = {
                 accessToken: loginData.jwtToken,
                 refreshToken: loginData.jwtRefreshToken,
+                email: formData.accountEmail,
+                isLogin: true,
             };
             useDispach(setUser(userData));
             nagigate('/');
@@ -62,7 +60,6 @@ function LoginPage() {
     }, [isLoginSuccess]);
 
     const handleOnSubmit = async () => {
-        console.log(formData);
         await loginUser(formData);
     };
     const handleOnEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
