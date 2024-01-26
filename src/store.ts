@@ -3,7 +3,6 @@ import { coursesApi } from './services/course.services';
 import { authApi } from './services/auth.services';
 import authSlice from './slices/authSlice';
 import userSlice from './slices/userSlice';
-import courseSlice from './slices/courseSlice';
 import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import sessionStorage from 'redux-persist/es/storage/session';
 
@@ -16,7 +15,6 @@ const persistConfig = {
 const rootReducer = combineReducers({
     auth: authSlice,
     user: userSlice,
-    course: courseSlice,
     [coursesApi.reducerPath]: coursesApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
 });

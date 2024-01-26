@@ -3,25 +3,27 @@ import CourseStep from './CourseStep';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { FormatType, secondsToTimeString } from '../../utils/TimeFormater';
 import { motion } from 'framer-motion';
+import { Section } from '../../types/Course.type';
 
-interface TracksProps {
-    track: Tracks;
+interface SectionProps {
+    section: Section;
     active: boolean | undefined;
+    isWrap: boolean;
 }
 
-const CourseSectionItem = ({ track, active }: TracksProps) => {
+const CourseSectionItem = ({ section, active, isWrap }: SectionProps) => {
     const [displaySteps, isDisplaySteps] = useState(false);
     const [maxHeight, setmaxHeight] = useState('0px');
     const [rotate, setRotate] = useState(0);
     const handleOnSectionClick = () => {
         isDisplaySteps((pre) => !pre);
-        setmaxHeight(displaySteps ? '0px' : `${52 * track.track_steps.length + 200}px`);
+        setmaxHeight(displaySteps ? '0px' : `${52 * section.steps.length + 200}px`);
         setRotate(displaySteps ? 0 : 180);
     };
 
     let totalMinute: number = 0;
-    track.track_steps.forEach((trackStep) => {
-        totalMinute += trackStep.step.duration;
+    section?.steps?.forEach((step) => {
+        totalMinute += step.duration;
     });
     const formattedTime = secondsToTimeString(totalMinute, FormatType.HH_MM, ['h', 'm']);
     return (
@@ -29,7 +31,7 @@ const CourseSectionItem = ({ track, active }: TracksProps) => {
             <div className="w-full border-[1px] border-[#d1d7dc]">
                 <div
                     onClick={handleOnSectionClick}
-                    className="relative flex cursor-pointer select-none justify-between rounded-lg  bg-[#f7f9fa] py-[14px] pl-[48px] pr-[30px] text-sm text-[#333]"
+                    className="relative flex cursor-pointer select-none rounded-lg  bg-[#f7f9fa] py-[14px] pl-[48px] pr-[30px] text-sm text-[#333]"
                 >
                     <span className={`absolute  left-4`}>
                         <motion.div
@@ -41,20 +43,22 @@ const CourseSectionItem = ({ track, active }: TracksProps) => {
                             </span>
                         </motion.div>
                     </span>
-                    <span className="font-medium">
-                        {track.position} - {track.title}
-                    </span>
-                    <span>
-                        {track.track_steps.length} bài . {formattedTime}
-                    </span>
+                    <div className={'flex flex-1 justify-between ' + (isWrap ? 'flex-col' : '')}>
+                        <span className="font-medium">
+                            {section?.position} - {section?.title}
+                        </span>
+                        <span className={isWrap ? 'ml-5' : ''}>
+                            {section?.steps.length} bài . {formattedTime}
+                        </span>
+                    </div>
                 </div>
                 <motion.div
                     animate={{ maxHeight: maxHeight }}
                     transition={{ duration: 0.3, type: 'tween' }}
                     className="overflow-hidden"
                 >
-                    {track.track_steps.map((step) => (
-                        <CourseStep active={active} key={step.position} steps={step} />
+                    {section?.steps.map((step) => (
+                        <CourseStep active={active} key={step.position} step={step} />
                     ))}
                 </motion.div>
             </div>

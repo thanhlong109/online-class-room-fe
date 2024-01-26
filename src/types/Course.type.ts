@@ -16,6 +16,27 @@ export interface Course {
     courseCategories: any[];
     orders: any[];
     registrationCourses: any[];
-    sections: any[];
+    sections: Section[];
     wishLists: any[];
+}
+
+export interface Section {
+    sectionId: number;
+    courseId: number;
+    title: string;
+    position: number;
+    course: any;
+    steps: Step[];
+}
+
+export interface Step {
+    stepId: number;
+    sectionId: number;
+    duration: number;
+    position: number;
+    title: string;
+    videoUrl: string;
+    stepDescription: string;
+    quizzes: any[];
+    section: any;
 }

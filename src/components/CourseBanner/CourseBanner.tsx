@@ -2,6 +2,7 @@ import { Rating, styled } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import { formatNumberWithCommas } from '../../utils/NumberFormater';
 import { Course } from '../../types/Course.type';
+import { Skeleton } from 'antd';
 
 const StyledRating = styled(Rating)({
     '& .MuiRating-icon': {
@@ -17,15 +18,17 @@ const StyledRating = styled(Rating)({
 
 interface Props {
     course: Course;
+    isLoading: boolean;
 }
 
-const CourseBanner = ({ course }: Props) => {
+const CourseBanner = ({ isLoading, course }: Props) => {
     const starRating = 3.8;
     const totalRating = formatNumberWithCommas(9999);
     const totalStudentJoin = formatNumberWithCommas(999999);
     return (
         <>
-            {course && (
+            {isLoading && <Skeleton active />}
+            {!isLoading && course && (
                 <div className="flex  bg-[#2d2f31] py-8">
                     <div className="container m-auto text-white">
                         <h1 className="text-3xl font-bold ">{course.title}</h1>

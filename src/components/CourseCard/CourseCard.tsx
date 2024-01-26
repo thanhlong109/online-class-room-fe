@@ -4,9 +4,7 @@ import { formatNumberWithCommas } from '../../utils/NumberFormater';
 import { Popover } from 'antd';
 import { CourseCardHover } from '..';
 import { Course } from '../../types/Course.type';
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setCourseDetails } from '../../slices/courseSlice';
+import { useNavigate } from 'react-router-dom';
 
 const StyledRating = styled(Rating)({
     '& .MuiRating-icon': {
@@ -28,10 +26,8 @@ const CourseCard = ({ course }: Props) => {
     const starRating = 4.5;
     const tototalRating = formatNumberWithCommas(4852);
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const handleOnCourseClick = () => {
         if (course) {
-            dispatch(setCourseDetails(course));
             navigate(`/courses/${course?.courseId}`);
         }
     };
@@ -40,7 +36,9 @@ const CourseCard = ({ course }: Props) => {
             {course && (
                 <Popover content={<CourseCardHover course={course} />} trigger="hover">
                     <div className="flex flex-col gap-2" onClick={handleOnCourseClick}>
-                        <img src={course?.imageUrl} />
+                        <div className="flex max-h-[180px] items-center justify-center overflow-hidden">
+                            <img className="w-max" src={course?.imageUrl} />
+                        </div>
                         <h2 className="font-bold normal-case">{course?.title}</h2>
                         <div className="flex items-center gap-1 text-sm">
                             <span className=" font-mediuminde">{starRating}</span>

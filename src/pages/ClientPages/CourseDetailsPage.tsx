@@ -7,32 +7,39 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useGetCourseIDQuery } from '../../services';
+import { Course, Section, Step } from '../../types/Course.type';
 
 const CourseDetailsPage = () => {
-    const courseState = useSelector((state: RootState) => state.course.courseDetails);
-    const [course, setCourse] = useState(courseState);
+    const [courseId, setCourseId] = useState('');
     const location = useLocation();
+    const [course, setCourse] = useState<Course | null>(null);
     useEffect(() => {
-        if (!course) {
-            const courseId = location.pathname.split('/').pop();
-            //load course
+        const getCourseId = location.pathname.split('/').pop();
+        if (getCourseId) {
+            setCourseId(getCourseId);
         }
     }, []);
+    const { data, isSuccess, isLoading } = useGetCourseIDQuery(courseId);
+    useEffect(() => {
+        if (data) setCourse(data);
+        console.log(data);
+    }, [isSuccess]);
 
-    const handleCalTotalTime = (tracks: Tracks[]) => {
+    const handleCalTotalTime = (sections: Section[]) => {
         let totalTimeLession = 0;
-        tracks.map((track) => {
-            track.track_steps.map((step) => {
-                totalTimeLession += step.step.duration;
+        sections.forEach((section) => {
+            section?.steps.forEach((step) => {
+                totalTimeLession += step?.duration;
             });
         });
         return secondsToTimeString(totalTimeLession, FormatType.HH_MM, ['h', 'm']);
     };
 
-    const handleCalLession = (tracks: Tracks[]) => {
+    const handleCalLession = (sections: Section[]) => {
         let totalLession = 0;
-        tracks.map((track) => {
-            totalLession += track.track_steps.length;
+        sections.forEach((section) => {
+            totalLession += section?.steps?.length;
         });
         return totalLession;
     };
@@ -41,7 +48,7 @@ const CourseDetailsPage = () => {
             {course && (
                 <div>
                     <div>
-                        <CourseBanner course={course} />
+                        <CourseBanner isLoading={isLoading} course={course} />
                         <div className="container">
                             <div className="flex max-w-[1290px] flex-col gap-10 md:flex-row">
                                 <div className="order-3 flex flex-1 flex-col gap-10 py-10 md:order-1">
@@ -57,7 +64,7 @@ const CourseDetailsPage = () => {
                                                         key={index}
                                                         className="flex items-center gap-2 text-base"
                                                     >
-                                                        <span>
+                                                        <span className="h-fit">
                                                             <CheckOutlinedIcon
                                                                 style={{ fontSize: 'inherit' }}
                                                             />
@@ -71,30 +78,32 @@ const CourseDetailsPage = () => {
                                         <h1 className="mb-4 text-2xl font-bold text-[#2d2f31]">
                                             Nội dung khóa học:
                                         </h1>
-                                        {/* <div>
-                                        {!isLoading && data?.tracks != null && (
-                                            <span>
-                                                {data.tracks.length} học phần -{' '}
-                                                {handleCalLession(data.tracks)} bài học -{' '}
-                                                {handleCalTotalTime(data.tracks)} tổng thời gian học
-                                            </span>
-                                        )}
-                                    </div>
-                                    <div className="mt-4">
-                                        {isLoading && <Skeleton active />}
-                                        {!isLoading && (
-                                            <CourseSection
-                                                active={false}
-                                                courseSections={data?.tracks}
-                                            />
-                                        )}
-                                    </div> */}
+                                        <div>
+                                            {!isLoading && course != null && (
+                                                <span>
+                                                    {course?.sections?.length} học phần -{' '}
+                                                    {handleCalLession(course?.sections)} bài học -{' '}
+                                                    {handleCalTotalTime(course?.sections)} tổng thời
+                                                    gian học
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div className="mt-4">
+                                            {isLoading && <Skeleton active />}
+                                            {!isLoading && (
+                                                <CourseSection
+                                                    isWrap={false}
+                                                    active={false}
+                                                    courseSections={course?.sections}
+                                                />
+                                            )}
+                                        </div>
                                     </div>
                                     <div>
                                         <h1 className="mb-4 text-2xl font-bold text-[#2d2f31]">
                                             Chi tiết khóa học:
                                         </h1>
-                                        <p className="text-sm">{course.description}</p>
+                                        <p className="text-sm">{course?.description}</p>
                                     </div>
                                     <div>
                                         <h1 className="mb-4 text-2xl font-bold text-[#2d2f31]">

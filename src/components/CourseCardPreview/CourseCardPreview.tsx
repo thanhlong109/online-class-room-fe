@@ -25,22 +25,17 @@ const CourseCardPreview = ({ course }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
 
     const handleBuyClick = () => {
-        changeStateLoading();
-        setTimeout(changeStateLoading, 3000);
+        //bui
     };
 
-    const changeStateLoading = () => {
-        setLoading((preLoading) => !preLoading);
-    };
     return (
         <>
             <Paper className="w-[350px]" elevation={3}>
                 <div className=" p-0.5">
                     <div className="relative flex justify-center">
-                        <img
-                            src="https://img-b.udemycdn.com/course/480x270/5059176_3a43_2.jpg"
-                            className="w-full rounded-sm"
-                        />
+                        <div className="flex max-h-[200px] items-center justify-center overflow-hidden">
+                            <img src={course?.imageUrl} className="w-full rounded-sm" />
+                        </div>
                         <div className="absolute inset-0 flex cursor-pointer items-center justify-center">
                             <PlayCircleOutlineIcon style={{ fontSize: 50, color: '#fff' }} />
                         </div>
