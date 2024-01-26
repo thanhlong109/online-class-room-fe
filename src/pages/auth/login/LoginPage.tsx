@@ -6,7 +6,7 @@ import { LoginRequest, useLoginUserMutation } from '../../../services/auth.servi
 import { useEffect, useState } from 'react';
 import { AuthToken, setUser } from '../../../slices/authSlice';
 import { checkEmailValidaion, checkEmptyValidation } from '../../../utils/Validation';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const initFromData: LoginRequest = {
     accountEmail: '',
@@ -140,6 +140,12 @@ function LoginPage() {
                         <GoogleOutlined style={{ fontSize: '24px', color: 'red' }} />
                         <span className="text-black">Google</span>
                     </Button>
+                    <div>
+                        Đã có tài khoản?{' '}
+                        <Link to={'/register'} className="text-red-500">
+                            Đăng kí ngay.
+                        </Link>
+                    </div>
                 </form>
             </div>
             <div className="hidden sm:block sm:w-[70%]">
