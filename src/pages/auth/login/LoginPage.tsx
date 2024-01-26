@@ -8,6 +8,7 @@ import { Button } from 'antd';
 import MyCarouselLogin from './MyCarouselLogin';
 import { ERROR_MESSAGES, LOGIN_PAGE_TEXT } from '../../../utils/messages';
 import { GoogleOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 // import { useState } from 'react';
 // import { Link } from 'react-router-dom';
 
@@ -38,18 +39,18 @@ function LoginPage() {
     // };
 
     return (
-        <div className="bg-greenHome flex">
+        <div className="flex bg-greenHome">
             <div className="w-full bg-white sm:w-[30%] sm:rounded-br-xl sm:rounded-tr-xl md:h-screen">
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
                     onSubmit={() => {}}
                 >
-                    <Form className="mt-8 flex flex-col items-center justify-center space-y-4">
+                    <Form className="mt-5 flex flex-col items-center justify-center space-y-4">
                         <section className="w-[70%] space-y-5 ">
                             <div className="mb-12 ml-1 mt-[40%] ">
                                 <h1 className="text-3xl">{loginText.title}</h1>
-                                <p className="sm:max-xl:text-md text-grayLine mt-2 text-base">
+                                <p className="sm:max-xl:text-md mt-2 text-base text-grayLine">
                                     {loginText.description}
                                 </p>
                             </div>
@@ -68,7 +69,7 @@ function LoginPage() {
                         <Button
                             type="primary"
                             htmlType="submit"
-                            className="text-md bg-greenHome h-11 w-[70%] font-bold"
+                            className="text-md h-11 w-[70%] bg-greenHome font-bold"
                         >
                             {loginText.loginButton}
                         </Button>
@@ -80,6 +81,12 @@ function LoginPage() {
                             <GoogleOutlined style={{ fontSize: '24px', color: 'red' }} />
                             <span className="text-black">Google</span>
                         </Button>
+                        <div>
+                            Đã có tài khoản?{' '}
+                            <Link to={'/register'} className="text-red-500">
+                                Đăng kí ngay.
+                            </Link>
+                        </div>
                     </Form>
                 </Formik>
             </div>
