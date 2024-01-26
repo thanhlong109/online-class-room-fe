@@ -7,6 +7,7 @@ const containNoUpercaseRegex = new RegExp('^(?=.*[a-z])');
 const containUpercaseRegex = new RegExp('^(?=.*[A-Z])');
 const containNumberRegex = new RegExp('^(?=.*[0-9])');
 const containSpecialCharacterRegex = new RegExp('^(?=.*[!@#%^&*()-_+])');
+const validEmailRegex = new RegExp('^([a-zA-Z0-9_.+-]+)@([a-zA-Z0-9_.-]+.[a-zA-Z]{2,})');
 
 export function checkPasswordValidation(password: string) {
     let result: ValidationResult = { isError: true, message: '' };
@@ -28,12 +29,27 @@ export function checkPasswordValidation(password: string) {
     return result;
 }
 
-export function checkEmptyValidation(text: string) {
+export function checkEmailValidaion(email: string) {
+    let result: ValidationResult = { isError: true, message: '' };
+    if (email.length == 0) {
+        result.message = 'Email không được để trống';
+    } else if (!validEmailRegex.test(email)) {
+        result.message = 'Email không hợp lệ';
+    } else {
+        result.isError = false;
+    }
+    return result;
+}
+
+export function checkEmptyValidation(text: string, message: string | null = null) {
     let result: ValidationResult = { isError: true, message: '' };
     if (text.length == 0) {
         result.message = 'Vui lòng không bỏ trống trường này!';
     } else {
         result.isError = false;
+    }
+    if (result.isError && message) {
+        result.message = message;
     }
     return result;
 }

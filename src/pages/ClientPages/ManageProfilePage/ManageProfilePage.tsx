@@ -1,5 +1,6 @@
 import {
     Avatar,
+    Button,
     ListItemIcon,
     ListItemText,
     MenuItem,
@@ -13,12 +14,15 @@ import LockPersonIcon from '@mui/icons-material/LockPerson';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useState } from 'react';
 import { ManageProfileMenu } from './ManageProfile.enum';
-import {
-    Profile,
-    Security,
-    Avatar as AvatarComponent,
-    Favorite as FavoriteComponent,
-} from './Components';
+import { Profile, Security, Favorite as FavoriteComponent, UploadAvatar } from './Components';
+import { Divider } from 'antd';
+import { LogoutOutlined } from '@mui/icons-material';
+import { useAppDispatch } from '../../../hooks/appHook';
+import { logoutUser } from '../../../slices/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { UserAvatar } from '../../../layouts/clientLayouts/Header/Components';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../store';
 
 interface Menu {
     type: ManageProfileMenu;
@@ -28,6 +32,11 @@ interface Menu {
 }
 
 const ManageProfilePage = () => {
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const userFullName = useSelector((state: RootState) => {
+        return `${state.user.firstName} ${state.user.lastName}`;
+    });
     const menuList: Menu[] = [
         {
             type: ManageProfileMenu.PROFILE,
@@ -39,7 +48,7 @@ const ManageProfilePage = () => {
             type: ManageProfileMenu.AVATAR,
             MenuIcon: ImageIcon,
             menutext: 'Ảnh đại diện',
-            component: <AvatarComponent />,
+            component: <UploadAvatar />,
         },
         {
             type: ManageProfileMenu.SECURITY,
@@ -89,12 +98,8 @@ const ManageProfilePage = () => {
             >
                 <div className="py-4">
                     <div className="mb-4">
-                        <Avatar
-                            className="m-auto"
-                            style={{ height: '120px', width: '120px' }}
-                            src="https://th.bing.com/th/id/OIP.KjsLCgX3HbKX9lx73cXzWQAAAA?rs=1&pid=ImgDetMain"
-                        />
-                        <h1 className="mt-2 text-center font-bold">Your Full Name</h1>
+                        <UserAvatar className="m-auto flex h-[120px] w-[120px]" />
+                        <h1 className="mt-2 text-center font-bold capitalize">{userFullName}</h1>
                     </div>
                     <MenuList>
                         {menuList.map(({ type, MenuIcon, menutext, component }, index) => {
@@ -113,6 +118,18 @@ const ManageProfilePage = () => {
                                 </StyledMenuItem>
                             );
                         })}
+
+                        <Divider />
+                        <Button
+                            onClick={() => {
+                                dispatch(logoutUser());
+                                navigate('/');
+                            }}
+                            className="!w-full !border-[#2d2f31] !text-sm !font-bold !text-[#2d2f31] hover:!border-[#ef4444] hover:!bg-[#ff5d5d0a] hover:!text-red-500"
+                            variant="outlined"
+                        >
+                            Đăng xuất <LogoutOutlined className="ml-3 !text-lg" />
+                        </Button>
                     </MenuList>
                 </div>
                 <div className="mx-2 border-t-[1px] border-t-[#d1d7dc] md:border-l-[1px] md:border-l-[#d1d7dc]"></div>
