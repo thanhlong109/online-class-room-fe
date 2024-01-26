@@ -57,4 +57,4 @@ export const selectAuth = (state: RootState) => state.auth;
 
 export const { setUser, logoutUser, loadUser } = authSlice.actions;
 
-export default authSlice;
+export default authSlice.reducer;

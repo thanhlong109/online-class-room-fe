@@ -25,7 +25,7 @@ const SideBar = ({ onCloseClick }: Props) => {
             </div>
             <div className="block overflow-y-scroll  md:fixed md:bottom-0 md:top-[80px]">
                 {isLoading && <Skeleton active />}
-                {!isLoading && <CourseSection active courseSections={data?.tracks} />}
+                {/* {!isLoading && <CourseSection active courseSections={data?.tracks} />} */}
             </div>
         </>
     );

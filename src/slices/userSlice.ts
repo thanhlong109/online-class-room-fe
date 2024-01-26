@@ -43,4 +43,4 @@ export const selectUser = (state: RootState) => state.user;
 
 export const { setUserInfo } = userSlice.actions;
 
-export default userSlice;
+export default userSlice.reducer;

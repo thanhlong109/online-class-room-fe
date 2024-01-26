@@ -54,7 +54,7 @@ export const authApi = createApi({
         updateUserInfo: build.mutation<UserInfoRequest, UserInfo>({
             query: (userInfo: UserInfo) => {
                 return {
-                    url: `api/account/${userInfo.accountId}`,
+                    url: 'api/account/change',
                     method: 'put',
                     headers: apiHeader,
                 };
