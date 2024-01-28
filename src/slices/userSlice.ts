@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 
 export interface UserInfo {
-    accountId: string | null;
+    id: string | null;
     firstName: string | null;
     lastName: string | null;
     phoneNumber: string | null;
@@ -13,7 +13,7 @@ export interface UserInfo {
 }
 
 const initialState: UserInfo = {
-    accountId: null,
+    id: null,
     firstName: null,
     lastName: null,
     phoneNumber: null,
@@ -28,6 +28,7 @@ export const userSlice = createSlice({
     initialState,
     reducers: {
         setUserInfo: (state, action: PayloadAction<UserInfo>) => {
+            state.id = action.payload.id;
             state.biography = action.payload.biography;
             state.firstName = action.payload.firstName;
             state.lastName = action.payload.lastName;

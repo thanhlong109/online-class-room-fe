@@ -6,7 +6,7 @@ export interface LoginRequest {
     accountPassword: string;
 }
 export interface UserInfoRequest {
-    accountId: string | null;
+    id: string | null;
     firstName: string | null;
     lastName: string | null;
     phoneNumber: string | null;
@@ -14,6 +14,13 @@ export interface UserInfoRequest {
     biography: null | string;
     profileImg: null | string;
     sex: null | string;
+}
+
+export interface ChangePasswordRequest {
+    email: string;
+    currentPassword: string;
+    newPassword: string;
+    confirmNewPassword: string;
 }
 
 const user = localStorage.getItem('user');
@@ -52,10 +59,21 @@ export const authApi = createApi({
             },
         }),
         updateUserInfo: build.mutation<UserInfoRequest, UserInfo>({
-            query: (userInfo: UserInfo) => {
+            query: (body: UserInfo) => {
                 return {
                     url: 'api/account/change',
                     method: 'put',
+                    headers: apiHeader,
+                    body,
+                };
+            },
+        }),
+        updatePassword: build.mutation<ChangePasswordRequest, ChangePasswordRequest>({
+            query: (body: ChangePasswordRequest) => {
+                return {
+                    url: 'api/account/changePassword',
+                    method: 'put',
+                    body,
                     headers: apiHeader,
                 };
             },
@@ -63,4 +81,9 @@ export const authApi = createApi({
     }),
 });
 
-export const { useLoginUserMutation, useGetUserInfoQuery, useUpdateUserInfoMutation } = authApi;
+export const {
+    useLoginUserMutation,
+    useGetUserInfoQuery,
+    useUpdateUserInfoMutation,
+    useUpdatePasswordMutation,
+} = authApi;

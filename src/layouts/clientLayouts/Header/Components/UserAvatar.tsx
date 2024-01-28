@@ -1,6 +1,8 @@
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
 import { Avatar } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Skeleton } from 'antd';
 
 interface Props {
     className: string;
@@ -25,23 +27,31 @@ function stringToColor(string: string) {
 }
 
 function stringAvatar(name: string) {
+    const splitName = name.toUpperCase().split(' ');
     return {
         sx: {
             bgcolor: stringToColor(name),
         },
-        children: `${name.split(' ')[0][0].toUpperCase()}${name.split(' ')[1][0].toLowerCase()}`,
+        children: `${splitName.length > 1 ? `${splitName[0].charAt(0)}${splitName[1].charAt(0)}` : ''}`,
     };
 }
 
 const UserAvatar = ({ className }: Props) => {
     const userAvatar = useSelector((state: RootState) => state.user.profileImg);
-    const userName = useSelector((state: RootState) => {
+    const [userName, setUserName] = useState<string | null>(null);
+
+    const loadUsername = useSelector((state: RootState) => {
         return `${state.user.firstName} ${state.user.lastName}`;
     });
+    useEffect(() => {
+        setUserName(loadUsername);
+    }, [loadUsername]);
     return (
         <>
             {userAvatar && <Avatar className={className} src={userAvatar} />}
-            {!userAvatar && <Avatar className={className} {...stringAvatar(userName)} />}
+            {!userAvatar && (
+                <>{userName && <Avatar className={className} {...stringAvatar(userName)} />}</>
+            )}
         </>
     );
 };

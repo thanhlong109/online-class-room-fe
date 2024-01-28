@@ -1,26 +1,76 @@
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import { LoadingButton } from '@mui/lab';
-import { IconButton } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Course } from '../../types/Course.type';
 import { FormatType, getVNDateString, secondsToTimeString } from '../../utils/TimeFormater';
+import {
+    useAddWishlistByAccountIDMutation,
+    useRemoveWishlistByAccountIDMutation,
+} from '../../services/wishlist.services';
+import { RootState } from '../../store';
+import { useAppSelector } from '../../hooks/appHook';
+import { useCheckCourseIsInWishlist } from '../../hooks/courseHook';
+import { CircularProgress, IconButton } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { addWishList, removeWishlist } from '../../slices/courseSlice';
 
 interface Props {
     course: Course | undefined;
 }
 
 const CourseCardHover = ({ course }: Props) => {
+    const dispatch = useDispatch();
+    //wishlist ui
     const [isFavorite, setFavorite] = useState(false);
-    const handleOnClickFavorite = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    //load wishlist from sever and check
+    const isWishlist = useCheckCourseIsInWishlist(course?.courseId);
+
+    //declare request add wishlist
+    const [addWishListMutate, { isSuccess: isAddSuccess, isLoading: isAddLoading }] =
+        useAddWishlistByAccountIDMutation();
+
+    const [removeWishListMutate, { isSuccess: isRemoveSuccess, isLoading: isRemoveLoading }] =
+        useRemoveWishlistByAccountIDMutation();
+
+    //get account id from slice state
+    const accontId = useAppSelector((state: RootState) => state.user.id);
+
+    //for handle event
+    const handleOnClickFavorite = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.stopPropagation();
-        setFavorite((pre) => !pre);
+        if (accontId && course?.courseId) {
+            if (isFavorite) {
+                await removeWishListMutate({ accountId: accontId, courseId: course.courseId });
+            } else {
+                await addWishListMutate({ accountId: accontId, courseId: course.courseId });
+            }
+        }
     };
 
     const handleBuyClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.stopPropagation();
     };
+
+    //when change update ui
+    useEffect(() => {
+        setFavorite(isWishlist);
+    }, [isWishlist]);
+
+    useEffect(() => {
+        if (isAddSuccess && course?.courseId) {
+            dispatch(addWishList({ courseId: course.courseId }));
+            setFavorite(true);
+        }
+    }, [isAddSuccess]);
+
+    useEffect(() => {
+        if (isRemoveSuccess && course?.courseId) {
+            dispatch(removeWishlist({ courseId: course.courseId }));
+            setFavorite(false);
+        }
+    }, [isRemoveSuccess]);
 
     return (
         <>
@@ -53,11 +103,20 @@ const CourseCardHover = ({ course }: Props) => {
                     <LoadingButton fullWidth onClick={handleBuyClick} variant="contained">
                         Mua khóa học
                     </LoadingButton>
-                    <IconButton onClick={handleOnClickFavorite} size="large">
-                        {isFavorite ? (
-                            <FavoriteIcon style={{ color: '#e95c5c' }} />
-                        ) : (
-                            <FavoriteBorderIcon />
+                    <IconButton
+                        onClick={handleOnClickFavorite}
+                        className="!text-[#e95c5c]"
+                        size="large"
+                        disabled={isAddLoading || isRemoveLoading}
+                    >
+                        {!(isAddLoading || isRemoveLoading) &&
+                            (isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />)}
+                        {(isAddLoading || isRemoveLoading) && (
+                            <CircularProgress
+                                color="secondary"
+                                className="!h-[24px] !w-[24px]"
+                                variant="indeterminate"
+                            />
                         )}
                     </IconButton>
                 </div>

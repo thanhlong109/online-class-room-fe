@@ -1,4 +1,4 @@
-import { Skeleton } from 'antd';
+import { Skeleton, Typography } from 'antd';
 import CourseSection from '../../components/CourseSection/CourseSection';
 import { CourseBanner, CourseCardPreview, RatingCourseItem } from '../../components';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
@@ -103,7 +103,10 @@ const CourseDetailsPage = () => {
                                         <h1 className="mb-4 text-2xl font-bold text-[#2d2f31]">
                                             Chi tiết khóa học:
                                         </h1>
-                                        <p className="text-sm">{course?.description}</p>
+                                        <Typography.Text italic>
+                                            {' '}
+                                            {course?.description}
+                                        </Typography.Text>
                                     </div>
                                     <div>
                                         <h1 className="mb-4 text-2xl font-bold text-[#2d2f31]">
