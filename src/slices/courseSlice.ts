@@ -1,12 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 
-export interface WishListSlice {
-    courseId: number;
-}
-
 interface courseState {
-    wishList: WishListSlice[];
+    wishList: number[];
 }
 
 const initialState: courseState = {
@@ -17,16 +13,16 @@ export const courseSlice = createSlice({
     name: 'course',
     initialState,
     reducers: {
-        addWishList: (state, action: PayloadAction<WishListSlice>) => {
+        addWishList: (state, action: PayloadAction<number>) => {
             state.wishList = [...state.wishList, action.payload];
         },
-        removeWishlist: (state, action: PayloadAction<WishListSlice>) => {
+        removeWishlist: (state, action: PayloadAction<number>) => {
             const courseIndex = state.wishList.findIndex((courseId) => courseId === action.payload);
             if (courseIndex != -1) {
                 state.wishList.splice(courseIndex, 1);
             }
         },
-        setWishList: (state, action: PayloadAction<WishListSlice[]>) => {
+        setWishList: (state, action: PayloadAction<number[]>) => {
             state.wishList = action.payload;
         },
     },

@@ -22,7 +22,6 @@ function Header() {
         if (isSuccess && data) {
             dispatch(loadUser());
             dispatch(setUserInfo({ ...data }));
-            console.log(data);
         }
     }, [isSuccess]);
 
@@ -66,7 +65,7 @@ function Header() {
                     <h1>
                         <Link to={'/'}>
                             <Typography.Title style={{ fontWeight: 'bold', margin: '0' }} level={2}>
-                                EStudy
+                                EStudyHub
                             </Typography.Title>
                         </Link>
                     </h1>

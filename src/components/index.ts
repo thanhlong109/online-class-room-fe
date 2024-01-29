@@ -7,3 +7,4 @@ export { CourseCard } from './CourseCard';
 export { CourseCardHover } from './CourseCardHover';
 export { CourseTabs } from './CourseTabs';
 export { Notification } from './Notification';
+export { FavoriteButton } from './FavoriteButton';
