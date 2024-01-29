@@ -106,7 +106,7 @@ function Header() {
                                     variant="outlined"
                                     className="!border-[#2d2f31] !text-sm !font-bold !text-[#2d2f31] hover:!bg-[#0000000a]"
                                 >
-                                    Đăng ký
+                                    <Link to={'/register'}>Đăng ký</Link>
                                 </Button>
                                 <Button
                                     variant="contained"
