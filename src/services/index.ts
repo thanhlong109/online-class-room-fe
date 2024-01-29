@@ -1,1 +1,5 @@
-export { useGetCoursesQuery, coursesApi, useGetCourseIDQuery } from './course.services';
+export {
+    useGetCoursesBaseStudentJoinedQuery,
+    coursesApi,
+    useGetCourseIDQuery,
+} from './course.services';

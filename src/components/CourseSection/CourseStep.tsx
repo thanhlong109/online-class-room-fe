@@ -1,13 +1,14 @@
+import { Step } from '../../types/Course.type';
 import { secondsToTimeString, FormatType } from '../../utils/TimeFormater';
 
 interface Props {
-    steps: TrackSteps;
+    step: Step;
     active: boolean | undefined;
 }
 
-const CourseStep = ({ steps, active }: Props) => {
-    const { step, position } = steps;
-    const formattedTime = secondsToTimeString(step.duration, FormatType.MM_SS);
+const CourseStep = ({ step, active }: Props) => {
+    const { position, duration } = step;
+    const formattedTime = secondsToTimeString(duration, FormatType.MM_SS);
     const handleOnClick = () => {
         if (active) {
             //dis[play video]
@@ -20,7 +21,7 @@ const CourseStep = ({ steps, active }: Props) => {
                 className={`flex min-h-[48px] items-center justify-between py-4 pl-[48px] pr-[30px] text-sm shadow-sm ${active ? 'cursor-pointer hover:bg-[#d0e1ed]' : ''}`}
             >
                 <span>
-                    {position}. {step.title}
+                    {position}. {step?.title}
                 </span>
                 <span className="min-w-11">{formattedTime}</span>
             </div>

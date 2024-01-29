@@ -1,6 +1,6 @@
 import { Divider, Input, Typography } from 'antd';
 import React, { useState } from 'react';
-import { checkPasswordValidation } from '../../../../utils/Validation';
+import { checkEmptyValidation, checkPasswordValidation } from '../../../../utils/Validation';
 import { LoadingButton } from '@mui/lab';
 
 interface PasswordProps {
@@ -20,7 +20,7 @@ const initialPasswordProps: PasswordProps = {
 const Security = () => {
     const [newPassword, setNewPassword] = useState(initialPasswordProps);
     const [newPasswordRetype, setNewPasswordRetype] = useState(initialPasswordProps);
-    const [oldPassword, setOldPassword] = useState(initialPasswordProps);
+    const [currentPassword, setCurrentPassword] = useState(initialPasswordProps);
 
     const handleOnNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { isError, message } = checkPasswordValidation(e.target.value);
@@ -41,7 +41,7 @@ const Security = () => {
     };
 
     const handleOnNewPasswordRetypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { isError, message } = checkPasswordValidation(e.target.value);
+        const { isError, message } = checkPasswordValidation(e.target.value, newPassword.value);
         setNewPasswordRetype({
             errorMessage: message,
             isError: isError,
@@ -49,6 +49,21 @@ const Security = () => {
             isVisible: newPasswordRetype.isVisible,
         });
     };
+
+    const handleOnCurrentPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { isError, message } = checkEmptyValidation(
+            e.target.value,
+            'Vui lòng nhập mật khẩu hiện tại',
+        );
+        setCurrentPassword({
+            errorMessage: message,
+            isError: isError,
+            value: e.target.value,
+            isVisible: newPasswordRetype.isVisible,
+        });
+    };
+
+    const handleOnClickSave = () => {};
     return (
         <>
             <div>
@@ -58,14 +73,18 @@ const Security = () => {
                 <Divider />
                 <div className="m-auto flex max-w-[350px] flex-col gap-8">
                     <div>
-                        <Typography.Title level={5}>Mật khẩu cũ</Typography.Title>
+                        <Typography.Title level={5}>Mật khẩu hiện tại</Typography.Title>
                         <Input.Password
-                            placeholder="Nhập mật khẩu cũ"
+                            placeholder="Nhập mật khẩu hiện tại"
+                            onChange={handleOnCurrentPasswordChange}
                             visibilityToggle={{
-                                visible: oldPassword.isVisible,
-                                onVisibleChange: () => handleOnPasswordToggle(setOldPassword),
+                                visible: currentPassword.isVisible,
+                                onVisibleChange: () => handleOnPasswordToggle(setCurrentPassword),
                             }}
                         />
+                        <p className="mt-1 text-xs font-medium text-red-500">
+                            {currentPassword.errorMessage}
+                        </p>
                     </div>
                     <div>
                         <Typography.Title level={5}>Mật khẩu mới</Typography.Title>
@@ -111,7 +130,18 @@ const Security = () => {
                             </div>
                         </div>
                     </div>
-                    <LoadingButton variant="contained">Lưu</LoadingButton>
+                    <LoadingButton
+                        disabled={
+                            currentPassword.value.length == 0 ||
+                            newPassword.value.length == 0 ||
+                            newPasswordRetype.value.length == 0 ||
+                            newPasswordRetype.isError
+                        }
+                        variant="contained"
+                        onClick={handleOnClickSave}
+                    >
+                        Lưu
+                    </LoadingButton>
                 </div>
             </div>
         </>

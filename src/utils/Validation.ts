@@ -9,7 +9,7 @@ const containNumberRegex = new RegExp('^(?=.*[0-9])');
 const containSpecialCharacterRegex = new RegExp('^(?=.*[!@#%^&*()-_+])');
 const validEmailRegex = new RegExp('^([a-zA-Z0-9_.+-]+)@([a-zA-Z0-9_.-]+.[a-zA-Z]{2,})');
 
-export function checkPasswordValidation(password: string) {
+export function checkPasswordValidation(password: string, currentPassworld: string | null = null) {
     let result: ValidationResult = { isError: true, message: '' };
     if (password.length < 8) {
         result.message = 'Mật khẩu dài tối thiểu 8 ký tự';
@@ -23,6 +23,8 @@ export function checkPasswordValidation(password: string) {
         result.message = 'Mật khẩu cần ít nhất 1 chữ số';
     } else if (!containSpecialCharacterRegex.test(password)) {
         result.message = 'Mật khẩu cần ít nhất 1 kí tự đặc biệt';
+    } else if (currentPassworld && currentPassworld != password) {
+        result.message = 'Mật khẩu không không khớp mật khẩu mới';
     } else {
         result.isError = false;
     }

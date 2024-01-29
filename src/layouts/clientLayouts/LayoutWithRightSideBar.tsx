@@ -17,9 +17,9 @@ const LayoutWithRightSideBar = ({ childen }: any) => {
     return (
         <>
             <div>
-                <Header />
                 <div className="flex flex-col md:flex-row">
                     <div className="flex-1">
+                        <Header />
                         {childen}
                         <div className="hidden md:block">
                             <Footer />

@@ -8,8 +8,15 @@ import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
+import { Course } from '../../types/Course.type';
+import { formatNumberWithCommas } from '../../utils/NumberFormater';
+import { FormatType, secondsToTimeString } from '../../utils/TimeFormater';
 
-const CourseCardPreview = () => {
+interface Props {
+    course: Course;
+}
+
+const CourseCardPreview = ({ course }: Props) => {
     const [isFavorite, setFavorite] = useState(false);
     const handleOnClickFavorite = () => {
         setFavorite((pre) => !pre);
@@ -18,23 +25,17 @@ const CourseCardPreview = () => {
     const [loading, setLoading] = useState<boolean>(false);
 
     const handleBuyClick = () => {
-        changeStateLoading();
-        setTimeout(changeStateLoading, 3000);
+        //bui
     };
 
-    const changeStateLoading = () => {
-        setLoading((preLoading) => !preLoading);
-    };
     return (
         <>
             <Paper className="w-[350px]" elevation={3}>
                 <div className=" p-0.5">
                     <div className="relative flex justify-center">
-                        <img
-                            src="https://img-b.udemycdn.com/course/480x270/5059176_3a43_2.jpg"
-                            alt=""
-                            className="w-full rounded-sm"
-                        />
+                        <div className="flex max-h-[200px] items-center justify-center overflow-hidden">
+                            <img src={course?.imageUrl} className="w-full rounded-sm" />
+                        </div>
                         <div className="absolute inset-0 flex cursor-pointer items-center justify-center">
                             <PlayCircleOutlineIcon style={{ fontSize: 50, color: '#fff' }} />
                         </div>
@@ -45,7 +46,9 @@ const CourseCardPreview = () => {
 
                     <div className="flex flex-col gap-2 px-8 py-4">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-2xl font-bold">1,699,000đ</h2>{' '}
+                            <h2 className="text-2xl font-bold">
+                                {formatNumberWithCommas(course?.price)}₫
+                            </h2>{' '}
                             <IconButton onClick={handleOnClickFavorite} size="large">
                                 {isFavorite ? (
                                     <FavoriteIcon style={{ color: '#e95c5c' }} />
@@ -71,7 +74,14 @@ const CourseCardPreview = () => {
                                         className="mr-4"
                                         style={{ fontSize: 'inherit' }}
                                     />
-                                    <p>38 giờ học bằng video</p>
+                                    <p>
+                                        {secondsToTimeString(
+                                            course.totalDuration,
+                                            FormatType.HH_MM,
+                                            [' giờ', ' phút'],
+                                        )}{' '}
+                                        thời gian học
+                                    </p>
                                 </div>
                                 <div className="flex items-center text-sm">
                                     <PhoneAndroidIcon

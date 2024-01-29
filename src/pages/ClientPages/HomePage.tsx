@@ -1,6 +1,9 @@
 import { Paper } from '@mui/material';
 import { CourseTabs } from '../../components';
 import { Carousel } from 'antd';
+import { useEffect, useState } from 'react';
+import { Course } from '../../types/Course.type';
+import { useGetCoursesBaseStudentJoinedQuery } from '../../services/course.services';
 
 const imgBaner = [
     'https://img-b.udemycdn.com/notices/featured_carousel_slide/image/b677b28c-9faf-4439-b042-2a2add2828ef.jpg',
@@ -8,6 +11,14 @@ const imgBaner = [
 ];
 
 const HomePage = () => {
+    const [topCoursesJoined, setTopCoursesJoined] = useState<Course[] | undefined>([]);
+    const { data, isFetching, isError, isSuccess } = useGetCoursesBaseStudentJoinedQuery(20);
+
+    useEffect(() => {
+        if (isSuccess) {
+            setTopCoursesJoined(data);
+        }
+    }, [isSuccess]);
     return (
         <>
             <div className="container flex flex-col gap-16 text-[#2d2f31]">
@@ -32,13 +43,11 @@ const HomePage = () => {
                     </Carousel>
                 </div>
                 <div>
-                    <CourseTabs />
-                </div>
-                <div>
-                    <CourseTabs />
-                </div>
-                <div>
-                    <CourseTabs />
+                    <CourseTabs
+                        isLoading={isFetching}
+                        tabsTitle="Top các khóa học được yêu thích"
+                        courseList={topCoursesJoined}
+                    />
                 </div>
             </div>
         </>

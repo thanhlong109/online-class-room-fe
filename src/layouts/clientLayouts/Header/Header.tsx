@@ -22,8 +22,9 @@ function Header() {
         if (isSuccess && data) {
             dispatch(loadUser());
             dispatch(setUserInfo({ ...data }));
+            console.log(data);
         }
-    }, [data]);
+    }, [isSuccess]);
 
     //
     const StyledSearch = styled(Input.Search)({
