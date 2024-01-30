@@ -18,11 +18,6 @@ interface Props {
 }
 
 const CourseCardPreview = ({ course }: Props) => {
-    const [isFavorite, setFavorite] = useState(false);
-    const handleOnClickFavorite = () => {
-        setFavorite((pre) => !pre);
-    };
-
     const [loading, setLoading] = useState<boolean>(false);
 
     const handleBuyClick = () => {
@@ -50,7 +45,7 @@ const CourseCardPreview = ({ course }: Props) => {
                             <h2 className="text-2xl font-bold">
                                 {formatNumberWithCommas(course?.price)}₫
                             </h2>{' '}
-                            <FavoriteButton isLoadFromSever={false} courseId={course.courseId} />
+                            <FavoriteButton courseId={course.courseId} />
                         </div>
 
                         <LoadingButton

@@ -1,40 +1,84 @@
 import { InboxOutlined } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
-import { Divider, Typography } from 'antd';
-import type { UploadProps } from 'antd';
+import { Divider, Progress, Typography, message } from 'antd';
+import type { UploadFile } from 'antd';
 import { Upload } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { firebaseStorage } from '../../../../config';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../store';
+import { FirebaseError } from 'firebase/app';
+import { RcFile, UploadChangeParam } from 'antd/es/upload';
 
 const { Dragger } = Upload;
 
 const UploadAvatar = () => {
-    const [img, setImg] = useState('https://img-c.udemycdn.com/user/200_H/anonymous_3.png');
-    const props: UploadProps = {
-        name: 'file',
-        multiple: false,
-        action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
-        onChange(info) {
-            /*const { status } = info.file;
-            if (status !== 'uploading') {
-                console.log(info.file, info.fileList);
+    const defaultPreviewImg = 'https://img-c.udemycdn.com/user/200_H/anonymous_3.png';
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
+    const [imgPreview, setImgPreview] = useState<string | undefined>(defaultPreviewImg);
+    const userInfo = useSelector((state: RootState) => state.user);
+    const storageRef = ref(firebaseStorage, `images/user-avatar/user-${userInfo.id}`);
+    const [selectedFile, setSelectedFile] = useState<any>(null);
+    const [percent, setPercent] = useState(0);
+    const [isImageFile, setIsImageFile] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const uploadFile = () => {
+        if (selectedFile) {
+            const uploadTask = uploadBytesResumable(storageRef, selectedFile);
+            setLoading(true);
+            try {
+                uploadTask.on(
+                    'state_changed',
+                    (snapshot) => {
+                        const percent = Math.floor(
+                            (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+                        );
+                        setPercent(percent);
+                    },
+                    (error: FirebaseError) => {
+                        console.error(error);
+                        setSelectedFile(null);
+                    },
+                    () => {
+                        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                            setLoading(false);
+                            setSelectedFile(null);
+                            message.success('Cập nhật avatar thành công!');
+                            setImgPreview(defaultPreviewImg);
+                            console.log(`link ${downloadURL}`);
+                        });
+                    },
+                );
+            } catch (error) {
+                console.error('Error uploading file:', error);
             }
-            if (status === 'done') {
-                message.success(`${info.file.name} file uploaded successfully.`);
-            } else if (status === 'error') {
-                message.error(`${info.file.name} file upload failed.`);
-            }*/
-            if (info.file.url) {
-                setImg(info.file.url);
+        }
+    };
+
+    const handleOnBeforeUpload = (file: RcFile) => {
+        const extentionFile = file.name.slice(((file.name.lastIndexOf('.') - 1) >>> 0) + 2);
+        const isAllowed = allowedExtensions.includes(extentionFile.toLocaleLowerCase());
+        setIsImageFile(isAllowed);
+        return false;
+    };
+
+    const handleOnSelectedFileChange = (info: UploadChangeParam<UploadFile<any>>) => {
+        if (isImageFile) {
+            const reader = new FileReader();
+            const file = info.fileList.pop()?.originFileObj;
+            console.log('select file');
+            if (file) {
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    setImgPreview(reader.result as string);
+                };
+                setSelectedFile(file);
             }
-        },
-        onDrop(e) {
-            console.log('Dropped files', e.dataTransfer.files);
-        },
-        onPreview(file) {
-            if (file.url) {
-                setImg(file.url);
-            }
-        },
+        } else {
+            message.error('Vui lòng chỉ chọn file ảnh!');
+        }
     };
     return (
         <>
@@ -48,12 +92,17 @@ const UploadAvatar = () => {
                         <Typography.Title level={5}>Ảnh xem trước</Typography.Title>
                         <div className=" border-[1px] border-[#2d2f31] p-4">
                             <div className="bg-[#f7f9fa] ">
-                                <img className="m-auto h-full" src={img} alt="" />
+                                <img className="m-auto h-full" src={imgPreview} alt="" />
                             </div>
                         </div>
                     </div>
                     <div>
-                        <Dragger {...props}>
+                        <Dragger
+                            showUploadList={false}
+                            multiple={false}
+                            onChange={handleOnSelectedFileChange}
+                            beforeUpload={handleOnBeforeUpload}
+                        >
                             <p className="ant-upload-drag-icon">
                                 <InboxOutlined />
                             </p>
@@ -64,7 +113,25 @@ const UploadAvatar = () => {
                             </p>
                         </Dragger>
                     </div>
-                    <LoadingButton variant="contained">Lưu</LoadingButton>
+                    {percent > 0 && percent < 100 && (
+                        <>
+                            <div>
+                                <Progress percent={percent} />
+                                <div className="text-xs">
+                                    <span className="font-medium">Upload file:</span>{' '}
+                                    {selectedFile && selectedFile.name}
+                                </div>
+                            </div>
+                        </>
+                    )}
+                    <LoadingButton
+                        loading={loading}
+                        onClick={uploadFile}
+                        disabled={selectedFile == null}
+                        variant="contained"
+                    >
+                        Lưu
+                    </LoadingButton>
                 </div>
             </div>
         </>

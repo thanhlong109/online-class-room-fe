@@ -47,7 +47,6 @@ function LoginPage() {
     }, [isLoginError]);
     useEffect(() => {
         if (isLoginSuccess) {
-            setErrorMessage('');
             const userData: AuthToken = {
                 accessToken: loginData.jwtToken,
                 refreshToken: loginData.jwtRefreshToken,
@@ -55,7 +54,9 @@ function LoginPage() {
                 isLogin: true,
             };
             useDispach(setUser(userData));
-            nagigate('/');
+            setTimeout(() => {
+                nagigate('/');
+            }, 1000);
         }
     }, [isLoginSuccess]);
 

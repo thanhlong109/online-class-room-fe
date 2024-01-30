@@ -16,7 +16,7 @@ import { loadUser } from '../../../slices/authSlice';
 function Header() {
     //load user data
     const dispatch = useDispatch();
-    const { data, isSuccess } = useGetUserInfoQuery();
+    const { data, isSuccess, isError } = useGetUserInfoQuery();
     const isLogin = useSelector((state: RootState) => state.auth.isLogin);
     useEffect(() => {
         if (isSuccess && data) {
