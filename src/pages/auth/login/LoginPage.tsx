@@ -54,9 +54,7 @@ function LoginPage() {
                 isLogin: true,
             };
             useDispach(setUser(userData));
-            setTimeout(() => {
-                nagigate('/');
-            }, 1000);
+            nagigate('/');
         }
     }, [isLoginSuccess]);
 

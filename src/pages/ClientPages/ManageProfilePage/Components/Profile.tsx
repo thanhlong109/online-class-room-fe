@@ -7,24 +7,35 @@ import {
     Radio,
     RadioChangeEvent,
     Typography,
+    message,
 } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
-import { UserInfo } from '../../../../slices/userSlice';
+import { UserInfo, setUserInfo } from '../../../../slices/userSlice';
+import { useUpdateUserInfoMutation } from '../../../../services/auth.services';
 
 const Profile = () => {
+    const dispatch = useDispatch();
     const email = useSelector((state: RootState) => state.auth.email);
+    const [updateUserMutate, { isSuccess, data, isLoading }] = useUpdateUserInfoMutation();
     const [date, setDate] = useState<dayjs.Dayjs | null>(
         dayjs(useSelector((state: RootState) => state.user.birthDate)),
     );
+
     const userLoaded = useSelector((state: RootState) => state.user);
     const [formData, setFormData] = useState<UserInfo>(userLoaded);
     useEffect(() => {
         setFormData(userLoaded);
     }, [userLoaded]);
+    useEffect(() => {
+        if (isSuccess && data) {
+            dispatch(setUserInfo(data));
+            message.success('cập nhật thành công!');
+        }
+    }, [isSuccess]);
     const handleOnGenderChange = (e: RadioChangeEvent) => {
         setFormData({ ...formData, sex: e.target.value });
     };
@@ -54,6 +65,7 @@ const Profile = () => {
     };
     const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        updateUserMutate(formData);
     };
 
     return (
@@ -127,7 +139,7 @@ const Profile = () => {
                                 placeholder="Nhập số điện thoại của bạn"
                                 allowClear
                                 required
-                                type="email"
+                                type="phoneNumber"
                                 value={formData.phoneNumber ? formData.phoneNumber : ''}
                                 onChange={handleOnPhoneNumberChange}
                             />
@@ -144,9 +156,14 @@ const Profile = () => {
                             placeholder="Thêm tiểu sử của bạn"
                         />
                     </div>
-
                     <div className="w-1/3 min-w-fit">
-                        <LoadingButton color="primary" fullWidth variant="contained" type="submit">
+                        <LoadingButton
+                            loading={isLoading}
+                            color="primary"
+                            fullWidth
+                            variant="contained"
+                            type="submit"
+                        >
                             Lưu
                         </LoadingButton>
                     </div>

@@ -3,7 +3,7 @@ import { LoadingButton } from '@mui/lab';
 import { Divider, Progress, Typography, message } from 'antd';
 import type { UploadFile } from 'antd';
 import { Upload } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { firebaseStorage } from '../../../../config';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { useSelector } from 'react-redux';

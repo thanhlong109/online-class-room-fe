@@ -12,11 +12,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store';
 import { setUserInfo } from '../../../slices/userSlice';
 import { loadUser } from '../../../slices/authSlice';
+import { useGetAccessTokenLocal } from '../../../hooks/appHook';
 
 function Header() {
     //load user data
     const dispatch = useDispatch();
-    const { data, isSuccess, isError } = useGetUserInfoQuery();
+    const userLocalData = useGetAccessTokenLocal();
+    const { data, isSuccess, refetch } = useGetUserInfoQuery(
+        userLocalData
+            ? { email: userLocalData.email, accessToken: userLocalData.accessToken }
+            : { email: null, accessToken: null },
+    );
     const isLogin = useSelector((state: RootState) => state.auth.isLogin);
     useEffect(() => {
         if (isSuccess && data) {
@@ -24,6 +30,10 @@ function Header() {
             dispatch(setUserInfo({ ...data }));
         }
     }, [isSuccess]);
+
+    useEffect(() => {
+        refetch();
+    }, [userLocalData]);
 
     //
     const StyledSearch = styled(Input.Search)({
