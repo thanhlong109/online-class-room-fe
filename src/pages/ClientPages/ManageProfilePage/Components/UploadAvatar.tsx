@@ -3,13 +3,15 @@ import { LoadingButton } from '@mui/lab';
 import { Divider, Progress, Typography, message } from 'antd';
 import type { UploadFile } from 'antd';
 import { Upload } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { firebaseStorage } from '../../../../config';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
 import { FirebaseError } from 'firebase/app';
 import { RcFile, UploadChangeParam } from 'antd/es/upload';
+import { useUpdateUserInfoMutation } from '../../../../services/auth.services';
+import { setUserInfo } from '../../../../slices/userSlice';
 
 const { Dragger } = Upload;
 
@@ -18,11 +20,13 @@ const UploadAvatar = () => {
     const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
     const [imgPreview, setImgPreview] = useState<string | undefined>(defaultPreviewImg);
     const userInfo = useSelector((state: RootState) => state.user);
+    const dispatch = useDispatch();
     const storageRef = ref(firebaseStorage, `images/user-avatar/user-${userInfo.id}`);
     const [selectedFile, setSelectedFile] = useState<any>(null);
     const [percent, setPercent] = useState(0);
     const [isImageFile, setIsImageFile] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [updateUserMutate, { isSuccess, data, isLoading }] = useUpdateUserInfoMutation();
 
     const uploadFile = () => {
         if (selectedFile) {
@@ -45,7 +49,8 @@ const UploadAvatar = () => {
                         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                             setLoading(false);
                             setSelectedFile(null);
-                            message.success('Cập nhật avatar thành công!');
+                            //
+                            updateUserMutate({ ...userInfo, profileImg: downloadURL });
                             setImgPreview(defaultPreviewImg);
                             console.log(`link ${downloadURL}`);
                         });
@@ -56,7 +61,12 @@ const UploadAvatar = () => {
             }
         }
     };
-
+    useEffect(() => {
+        if (isSuccess && data) {
+            message.success('Cập nhật avatar thành công!');
+            dispatch(setUserInfo(data));
+        }
+    }, [isSuccess]);
     const handleOnBeforeUpload = (file: RcFile) => {
         const extentionFile = file.name.slice(((file.name.lastIndexOf('.') - 1) >>> 0) + 2);
         const isAllowed = allowedExtensions.includes(extentionFile.toLocaleLowerCase());
