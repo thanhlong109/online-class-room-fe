@@ -5,10 +5,9 @@ import PauseIcon from '@mui/icons-material/Pause';
 
 interface Props {
     src: string;
-    ref: any;
 }
 
-const Video = ({ src, ref = null }: Props) => {
+const Video = ({ src }: Props, ref: any) => {
     if (ref === null) {
         ref = useRef();
     }

@@ -66,7 +66,7 @@ function Header() {
     return (
         <>
             <header className="max-w-[100vw] shadow-[0_2px_4px_rgb(0,0,0,0.08),0_4px_12px_rgb(0,0,0,0.08)]">
-                <div className="container flex h-[76px] items-center justify-between  gap-8 bg-white ">
+                <div className="container flex h-[76px] items-center justify-between  gap-4 bg-white md:gap-8 ">
                     <div className="md:hidden">
                         <IconButton onClick={handleOpenMenuToggle}>
                             <MenuIcon />
@@ -74,7 +74,11 @@ function Header() {
                     </div>
                     <h1>
                         <Link to={'/'}>
-                            <Typography.Title style={{ fontWeight: 'bold', margin: '0' }} level={2}>
+                            <Typography.Title
+                                className="!text-xl md:!text-2xl"
+                                style={{ fontWeight: 'bold', margin: '0' }}
+                                level={2}
+                            >
                                 EStudyHub
                             </Typography.Title>
                         </Link>
@@ -144,17 +148,37 @@ function Header() {
                     placement="left"
                     title={
                         <div className="flex items-center gap-2">
-                            <Button onClick={handleOpenMenuToggle}>
-                                <Link to={'/user/12'}>
-                                    <UserAvatar className="h-[64px] w-[64px] cursor-pointer md:h-[48px] md:w-[48px]" />
-                                </Link>
-                            </Button>
-
-                            <div>
-                                <h2 className="text-lg font-bold">Hi, Long Nguyen</h2>
-                                <p className="text-sm">Chào mừng trở lại</p>
-                            </div>
-                            <Notification />
+                            {isLogin && (
+                                <>
+                                    {' '}
+                                    <Button onClick={handleOpenMenuToggle}>
+                                        <Link to={'/user/12'}>
+                                            <UserAvatar className="h-[64px] w-[64px] cursor-pointer md:h-[48px] md:w-[48px]" />
+                                        </Link>
+                                    </Button>
+                                    <div>
+                                        <h2 className="text-lg font-bold">Hi, Long Nguyen</h2>
+                                        <p className="text-sm">Chào mừng trở lại</p>
+                                    </div>
+                                    <Notification />
+                                </>
+                            )}
+                            {!isLogin && (
+                                <div className="flex gap-3">
+                                    <Button
+                                        variant="outlined"
+                                        className="!border-[#2d2f31] !text-sm !font-bold !text-[#2d2f31] hover:!bg-[#0000000a]"
+                                    >
+                                        Đăng ký
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        className=" !border-[#2d2f31] !bg-[#2d2f31] !text-sm !font-bold !shadow-none hover:!bg-[#747474]"
+                                    >
+                                        <Link to={'/login'}>Đăng nhập</Link>
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     }
                     closeIcon={<KeyboardDoubleArrowLeftIcon />}

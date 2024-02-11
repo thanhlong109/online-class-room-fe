@@ -1,7 +1,5 @@
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
-import { Button, IconButton, Paper } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { Paper } from '@mui/material';
 import { useState } from 'react';
 import { LoadingButton } from '@mui/lab';
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
@@ -11,7 +9,8 @@ import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 import { Course } from '../../types/Course.type';
 import { formatNumberWithCommas } from '../../utils/NumberFormater';
 import { FormatType, secondsToTimeString } from '../../utils/TimeFormater';
-import { FavoriteButton } from '..';
+import { FavoriteButton, Video } from '..';
+import { Modal } from 'antd';
 
 interface Props {
     course: Course;
@@ -19,9 +18,14 @@ interface Props {
 
 const CourseCardPreview = ({ course }: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
-
+    const [openPreviewModal, setOpenPreviewModal] = useState(false);
     const handleBuyClick = () => {
         //bui
+    };
+
+    const handlePreviewClick = () => {
+        console.log(`link ${course.videoPreviewUrl}`);
+        setOpenPreviewModal(true);
     };
 
     return (
@@ -32,7 +36,10 @@ const CourseCardPreview = ({ course }: Props) => {
                         <div className="flex max-h-[200px] items-center justify-center overflow-hidden">
                             <img src={course?.imageUrl} className="w-full rounded-sm" />
                         </div>
-                        <div className="absolute inset-0 flex cursor-pointer items-center justify-center">
+                        <div
+                            className="absolute inset-0 flex cursor-pointer items-center justify-center"
+                            onClick={handlePreviewClick}
+                        >
                             <PlayCircleOutlineIcon style={{ fontSize: 50, color: '#fff' }} />
                         </div>
                         <span className="absolute bottom-7 flex justify-center text-lg font-bold text-white">
@@ -99,6 +106,20 @@ const CourseCardPreview = ({ course }: Props) => {
                     </div>
                 </div>
             </Paper>
+            <Modal
+                open={openPreviewModal}
+                centered
+                maskClosable={true}
+                footer={null}
+                closable={false}
+                className="!w-[1000px]"
+                destroyOnClose
+                onCancel={() => setOpenPreviewModal(false)}
+            >
+                <div>
+                    <Video src={course.videoPreviewUrl} />
+                </div>
+            </Modal>
         </>
     );
 };
