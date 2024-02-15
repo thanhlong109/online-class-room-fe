@@ -9,6 +9,7 @@ import {
 import LoginPage from '../pages/auth/login/LoginPage';
 import TestApiPage from '../pages/ClientPages/TestApiPage';
 import RegisterPage from '../pages/auth/login/RegisterPage';
+import NotFoundPage from '../pages/errorPage/NotFoundPage';
 
 interface RouteProps {
     path: string;
@@ -22,6 +23,7 @@ const publicRoutes: RouteProps[] = [
     { path: '/login', component: LoginPage, layout: LoginLayout },
     { path: '/register', component: RegisterPage, layout: LoginLayout },
     { path: '/testApi', component: TestApiPage, layout: DefaultLayout },
+    { path: '*', component: NotFoundPage, layout: DefaultLayout },
 ];
 
 const privateRoutes: RouteProps[] = [
