@@ -3,8 +3,6 @@ import CourseSection from '../../components/CourseSection/CourseSection';
 import { CourseBanner, CourseCardPreview, RatingCourseItem } from '../../components';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import { FormatType, secondsToTimeString } from '../../utils/TimeFormater';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useGetCourseIDQuery } from '../../services';

@@ -11,6 +11,7 @@ import EmojiEventsOutlinedIcon from '@mui/icons-material/EmojiEventsOutlined';
 import { Course } from '../../types/Course.type';
 import { formatNumberWithCommas } from '../../utils/NumberFormater';
 import { FormatType, secondsToTimeString } from '../../utils/TimeFormater';
+import { FavoriteButton } from '..';
 
 interface Props {
     course: Course;
@@ -49,13 +50,7 @@ const CourseCardPreview = ({ course }: Props) => {
                             <h2 className="text-2xl font-bold">
                                 {formatNumberWithCommas(course?.price)}₫
                             </h2>{' '}
-                            <IconButton onClick={handleOnClickFavorite} size="large">
-                                {isFavorite ? (
-                                    <FavoriteIcon style={{ color: '#e95c5c' }} />
-                                ) : (
-                                    <FavoriteBorderIcon />
-                                )}
-                            </IconButton>
+                            <FavoriteButton isLoadFromSever={false} courseId={course.courseId} />
                         </div>
 
                         <LoadingButton
