@@ -25,7 +25,7 @@ const Video = ({ src }: Props, ref: any) => {
     };
     return (
         <>
-            <div className="relative cursor-pointer text-[100px]">
+            <div className="relative cursor-pointer text-[50px] md:text-[80px]">
                 <video
                     onPause={() => handleOnVideoClick(true)}
                     onPlay={() => handleOnVideoClick(false)}

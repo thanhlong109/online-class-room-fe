@@ -6,7 +6,7 @@ import { FormatType, secondsToTimeString } from '../../utils/TimeFormater';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useGetCourseIDQuery } from '../../services';
-import { Course, Section, Step } from '../../types/Course.type';
+import { Course, Section } from '../../types/Course.type';
 
 const CourseDetailsPage = () => {
     const [courseId, setCourseId] = useState('');
@@ -23,7 +23,6 @@ const CourseDetailsPage = () => {
         if (data) setCourse(data);
         console.log(data);
     }, [isSuccess]);
-
     const handleCalTotalTime = (sections: Section[]) => {
         let totalTimeLession = 0;
         sections.forEach((section) => {
@@ -85,6 +84,7 @@ const CourseDetailsPage = () => {
                                                     gian học
                                                 </span>
                                             )}
+                                            {isLoading && <Skeleton active />}
                                         </div>
                                         <div className="mt-4">
                                             {isLoading && <Skeleton active />}

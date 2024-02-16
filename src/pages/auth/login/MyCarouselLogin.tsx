@@ -1,5 +1,4 @@
 import { Carousel } from 'antd';
-import React from 'react';
 
 const images = [
     'https://firebasestorage.googleapis.com/v0/b/online-classroom-fe.appspot.com/o/Login_Image%2FloginHello.png?alt=media&token=c4dd4a9b-83ce-4569-967d-ec13d63ed66d',

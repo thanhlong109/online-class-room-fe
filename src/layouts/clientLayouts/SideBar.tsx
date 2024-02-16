@@ -31,7 +31,7 @@ const SideBar = ({ onCloseClick }: Props) => {
     return (
         <>
             <div
-                className="xs:hidden absolute bg-white  md:fixed md:bottom-0 md:top-0 md:pt-3 md:disabled:absolute"
+                className="xs:hidden absolute bg-[#edeeee] md:fixed md:bottom-0 md:top-0 md:pt-3 md:disabled:absolute"
                 style={{ width: '-webkit-fill-available' }}
             >
                 <div className="flex items-center justify-between">
@@ -41,7 +41,7 @@ const SideBar = ({ onCloseClick }: Props) => {
                     </IconButton>
                 </div>
             </div>
-            <div className="block overflow-y-scroll  md:fixed md:bottom-0 md:top-[80px]">
+            <div className="block w-full overflow-y-scroll  md:fixed md:bottom-0 md:top-[80px]">
                 {isLoading && <Skeleton active />}
                 {!isLoading && <CourseSection isWrap active courseSections={course?.sections} />}
             </div>

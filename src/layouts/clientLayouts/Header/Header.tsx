@@ -74,13 +74,25 @@ function Header() {
                     </div>
                     <h1>
                         <Link to={'/'}>
-                            <Typography.Title
+                            {/* <Typography.Title
                                 className="!text-xl md:!text-2xl"
                                 style={{ fontWeight: 'bold', margin: '0' }}
                                 level={2}
                             >
                                 EStudyHub
-                            </Typography.Title>
+                            </Typography.Title> */}
+                            <div className="hidden  items-center justify-center md:flex">
+                                <img
+                                    className="h-[40px]"
+                                    src="https://firebasestorage.googleapis.com/v0/b/estudyhub-a1699.appspot.com/o/logo%2Fe-black.png?alt=media&token=a0a401b9-6d20-4597-833c-962457c543ac"
+                                    alt=""
+                                />
+                                <img
+                                    className="ml-1 h-[32px]"
+                                    src="https://firebasestorage.googleapis.com/v0/b/estudyhub-a1699.appspot.com/o/logo%2Flogo-black-tail.png?alt=media&token=e65f65a8-94a6-4504-a370-730b122ba42e"
+                                    alt=""
+                                />
+                            </div>
                         </Link>
                     </h1>
                     <div className="hidden cursor-pointer text-[#2d2f31] hover:text-[#a435f0] md:block">
