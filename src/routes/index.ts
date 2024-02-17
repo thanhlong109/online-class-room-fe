@@ -1,5 +1,7 @@
+import DefaultLayoutAdmin from '../layouts/adminLayouts/DefaultLayoutAdmin';
 import { DefaultLayout, LayoutWithRightSideBar } from '../layouts/clientLayouts';
 import LoginLayout from '../layouts/clientLayouts/LoginLayout';
+import { DashboardPage } from '../pages/AdminPages';
 import {
     CourseDetailsPage,
     HomePage,
@@ -7,7 +9,6 @@ import {
     ManageProfilePage,
 } from '../pages/ClientPages';
 import LoginPage from '../pages/auth/login/LoginPage';
-import TestApiPage from '../pages/ClientPages/TestApiPage';
 import RegisterPage from '../pages/auth/login/RegisterPage';
 import NotFoundPage from '../pages/errorPage/NotFoundPage';
 import CheckoutPage from '../pages/ClientPages/CheckoutPage/CheckoutPage';
@@ -23,7 +24,6 @@ const publicRoutes: RouteProps[] = [
     { path: '/courses/:id', component: CourseDetailsPage, layout: DefaultLayout },
     { path: '/login', component: LoginPage, layout: LoginLayout },
     { path: '/register', component: RegisterPage, layout: LoginLayout },
-    { path: '/testApi', component: TestApiPage, layout: DefaultLayout },
     { path: '/checkout', component: CheckoutPage, layout: DefaultLayout },
     { path: '*', component: NotFoundPage, layout: DefaultLayout },
 ];
@@ -33,7 +33,9 @@ const privateRoutes: RouteProps[] = [
     { path: '/user/:id', component: ManageProfilePage, layout: DefaultLayout },
 ];
 
-const adminRoutes: RouteProps[] = [];
+const adminRoutes: RouteProps[] = [
+    { path: '/admin/', component: DashboardPage, layout: DefaultLayoutAdmin },
+];
 
 const staffRoutes: RouteProps[] = [];
 

@@ -7,10 +7,11 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 
 const LayoutWithRightSideBar = ({ childen }: any) => {
     const [isClose, setClose] = useState(false);
-    const [width, setWidth] = useState('md:w-1/4 md:min-w-[275px]');
+    const displayWidth = 'md:w-1/5 md:min-w-[200px]';
+    const [width, setWidth] = useState(displayWidth);
     const handleClickCloseOpen = () => {
         setClose((pre) => {
-            setWidth(!pre ? 'md:w-0' : 'md:w-1/4 md:min-w-[275px]');
+            setWidth(!pre ? 'md:w-0' : displayWidth);
             return !pre;
         });
     };

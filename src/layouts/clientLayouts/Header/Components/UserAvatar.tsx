@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
 import { Avatar } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Skeleton } from 'antd';
 
 interface Props {
     className: string;

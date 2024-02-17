@@ -12,11 +12,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store';
 import { setUserInfo } from '../../../slices/userSlice';
 import { loadUser } from '../../../slices/authSlice';
+import { useGetAccessTokenLocal } from '../../../hooks/appHook';
 
 function Header() {
     //load user data
     const dispatch = useDispatch();
-    const { data, isSuccess } = useGetUserInfoQuery();
+    const userLocalData = useGetAccessTokenLocal();
+    const { data, isSuccess, refetch } = useGetUserInfoQuery(
+        userLocalData
+            ? { email: userLocalData.email, accessToken: userLocalData.accessToken }
+            : { email: null, accessToken: null },
+    );
     const isLogin = useSelector((state: RootState) => state.auth.isLogin);
     useEffect(() => {
         if (isSuccess && data) {
@@ -24,6 +30,10 @@ function Header() {
             dispatch(setUserInfo({ ...data }));
         }
     }, [isSuccess]);
+
+    useEffect(() => {
+        refetch();
+    }, [userLocalData]);
 
     //
     const StyledSearch = styled(Input.Search)({
@@ -56,7 +66,7 @@ function Header() {
     return (
         <>
             <header className="max-w-[100vw] shadow-[0_2px_4px_rgb(0,0,0,0.08),0_4px_12px_rgb(0,0,0,0.08)]">
-                <div className="container flex h-[76px] items-center justify-between  gap-8 bg-white ">
+                <div className="container flex h-[76px] items-center justify-between  gap-4 bg-white md:gap-8 ">
                     <div className="md:hidden">
                         <IconButton onClick={handleOpenMenuToggle}>
                             <MenuIcon />
@@ -64,9 +74,25 @@ function Header() {
                     </div>
                     <h1>
                         <Link to={'/'}>
-                            <Typography.Title style={{ fontWeight: 'bold', margin: '0' }} level={2}>
+                            {/* <Typography.Title
+                                className="!text-xl md:!text-2xl"
+                                style={{ fontWeight: 'bold', margin: '0' }}
+                                level={2}
+                            >
                                 EStudyHub
-                            </Typography.Title>
+                            </Typography.Title> */}
+                            <div className="hidden  items-center justify-center md:flex">
+                                <img
+                                    className="h-[40px]"
+                                    src="https://firebasestorage.googleapis.com/v0/b/estudyhub-a1699.appspot.com/o/logo%2Fe-black.png?alt=media&token=a0a401b9-6d20-4597-833c-962457c543ac"
+                                    alt=""
+                                />
+                                <img
+                                    className="ml-1 h-[32px]"
+                                    src="https://firebasestorage.googleapis.com/v0/b/estudyhub-a1699.appspot.com/o/logo%2Flogo-black-tail.png?alt=media&token=e65f65a8-94a6-4504-a370-730b122ba42e"
+                                    alt=""
+                                />
+                            </div>
                         </Link>
                     </h1>
                     <div className="hidden cursor-pointer text-[#2d2f31] hover:text-[#a435f0] md:block">
@@ -134,17 +160,37 @@ function Header() {
                     placement="left"
                     title={
                         <div className="flex items-center gap-2">
-                            <Button onClick={handleOpenMenuToggle}>
-                                <Link to={'/user/12'}>
-                                    <UserAvatar className="h-[64px] w-[64px] cursor-pointer md:h-[48px] md:w-[48px]" />
-                                </Link>
-                            </Button>
-
-                            <div>
-                                <h2 className="text-lg font-bold">Hi, Long Nguyen</h2>
-                                <p className="text-sm">Chào mừng trở lại</p>
-                            </div>
-                            <Notification />
+                            {isLogin && (
+                                <>
+                                    {' '}
+                                    <Button onClick={handleOpenMenuToggle}>
+                                        <Link to={'/user/12'}>
+                                            <UserAvatar className="h-[64px] w-[64px] cursor-pointer md:h-[48px] md:w-[48px]" />
+                                        </Link>
+                                    </Button>
+                                    <div>
+                                        <h2 className="text-lg font-bold">Hi, Long Nguyen</h2>
+                                        <p className="text-sm">Chào mừng trở lại</p>
+                                    </div>
+                                    <Notification />
+                                </>
+                            )}
+                            {!isLogin && (
+                                <div className="flex gap-3">
+                                    <Button
+                                        variant="outlined"
+                                        className="!border-[#2d2f31] !text-sm !font-bold !text-[#2d2f31] hover:!bg-[#0000000a]"
+                                    >
+                                        Đăng ký
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        className=" !border-[#2d2f31] !bg-[#2d2f31] !text-sm !font-bold !shadow-none hover:!bg-[#747474]"
+                                    >
+                                        <Link to={'/login'}>Đăng nhập</Link>
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     }
                     closeIcon={<KeyboardDoubleArrowLeftIcon />}

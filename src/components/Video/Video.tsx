@@ -5,10 +5,9 @@ import PauseIcon from '@mui/icons-material/Pause';
 
 interface Props {
     src: string;
-    ref: any;
 }
 
-const Video = ({ src, ref = null }: Props) => {
+const Video = ({ src }: Props, ref: any) => {
     if (ref === null) {
         ref = useRef();
     }
@@ -26,7 +25,7 @@ const Video = ({ src, ref = null }: Props) => {
     };
     return (
         <>
-            <div className="relative cursor-pointer text-[100px]">
+            <div className="relative cursor-pointer text-[50px] md:text-[80px]">
                 <video
                     onPause={() => handleOnVideoClick(true)}
                     onPlay={() => handleOnVideoClick(false)}

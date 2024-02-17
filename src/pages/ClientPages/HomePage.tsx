@@ -3,7 +3,11 @@ import { CourseTabs } from '../../components';
 import { Carousel } from 'antd';
 import { useEffect, useState } from 'react';
 import { Course } from '../../types/Course.type';
-import { useGetCoursesBaseStudentJoinedQuery } from '../../services/course.services';
+import {
+    useGetCoursesBaseRatingQuery,
+    useGetCoursesBaseSalesQuery,
+    useGetCoursesBaseStudentJoinedQuery,
+} from '../../services/course.services';
 
 const imgBaner = [
     'https://img-b.udemycdn.com/notices/featured_carousel_slide/image/b677b28c-9faf-4439-b042-2a2add2828ef.jpg',
@@ -12,13 +16,44 @@ const imgBaner = [
 
 const HomePage = () => {
     const [topCoursesJoined, setTopCoursesJoined] = useState<Course[] | undefined>([]);
-    const { data, isFetching, isError, isSuccess } = useGetCoursesBaseStudentJoinedQuery(20);
+    const [topCoursesRating, setTopCoursesRating] = useState<Course[] | undefined>([]);
+    const [topCoursesSales, setTopCoursesSales] = useState<Course[] | undefined>([]);
+
+    const {
+        data: coursesBaseJoined,
+        isFetching: coursesBaseJoinedIsFetching,
+        isSuccess: coursesBaseJoinedIsSuccess,
+    } = useGetCoursesBaseStudentJoinedQuery(10);
+
+    const {
+        data: coursesBaseRating,
+        isFetching: coursesBaseRatingIsFetching,
+        isSuccess: coursesBaseRatingIsSuccess,
+    } = useGetCoursesBaseRatingQuery(10);
+
+    const {
+        data: coursesBaseSales,
+        isFetching: coursesBaseSalesIsFetching,
+        isSuccess: coursesBaseSalesIsSuccess,
+    } = useGetCoursesBaseSalesQuery(10);
 
     useEffect(() => {
-        if (isSuccess) {
-            setTopCoursesJoined(data);
+        if (coursesBaseJoinedIsSuccess) {
+            setTopCoursesJoined(coursesBaseJoined);
         }
-    }, [isSuccess]);
+    }, [coursesBaseJoinedIsSuccess]);
+
+    useEffect(() => {
+        if (coursesBaseRatingIsSuccess) {
+            setTopCoursesRating(coursesBaseRating);
+        }
+    }, [coursesBaseRatingIsSuccess]);
+
+    useEffect(() => {
+        if (coursesBaseSalesIsSuccess) {
+            setTopCoursesSales(coursesBaseSales);
+        }
+    }, [coursesBaseSalesIsSuccess]);
     return (
         <>
             <div className="container flex flex-col gap-16 text-[#2d2f31]">
@@ -44,9 +79,23 @@ const HomePage = () => {
                 </div>
                 <div>
                     <CourseTabs
-                        isLoading={isFetching}
+                        isLoading={coursesBaseJoinedIsFetching}
                         tabsTitle="Top các khóa học được yêu thích"
                         courseList={topCoursesJoined}
+                    />
+                </div>
+                <div>
+                    <CourseTabs
+                        isLoading={coursesBaseRatingIsFetching}
+                        tabsTitle="Top các khóa học được đánh giá cao"
+                        courseList={topCoursesRating}
+                    />
+                </div>
+                <div>
+                    <CourseTabs
+                        isLoading={coursesBaseSalesIsFetching}
+                        tabsTitle="Top các khóa học ưu đãi"
+                        courseList={topCoursesSales}
                     />
                 </div>
             </div>

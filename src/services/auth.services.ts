@@ -23,48 +23,61 @@ export interface ChangePasswordRequest {
     confirmNewPassword: string;
 }
 
-const user = localStorage.getItem('user');
-let accessToken: string | null = null;
-let email: string | null = null;
-if (user) {
-    const userData = JSON.parse(user);
-    accessToken = userData ? userData.accessToken : null;
-    email = userData ? userData.email : null;
-}
-
-const apiHeader = {
-    Authorization: 'Bearer ' + accessToken,
-};
-
 export const authApi = createApi({
     reducerPath: 'authApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://estudyhub.azurewebsites.net/' }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: 'https://estudyhub.azurewebsites.net/',
+        prepareHeaders: (headers, { getState }) => {
+            // Thêm logic để lấy accessToken từ localStorage và đặt vào header Authorization
+            const user = localStorage.getItem('user');
+            if (user) {
+                const userData = JSON.parse(user);
+                const accessToken = userData ? userData.accessToken : null;
+                headers.set('Authorization', `Bearer ${accessToken}`);
+            }
+            return headers;
+        },
+    }),
     endpoints: (build) => ({
         loginUser: build.mutation({
-            query: (body: LoginRequest) => {
-                return {
-                    url: 'api/account/signin',
-                    method: 'post',
-                    body,
-                };
-            },
+            query: (body: LoginRequest) => ({
+                url: 'api/account/signin',
+                method: 'post',
+                body,
+            }),
         }),
-        getUserInfo: build.query<UserInfoRequest, void>({
-            query: () => {
+        getUserInfo: build.query<
+            UserInfoRequest,
+            { accessToken: string | null; email: string | null }
+        >({
+            query: (data: { accessToken: string | null; email: string | null }) => {
                 return {
-                    url: `api/account/${email}`,
+                    url: `api/account/${data.email}`,
                     method: 'get',
-                    headers: apiHeader,
+                    headers: { Authorization: 'Bearer ' + data.accessToken },
                 };
             },
         }),
-        updateUserInfo: build.mutation<UserInfoRequest, UserInfo>({
-            query: (body: UserInfo) => {
+        updateUserInfo: build.mutation<UserInfo, UserInfo>({
+            query: ({ id, ...data }: UserInfo) => ({
+                url: `api/account/UpdateProfile?accountId=${id}`,
+                method: 'put',
+                body: {
+                    ...data,
+                    id,
+                },
+            }),
+            transformResponse: (response) => {
+                const data = (response as any).dataObject;
                 return {
-                    url: 'api/account/change',
-                    method: 'put',
-                    headers: apiHeader,
-                    body,
+                    id: data?.id,
+                    biography: data?.biography,
+                    birthDate: data?.birthDate,
+                    firstName: data?.firstName,
+                    lastName: data?.lastName,
+                    phoneNumber: data?.phoneNumber,
+                    profileImg: data?.profileImg,
+                    sex: data?.sex,
                 };
             },
         }),
@@ -74,7 +87,6 @@ export const authApi = createApi({
                     url: 'api/account/changePassword',
                     method: 'put',
                     body,
-                    headers: apiHeader,
                 };
             },
         }),
@@ -86,4 +98,5 @@ export const {
     useGetUserInfoQuery,
     useUpdateUserInfoMutation,
     useUpdatePasswordMutation,
+    endpoints,
 } = authApi;

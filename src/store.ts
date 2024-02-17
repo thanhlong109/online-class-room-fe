@@ -8,7 +8,7 @@ import sessionStorage from 'redux-persist/es/storage/session';
 import { wishlistApi } from './services/wishlist.services';
 import courseSlice from './slices/courseSlice';
 
-const persistConfig = {
+export const persistConfig = {
     key: 'root',
     storage: sessionStorage,
     whitelist: ['auth', 'user', 'course'],

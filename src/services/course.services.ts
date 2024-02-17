@@ -12,7 +12,20 @@ export const coursesApi = createApi({
         getCourseID: build.query<Course, string>({
             query: (id) => `api/Course/GetCourseDetailById?courseId=${id}`,
         }),
+        getCoursesBaseRating: build.query<Course[], number>({
+            query: (number: number) =>
+                `api/Course/TopFavoritesCourseBaseRating?numberOfCourses=${number}`,
+        }),
+        getCoursesBaseSales: build.query<Course[], number>({
+            query: (number: number) =>
+                `api/Course/TopFavoritesCourseBaseSales?numberOfCourses=${number}`,
+        }),
     }),
 });
 
-export const { useGetCoursesBaseStudentJoinedQuery, useGetCourseIDQuery } = coursesApi;
+export const {
+    useGetCoursesBaseStudentJoinedQuery,
+    useGetCourseIDQuery,
+    useGetCoursesBaseRatingQuery,
+    useGetCoursesBaseSalesQuery,
+} = coursesApi;

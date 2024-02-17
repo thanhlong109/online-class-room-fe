@@ -1,4 +1,4 @@
-interface ValidationResult {
+export interface ValidationResult {
     isError: boolean;
     message: string;
 }
