@@ -17,7 +17,7 @@ interface Props {
 }
 
 const CourseCardPreview = ({ course }: Props) => {
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading] = useState<boolean>(false);
     const [openPreviewModal, setOpenPreviewModal] = useState(false);
     const handleBuyClick = () => {
         //bui

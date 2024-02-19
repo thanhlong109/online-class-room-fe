@@ -15,7 +15,7 @@ export const wishlistApi = createApi({
     reducerPath: 'wishlistApi',
     baseQuery: fetchBaseQuery({
         baseUrl: 'https://estudyhub.azurewebsites.net/',
-        prepareHeaders: (headers, { getState }) => {
+        prepareHeaders: (headers, _) => {
             // Thêm logic để lấy accessToken từ localStorage và đặt vào header Authorization
             const user = localStorage.getItem('user');
             if (user) {
