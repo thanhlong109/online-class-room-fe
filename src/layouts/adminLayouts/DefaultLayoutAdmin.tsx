@@ -21,10 +21,10 @@ const DefaultLayoutAdmin = ({ childen }: any) => {
                         <div
                             style={{
                                 padding: 24,
-                                minHeight: 360,
                                 background: colorBgContainer,
                                 borderRadius: borderRadiusLG,
                             }}
+                            className="min-h-full"
                         >
                             {childen}
                         </div>

@@ -40,3 +40,24 @@ export interface Step {
     quizzes: any[];
     section: any;
 }
+
+export interface AddCourseRequest {
+    title: string;
+    description: string;
+    imageUrl: string;
+    videoPreviewUrl: string;
+    price: number;
+    salesCampaign: number;
+    isPublic: boolean;
+    totalDuration: number;
+    courseIsActive: boolean;
+    knowdledgeDescription: string;
+    linkCertificated: string;
+    categoryList: number[];
+}
+
+export interface CategoryRespone {
+    categoryId: number;
+    categoryName: string;
+    categoryDescription: string;
+}
