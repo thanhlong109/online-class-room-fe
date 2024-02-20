@@ -1,5 +1,3 @@
-import { number } from 'yup';
-
 export enum FormatType {
     HH_MM_SS,
     HH_MM,

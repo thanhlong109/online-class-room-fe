@@ -1,5 +1,4 @@
 import { Divider, Typography } from 'antd';
-import { CourseCard } from '../../../../components';
 
 const Favorite = () => {
     return (
@@ -9,13 +8,7 @@ const Favorite = () => {
                     Khóa học yêu thích
                 </Typography.Title>
                 <Divider />
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-                    <CourseCard />
-                    <CourseCard />
-                    <CourseCard />
-                    <CourseCard />
-                    <CourseCard />
-                </div>
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3"></div>
             </div>
         </>
     );

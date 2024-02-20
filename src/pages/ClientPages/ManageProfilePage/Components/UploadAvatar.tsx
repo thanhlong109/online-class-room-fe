@@ -26,7 +26,7 @@ const UploadAvatar = () => {
     const [percent, setPercent] = useState(0);
     const [isImageFile, setIsImageFile] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [updateUserMutate, { isSuccess, data, isLoading }] = useUpdateUserInfoMutation();
+    const [updateUserMutate, { isSuccess, data }] = useUpdateUserInfoMutation();
 
     const uploadFile = () => {
         if (selectedFile) {

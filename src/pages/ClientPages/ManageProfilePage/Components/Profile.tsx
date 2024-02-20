@@ -34,7 +34,7 @@ const Profile = () => {
         }
     }, [isSuccess]);
 
-    const handleOnBirthdateChange: DatePickerProps['onChange'] = (date, dateString) => {
+    const handleOnBirthdateChange: DatePickerProps['onChange'] = (_, dateString) => {
         setFormData({ ...formData, birthDate: dateString });
     };
 
