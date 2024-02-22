@@ -1,15 +1,19 @@
-import { Breadcrumb, Layout, theme } from 'antd';
-import Nav from './Nav/Nav';
+import { Layout } from 'antd';
+// import Nav from './Nav/Nav';
+import MySider from './Nav/Sider';
+import MyHeader from './Nav/HeaderAdmin';
+import MyContent from './Nav/ContentAdmin';
+import MyFooter from './Nav/FooterAdmin';
 
-const { Header, Content, Footer } = Layout;
+// const { Header, Content, Footer } = Layout;
 
-const DefaultLayoutAdmin = ({ childen }: any) => {
-    const {
-        token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken();
+const DefaultLayoutAdmin = ({ childen }: { childen: React.ReactNode }) => {
+    // const {
+    //     token: { colorBgContainer, borderRadiusLG },
+    // } = theme.useToken();
     return (
         <>
-            <Layout style={{ minHeight: '100vh' }}>
+            {/* <Layout style={{ minHeight: '100vh' }}>
                 <Nav />
                 <Layout>
                     <Header style={{ padding: 0, background: colorBgContainer }}>header ...</Header>
@@ -32,6 +36,14 @@ const DefaultLayoutAdmin = ({ childen }: any) => {
                     <Footer style={{ textAlign: 'center' }}>
                         ©{new Date().getFullYear()} Created by EStudyHub
                     </Footer>
+                </Layout>
+            </Layout> */}
+            <Layout className="min-h-screen">
+                <MySider></MySider>
+                <Layout className="bg-white">
+                    <MyHeader />
+                    <MyContent childen={childen} />
+                    <MyFooter />
                 </Layout>
             </Layout>
         </>
