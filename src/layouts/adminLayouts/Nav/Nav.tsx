@@ -9,7 +9,7 @@ import { Menu, MenuProps } from 'antd';
 import Sider, { SiderProps } from 'antd/es/layout/Sider';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
