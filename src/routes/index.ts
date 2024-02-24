@@ -11,6 +11,7 @@ import {
 import LoginPage from '../pages/auth/login/LoginPage';
 import RegisterPage from '../pages/auth/login/RegisterPage';
 import NotFoundPage from '../pages/errorPage/NotFoundPage';
+import PaymentPage from '../pages/ClientPages/CheckoutPage/PaymentPage';
 
 interface RouteProps {
     path: string;
@@ -23,6 +24,7 @@ const publicRoutes: RouteProps[] = [
     { path: '/courses/:id', component: CourseDetailsPage, layout: DefaultLayout },
     { path: '/login', component: LoginPage, layout: LoginLayout },
     { path: '/register', component: RegisterPage, layout: LoginLayout },
+    { path: '/payment', component: PaymentPage, layout: DefaultLayout },
     { path: '*', component: NotFoundPage, layout: DefaultLayout },
 ];
 
