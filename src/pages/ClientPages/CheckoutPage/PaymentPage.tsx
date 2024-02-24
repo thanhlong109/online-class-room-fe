@@ -1,6 +1,5 @@
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { Button } from 'antd';
-import React from 'react';
 
 const PaymentPage = () => {
     return (
