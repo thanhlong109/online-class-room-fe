@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { Input, StepProps, Steps, Tag, message } from 'antd';
+import { Input, StepProps, Steps, Tag } from 'antd';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
@@ -35,7 +35,6 @@ const AddCoursePage = () => {
     const addCourseData = addCourseState.data;
     const addCourseStep = addCourseState.currentStep;
     const [currentStep, setCurrentStep] = useState(addCourseStep);
-    const [createdCourse, setCreatedCourse] = useState(false);
     const next = () => {
         setCurrentStep(currentStep + 1);
     };
@@ -56,7 +55,7 @@ const AddCoursePage = () => {
     };
     return (
         <div>
-            {!createdCourse && (
+            {!(currentStep === 4) && (
                 <div>
                     <Steps size="small" current={currentStep} items={totalSteps} />
                     <div className="mt-12 text-center">
@@ -209,7 +208,15 @@ const AddCoursePage = () => {
                                 }
                                 className="!normal-case"
                                 variant="contained"
-                                onClick={() => setCreatedCourse(true)}
+                                onClick={() => {
+                                    next();
+                                    dispatch(
+                                        setAddCourse({
+                                            currentStep: currentStep,
+                                            data: { ...addCourseData },
+                                        }),
+                                    );
+                                }}
                             >
                                 Hoàn thành
                             </Button>
@@ -217,7 +224,7 @@ const AddCoursePage = () => {
                     </div>
                 </div>
             )}
-            {createdCourse && <AddCourseContent />}
+            {currentStep === 4 && <AddCourseContent />}
         </div>
     );
 };

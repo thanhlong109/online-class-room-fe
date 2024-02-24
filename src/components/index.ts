@@ -10,3 +10,4 @@ export { Notification } from './Notification';
 export { FavoriteButton } from './FavoriteButton';
 export { default as MultipleInputItem } from './MultipleInput/MultipleInputItem';
 export { default as MultipleInput } from './MultipleInput/MultipleInput';
+export { default as UploadFileCustom } from './UploadFile/UploadFileCustom';
