@@ -20,6 +20,10 @@ export const coursesApi = createApi({
             query: (number: number) =>
                 `api/Course/TopFavoritesCourseBaseSales?numberOfCourses=${number}`,
         }),
+        getAllCourses: build.query<Course[], number>({
+            query: (number: number) =>
+                `api/Course/SelectCourselistPagination?page=${number}&limit=10`,
+        }),
     }),
 });
 
@@ -28,4 +32,5 @@ export const {
     useGetCourseIDQuery,
     useGetCoursesBaseRatingQuery,
     useGetCoursesBaseSalesQuery,
+    useGetAllCoursesQuery,
 } = coursesApi;

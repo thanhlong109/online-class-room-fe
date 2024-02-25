@@ -7,6 +7,7 @@ import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } fro
 import sessionStorage from 'redux-persist/es/storage/session';
 import { wishlistApi } from './services/wishlist.services';
 import courseSlice from './slices/courseSlice';
+import getCourseAllSlice from './slices/getCourseAllSlice';
 
 export const persistConfig = {
     key: 'root',
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
     [coursesApi.reducerPath]: coursesApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [wishlistApi.reducerPath]: wishlistApi.reducer,
+    courseAll: getCourseAllSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
