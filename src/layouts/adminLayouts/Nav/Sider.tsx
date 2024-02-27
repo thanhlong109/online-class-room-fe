@@ -65,7 +65,8 @@ export default function MySider() {
         .set('1', '/admin/')
         .set('3', '/admin/getAllCourse')
         .set('4', '/admin/addCourse/')
-        .set('5', '/admin/deleteCourse');
+        .set('5', '/admin/deleteCourse')
+        .set('student', '/admin/studentList');
 
     // useEffect(() => {
     //   const fetchData = async () => {

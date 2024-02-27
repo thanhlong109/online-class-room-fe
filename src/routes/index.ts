@@ -13,7 +13,7 @@ import RegisterPage from '../pages/auth/login/RegisterPage';
 import NotFoundPage from '../pages/errorPage/NotFoundPage';
 import PaymentPage from '../pages/ClientPages/CheckoutPage/PaymentPage';
 import GetAllCourse from '../pages/AdminPages/ManageCourse/GetAllCourse/GetAllCourse';
-
+import GetStudentList from '../pages/AdminPages/ManageStudent/GetStudent/GetStudentList';
 interface RouteProps {
     path: string;
     component: () => JSX.Element;
@@ -38,6 +38,7 @@ const adminRoutes: RouteProps[] = [
     { path: '/admin/', component: DashboardPage, layout: DefaultLayoutAdmin },
     { path: '/admin/addCourse/', component: AddCoursePage, layout: DefaultLayoutAdmin },
     { path: '/admin/getAllCourse', component: GetAllCourse, layout: DefaultLayoutAdmin },
+    { path: '/admin/studentList', component: GetStudentList, layout: DefaultLayoutAdmin },
 ];
 
 const staffRoutes: RouteProps[] = [];
