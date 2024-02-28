@@ -1,16 +1,23 @@
-import { Input, Pagination, Table, Tag } from 'antd';
+import { Button, Input, Modal, Pagination, Table, Tag, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Course } from '../../../../types/Course.type';
 import { ColumnType } from 'antd/es/table';
 // import { PagingParam } from '../../../../types/TableParam';
 import { useCourseAll } from '../../../../hooks/useCourseAll';
+import { FormatType, secondsToTimeString } from '../../../../utils/TimeFormater';
+import { formatNumberWithCommas } from '../../../../utils/NumberFormater';
+import { Link } from 'react-router-dom';
 
 type GetAllCourseProps = {
     pagination: { current: number; total: number };
     displayData: number;
 };
 
-const columns = ({ pagination, displayData }: GetAllCourseProps): ColumnType<Course>[] => [
+const columns = ({
+    pagination,
+    displayData,
+    handleDelete,
+}: GetAllCourseProps & { handleDelete: (id: number) => void }): ColumnType<Course>[] => [
     {
         title: 'STT',
         dataIndex: 'stt',
@@ -54,17 +61,17 @@ const columns = ({ pagination, displayData }: GetAllCourseProps): ColumnType<Cou
         dataIndex: 'price',
         render: (price) => (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span>{price}</span>
+                <span>{formatNumberWithCommas(price)} đ</span>
             </div>
         ),
         width: '8%',
     },
     {
-        title: 'Kiến thức đạt được',
-        dataIndex: 'knowdledgeDescription',
-        render: (knowdledgeDescription) => (
+        title: 'Thể loại',
+        dataIndex: 'category',
+        render: (category) => (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span>{knowdledgeDescription}</span>
+                <span>{category}</span>
             </div>
         ),
         width: '12%',
@@ -72,30 +79,27 @@ const columns = ({ pagination, displayData }: GetAllCourseProps): ColumnType<Cou
     {
         title: 'Thời lượng khóa học',
         dataIndex: 'totalDuration',
-        render: (totalDuration) => (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span>{totalDuration}</span>
-            </div>
-        ),
+        render: (totalDuration) => {
+            const formattedTime = secondsToTimeString(totalDuration * 60, FormatType.HH_MM, [
+                'h',
+                'm',
+            ]);
+            return (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <span>{formattedTime}</span>
+                </div>
+            );
+        },
         width: '8%',
     },
-    {
-        title: 'Ngày tạo khóa học',
-        dataIndex: 'createAt',
-        render: (createAt) => (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span>{createAt.split('T')[0]}</span>
-            </div>
-        ),
-        width: '10%',
-    },
+
     {
         title: 'Cập nhật gần nhất',
         dataIndex: 'updateAt',
         render: (updateAt) => {
             return (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <span>{updateAt.split('T')[0]}</span>
+                    <span>{updateAt ? updateAt.split('T')[0] : ''}</span>{' '}
                 </div>
             );
         },
@@ -119,6 +123,26 @@ const columns = ({ pagination, displayData }: GetAllCourseProps): ColumnType<Cou
         },
         width: '6%',
     },
+    {
+        title: 'Hành động',
+        dataIndex: 'id',
+        width: '5%',
+        render: (id) => {
+            const idUrl = id;
+            return (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Link to={`/admin/getAllCourse/details/${idUrl}`}>
+                        <Button className="mr-2 bg-[#1677ff] " type="primary">
+                            Xem chi tiết
+                        </Button>
+                    </Link>
+                    <Button danger type="primary" onClick={() => handleDelete(id)}>
+                        Xóa
+                    </Button>
+                </div>
+            );
+        },
+    },
 ];
 const GetAllCourse = () => {
     const [data, setData] = useState<Course[]>([]);
@@ -132,7 +156,8 @@ const GetAllCourse = () => {
         total: 0,
     });
     const { Search } = Input;
-    const tableColumns: ColumnType<Course>[] = columns({ pagination, displayData });
+    const [deleteModalVisible, setDeleteModalVisible] = useState(false); // State để điều khiển hiển thị của modal xác nhận xóa
+    // const [deletingItemId, setDeletingItemId] = useState<number | null>(null); // State để lưu id của item đang được chọn để xóa
     const fetchData = () => {
         // const input: PagingParam = {
         //     id: id || "",
@@ -149,6 +174,7 @@ const GetAllCourse = () => {
             });
         }
     };
+
     useEffect(() => {
         fetchData();
     }, [pagination.current]);
@@ -177,17 +203,40 @@ const GetAllCourse = () => {
             fetchData();
         }
     };
+    const handleDelete = () => {
+        // Xử lý xóa ở đây
+        // setDeletingItemId(id); // Lưu id của item đang được chọn để xóa
+        setDeleteModalVisible(true); // Hiển thị modal xác nhận xóa
+    };
+
+    const confirmDelete = () => {
+        // Xác nhận xóa ở đây
+        // Sau khi xóa xong, đóng modal và cập nhật lại dữ liệu
+        setDeleteModalVisible(false);
+        // Gọi hàm xóa hoặc cập nhật dữ liệu ở đây
+        // fetchData(); // Nếu cần refetch dữ liệu sau khi xóa
+        message.success('Bạn đã xóa thành công khóa học');
+    };
+
+    const cancelDelete = () => {
+        // Hủy xóa, đóng modal
+        setDeleteModalVisible(false);
+    };
+
+    const tableColumns: ColumnType<Course>[] = columns({ pagination, displayData, handleDelete });
 
     return (
         <div className="mx-auto w-[99%]  space-y-4">
             <>
                 {' '}
                 <div>
-                    <div className="flex">
+                    <div className="flex items-center justify-between">
                         <h1 className="mb-5 text-2xl font-bold text-gray-800">
                             Danh sách các khóa học:
                         </h1>
-                        <h2 className="mb-5 ml-2 text-2xl text-gray-800"></h2>
+                        <Button type="primary" className="bg-blue-500">
+                            <Link to={'/admin/addCourse/'}>Thêm khóa học mới</Link>
+                        </Button>
                     </div>
                     <div>
                         <div className="flex items-center justify-between">
@@ -215,6 +264,18 @@ const GetAllCourse = () => {
                     total={pagination.total}
                     onChange={handlePageChange}
                 />
+                <Modal
+                    title="Xác nhận xóa"
+                    open={deleteModalVisible}
+                    onOk={confirmDelete}
+                    onCancel={cancelDelete}
+                    okButtonProps={{ className: 'bg-blue-500 text-white' }}
+                    cancelButtonProps={{ className: 'bg-red-500 text-white' }}
+                    okText="Xác nhận"
+                    cancelText="Hủy"
+                >
+                    <p>Bạn có chắc chắn muốn xóa khóa học này không?</p>
+                </Modal>
             </>
         </div>
     );
