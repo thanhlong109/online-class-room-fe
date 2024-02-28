@@ -13,7 +13,7 @@ export interface Course {
     totalDuration: number;
     courseIsActive: boolean;
     knowdledgeDescription: string;
-    courseCategories: any[];
+    courseCategories: CourseCategory[];
     orders: any[];
     registrationCourses: any[];
     sections: Section[];
@@ -60,4 +60,12 @@ export interface CategoryRespone {
     categoryId: number;
     categoryName: string;
     categoryDescription: string;
+}
+
+export interface CourseCategory {
+    courseCategoryId: number;
+    courseId: number;
+    categoryId: number;
+    category: any;
+    course: any;
 }

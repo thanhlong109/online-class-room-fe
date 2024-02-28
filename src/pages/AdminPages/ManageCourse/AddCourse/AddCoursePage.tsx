@@ -1,12 +1,13 @@
-import { Button } from '@mui/material';
-import { Input, StepProps, Steps, Tag } from 'antd';
-import { useState } from 'react';
+import { Button, CircularProgress } from '@mui/material';
+import { Input, StepProps, Steps, Tag, message } from 'antd';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
-import { setAddCourse } from '../../../../slices/courseSlice';
+import { setAddCourse, setCourseCreatedData } from '../../../../slices/courseSlice';
 import { CategoryRespone } from '../../../../types/Course.type';
 import { MultipleInput } from '../../../../components';
 import AddCourseContent from './AddCourseContent';
+import { useAddNewCourseMutation } from '../../../../services/course.services';
 
 const totalSteps: StepProps[] = [
     { title: 'Tiêu đề' },
@@ -32,9 +33,25 @@ const tagsData: CategoryRespone[] = [
 const AddCoursePage = () => {
     const dispatch = useDispatch();
     const addCourseState = useSelector((state: RootState) => state.course.addCourse);
+    const [addCourseMutation, { isLoading, isSuccess, data }] = useAddNewCourseMutation();
     const addCourseData = addCourseState.data;
     const addCourseStep = addCourseState.currentStep;
     const [currentStep, setCurrentStep] = useState(addCourseStep);
+
+    useEffect(() => {
+        if (isSuccess && data) {
+            message.success('Tạo khóa học thành công!');
+            dispatch(setCourseCreatedData(data));
+            next();
+            dispatch(
+                setAddCourse({
+                    currentStep: currentStep + 1,
+                    data: { ...addCourseData },
+                }),
+            );
+        }
+    }, [isSuccess]);
+
     const next = () => {
         setCurrentStep(currentStep + 1);
     };
@@ -52,6 +69,9 @@ const AddCoursePage = () => {
     };
     const prev = () => {
         setCurrentStep(currentStep - 1);
+    };
+    const handleCreateCourseClick = () => {
+        addCourseMutation(addCourseState.data);
     };
     return (
         <div>
@@ -203,21 +223,22 @@ const AddCoursePage = () => {
                         {currentStep === totalSteps.length - 1 && (
                             <Button
                                 disabled={
-                                    currentStep === 3 &&
-                                    addCourseData.knowdledgeDescription.split('|').length - 1 < 3
+                                    (currentStep === 3 &&
+                                        addCourseData.knowdledgeDescription.split('|').length - 1 <
+                                            3) ||
+                                    isLoading
                                 }
                                 className="!normal-case"
                                 variant="contained"
-                                onClick={() => {
-                                    next();
-                                    dispatch(
-                                        setAddCourse({
-                                            currentStep: currentStep,
-                                            data: { ...addCourseData },
-                                        }),
-                                    );
-                                }}
+                                onClick={handleCreateCourseClick}
                             >
+                                {isLoading && (
+                                    <CircularProgress
+                                        color="secondary"
+                                        className="!h-[24px] !w-[24px]"
+                                        variant="indeterminate"
+                                    />
+                                )}
                                 Hoàn thành
                             </Button>
                         )}

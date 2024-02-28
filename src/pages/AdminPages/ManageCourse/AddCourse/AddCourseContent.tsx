@@ -1,20 +1,29 @@
 import { Paper } from '@mui/material';
-import { StepProps, Steps } from 'antd';
-import { useState } from 'react';
+import { Steps } from 'antd';
 import { UploadFileCustom } from '../../../../components';
 import { UploadFileType } from '../../../../components/UploadFile/UploadFileCustom';
-
-const totalSteps: StepProps[] = [
-    { title: 'Hiển thị' },
-    { title: 'Chu trình học', status: 'finish' },
-    { title: 'Thể loại' },
-    { title: 'Mục tiêu học tập', status: 'finish' },
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../../store';
+import Curriculum from './Curriculum/Curriculum';
+import { setAddCourse, setCourseContentCurrent } from '../../../../slices/courseSlice';
 
 const AddCourseContent = () => {
-    const [current, setCurrent] = useState(0);
+    const dispatch = useDispatch();
+
+    const addCourseState = useSelector((state: RootState) => state.course.addCourse);
+    const current = addCourseState.navStatus.findIndex((value) => value.status === 'process');
+    const totalSteps = addCourseState.navStatus;
     const onStepChange = (value: number) => {
-        setCurrent(value);
+        dispatch(setCourseContentCurrent(value));
+    };
+    const handleOnUploadThumbnailSuccess = (dowloadUrl: string) => {
+        console.log(dowloadUrl);
+        dispatch(
+            setAddCourse({
+                ...addCourseState,
+                data: { ...addCourseState.data, imageUrl: dowloadUrl },
+            }),
+        );
     };
     return (
         <div className="flex ">
@@ -38,16 +47,18 @@ const AddCourseContent = () => {
                             </p>
                             <div>
                                 <UploadFileCustom
-                                    onUploadFileSuccess={(url) => console.log(url)}
+                                    onUploadFileSuccess={handleOnUploadThumbnailSuccess}
                                     onUploadFileError={(e) => console.log(e)}
-                                    fileName="fileTest"
-                                    fileType={UploadFileType.IMAGE}
+                                    fileName={`course${'id'}`}
+                                    fileType={UploadFileType.VIDEO}
                                     showPreview
-                                    storePath="images/test/"
+                                    storePath="images/courseThumbnail/"
+                                    buttonText="Upload"
                                 />
                             </div>
                         </div>
                     )}
+                    {current === 1 && <Curriculum />}
                 </Paper>
             </div>
         </div>

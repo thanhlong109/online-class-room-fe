@@ -3,10 +3,11 @@ import { firebaseStorage } from '../../config';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { FirebaseError } from 'firebase/app';
 import { RcFile, UploadChangeParam, UploadFile } from 'antd/es/upload';
-import { Progress, Typography, message } from 'antd';
+import { Empty, Progress, Typography, message } from 'antd';
 import Dragger from 'antd/es/upload/Dragger';
 import { InboxOutlined } from '@ant-design/icons';
 import { LoadingButton } from '@mui/lab';
+import { Video } from '..';
 
 export enum UploadFileType {
     IMAGE,
@@ -24,8 +25,8 @@ interface UploadFileProps {
 }
 
 const ImageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
-const VideoExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
-const defaultPreviewImg = 'https://img-c.udemycdn.com/user/200_H/anonymous_3.png';
+const VideoExtensions = ['mp4', 'avi', 'mov', 'webm', 'mkv'];
+//const defaultPreviewImg = 'https://img-c.udemycdn.com/user/200_H/anonymous_3.png';
 const UploadFileCustom = ({
     storePath,
     onUploadFileSuccess,
@@ -35,7 +36,7 @@ const UploadFileCustom = ({
     fileName,
     buttonText = 'Lưu',
 }: UploadFileProps) => {
-    const [imgPreview, setImgPreview] = useState<string | undefined>(defaultPreviewImg);
+    const [Preview, setPreview] = useState<string | undefined>(undefined);
     const allowedExtensions = fileType === UploadFileType.IMAGE ? ImageExtensions : VideoExtensions;
     const errorMessageTypeFit =
         UploadFileType.IMAGE === fileType
@@ -72,8 +73,9 @@ const UploadFileCustom = ({
                             setSelectedFile(null);
                             //
                             onUploadFileSuccess(downloadURL);
-                            setImgPreview(defaultPreviewImg);
+                            setPreview(undefined);
                             console.log(`link ${downloadURL}`);
+                            message.success('Upload file thành công!');
                         });
                     },
                 );
@@ -97,7 +99,7 @@ const UploadFileCustom = ({
             if (file) {
                 reader.readAsDataURL(file);
                 reader.onload = () => {
-                    setImgPreview(reader.result as string);
+                    setPreview(reader.result as string);
                 };
                 setSelectedFile(file);
             }
@@ -110,10 +112,16 @@ const UploadFileCustom = ({
             <div className="m-auto flex max-w-[500px] flex-col gap-8">
                 {showPreview && (
                     <div>
-                        <Typography.Title level={5}>Ảnh xem trước</Typography.Title>
+                        <Typography.Title level={5}>Xem trước</Typography.Title>
                         <div className=" border-[1px] border-[#2d2f31] p-4">
                             <div className="bg-[#f7f9fa] ">
-                                <img className="m-auto h-full" src={imgPreview} alt="" />
+                                {!Preview && <Empty />}
+                                {Preview && fileType === UploadFileType.IMAGE && (
+                                    <img className="m-auto h-full" src={Preview} alt="" />
+                                )}
+                                {Preview && fileType === UploadFileType.VIDEO && (
+                                    <Video src={Preview} />
+                                )}
                             </div>
                         </div>
                     </div>
@@ -128,10 +136,9 @@ const UploadFileCustom = ({
                         <p className="ant-upload-drag-icon">
                             <InboxOutlined />
                         </p>
-                        <p className="ant-upload-text">Ấn hoặc kéo thả ảnh vào đây</p>
+                        <p className="ant-upload-text">Ấn hoặc kéo file vào đây</p>
                         <p className="ant-upload-hint">
-                            Nghiêm cấm hành vi tải lên các hình ảnh mang tính chất đồi trụy hoặc bạo
-                            lực
+                            Nghiêm cấm hành vi tải lên các file mang tính chất đồi trụy hoặc bạo lực
                         </p>
                     </Dragger>
                 </div>
