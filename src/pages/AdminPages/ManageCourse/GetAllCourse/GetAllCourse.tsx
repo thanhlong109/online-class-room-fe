@@ -64,14 +64,14 @@ const columns = ({
                 <span>{formatNumberWithCommas(price)} đ</span>
             </div>
         ),
-        width: '8%',
+        width: '10%',
     },
     {
         title: 'Thể loại',
-        dataIndex: 'category',
-        render: (category) => (
+        dataIndex: 'courseCategories',
+        render: (courseCategories) => (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span>{category}</span>
+                <span>{courseCategories}</span>
             </div>
         ),
         width: '12%',
@@ -80,17 +80,14 @@ const columns = ({
         title: 'Thời lượng khóa học',
         dataIndex: 'totalDuration',
         render: (totalDuration) => {
-            const formattedTime = secondsToTimeString(totalDuration * 60, FormatType.HH_MM, [
-                'h',
-                'm',
-            ]);
+            const formattedTime = secondsToTimeString(totalDuration, FormatType.HH_MM, ['h', 'm']);
             return (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <span>{formattedTime}</span>
                 </div>
             );
         },
-        width: '8%',
+        width: '10%',
     },
 
     {
@@ -107,12 +104,12 @@ const columns = ({
     },
     {
         title: 'Trạng thái',
-        dataIndex: 'isPublic',
-        render: (isPublic) => {
+        dataIndex: 'courseIsActive',
+        render: (courseIsActive) => {
             return (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <span>
-                        {isPublic ? (
+                        {courseIsActive ? (
                             <Tag color="green">Hoạt động</Tag>
                         ) : (
                             <Tag color="red">Không hoạt động</Tag>
@@ -121,22 +118,21 @@ const columns = ({
                 </div>
             );
         },
-        width: '6%',
+        width: '4%',
     },
     {
         title: 'Hành động',
-        dataIndex: 'id',
+        dataIndex: 'courseId',
         width: '5%',
-        render: (id) => {
-            const idUrl = id;
+        render: (courseId) => {
             return (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Link to={`/admin/getAllCourse/details/${idUrl}`}>
+                    <Link to={`/admin//getAllCourse/details/${courseId}`}>
                         <Button className="mr-2 bg-[#1677ff] " type="primary">
                             Xem chi tiết
                         </Button>
                     </Link>
-                    <Button danger type="primary" onClick={() => handleDelete(id)}>
+                    <Button danger type="primary" onClick={() => handleDelete(courseId)}>
                         Xóa
                     </Button>
                 </div>
