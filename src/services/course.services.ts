@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { AddCourseRequest, Course } from '../types/Course.type';
+import { AddCourseRequest, Course, UpdateCourseRequest } from '../types/Course.type';
 
 export const coursesApi = createApi({
     reducerPath: 'coursesApi',
@@ -46,6 +46,20 @@ export const coursesApi = createApi({
                 };
             },
         }),
+        updateCourse: build.mutation<Course, UpdateCourseRequest>({
+            query: (body: UpdateCourseRequest) => ({
+                url: 'api/Course/UpdateCourse',
+                body,
+                method: 'put',
+            }),
+            transformResponse: (response) => {
+                const data = (response as any).dataObject;
+                console.log(data);
+                return {
+                    ...data,
+                };
+            },
+        }),
     }),
 });
 
@@ -55,4 +69,5 @@ export const {
     useGetCoursesBaseRatingQuery,
     useGetCoursesBaseSalesQuery,
     useAddNewCourseMutation,
+    useUpdateCourseMutation,
 } = coursesApi;

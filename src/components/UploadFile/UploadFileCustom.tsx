@@ -22,6 +22,7 @@ interface UploadFileProps {
     fileType: UploadFileType;
     showPreview: boolean;
     buttonText?: string;
+    isLoading?: boolean;
 }
 
 const ImageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
@@ -35,6 +36,7 @@ const UploadFileCustom = ({
     showPreview,
     fileName,
     buttonText = 'Lưu',
+    isLoading = false,
 }: UploadFileProps) => {
     const [Preview, setPreview] = useState<string | undefined>(undefined);
     const allowedExtensions = fileType === UploadFileType.IMAGE ? ImageExtensions : VideoExtensions;
@@ -154,7 +156,7 @@ const UploadFileCustom = ({
                     </>
                 )}
                 <LoadingButton
-                    loading={loading}
+                    loading={isLoading}
                     onClick={uploadFile}
                     disabled={selectedFile == null}
                     variant="contained"

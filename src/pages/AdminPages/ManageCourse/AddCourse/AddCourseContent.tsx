@@ -5,26 +5,52 @@ import { UploadFileType } from '../../../../components/UploadFile/UploadFileCust
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
 import Curriculum from './Curriculum/Curriculum';
-import { setAddCourse, setCourseContentCurrent } from '../../../../slices/courseSlice';
+import { setCourseContentCurrent, setCourseCreatedData } from '../../../../slices/courseSlice';
+import { useUpdateCourseMutation } from '../../../../services/course.services';
+import { UpdateCourseRequest } from '../../../../types/Course.type';
+import { useEffect } from 'react';
 
 const AddCourseContent = () => {
     const dispatch = useDispatch();
-
+    const [updatecourse, { isSuccess: isUpdateSuccess, isLoading: isUpdateLoading, data }] =
+        useUpdateCourseMutation();
     const addCourseState = useSelector((state: RootState) => state.course.addCourse);
+    const courseCreatedData = addCourseState.courseCreatedData;
     const current = addCourseState.navStatus.findIndex((value) => value.status === 'process');
     const totalSteps = addCourseState.navStatus;
     const onStepChange = (value: number) => {
         dispatch(setCourseContentCurrent(value));
     };
+
     const handleOnUploadThumbnailSuccess = (dowloadUrl: string) => {
-        console.log(dowloadUrl);
-        dispatch(
-            setAddCourse({
-                ...addCourseState,
-                data: { ...addCourseState.data, imageUrl: dowloadUrl },
-            }),
-        );
+        if (courseCreatedData.courseId) {
+            var udpateCourseData: UpdateCourseRequest = {
+                ...addCourseState.data,
+                imageUrl: dowloadUrl,
+                courseId: courseCreatedData.courseId,
+                videoPreviewUrl: courseCreatedData.videoPreviewUrl,
+            };
+            updatecourse(udpateCourseData);
+        }
     };
+    const handleOnUploadVideoPreviewSuccess = (dowloadUrl: string) => {
+        if (courseCreatedData.courseId) {
+            var udpateCourseData: UpdateCourseRequest = {
+                ...addCourseState.data,
+                imageUrl: courseCreatedData.imageUrl,
+                videoPreviewUrl: dowloadUrl,
+                courseId: courseCreatedData.courseId,
+            };
+            updatecourse(udpateCourseData);
+        }
+    };
+
+    useEffect(() => {
+        if (isUpdateSuccess && data) {
+            console.log(data);
+            dispatch(setCourseCreatedData(data));
+        }
+    }, [isUpdateSuccess]);
     return (
         <div className="flex ">
             <div className="h-full w-fit">
@@ -49,11 +75,26 @@ const AddCourseContent = () => {
                                 <UploadFileCustom
                                     onUploadFileSuccess={handleOnUploadThumbnailSuccess}
                                     onUploadFileError={(e) => console.log(e)}
-                                    fileName={`course${'id'}`}
-                                    fileType={UploadFileType.VIDEO}
+                                    fileName={`course${addCourseState.courseCreatedData.courseId}`}
+                                    fileType={UploadFileType.IMAGE}
                                     showPreview
                                     storePath="images/courseThumbnail/"
-                                    buttonText="Upload"
+                                    buttonText="Lưu"
+                                />
+                            </div>
+                            <p className="mb-6 mt-12 text-xl font-bold text-[#1677ff]">
+                                Thêm video video giới thiệu ngắn cho khóa học
+                            </p>
+                            <div>
+                                <UploadFileCustom
+                                    onUploadFileSuccess={handleOnUploadVideoPreviewSuccess}
+                                    onUploadFileError={(e) => console.log(e)}
+                                    fileName={`course${addCourseState.courseCreatedData.courseId}`}
+                                    fileType={UploadFileType.VIDEO}
+                                    showPreview
+                                    storePath="videos/coursesPreview/"
+                                    buttonText="Lưu"
+                                    isLoading={isUpdateLoading}
                                 />
                             </div>
                         </div>

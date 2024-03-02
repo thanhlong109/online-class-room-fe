@@ -12,17 +12,15 @@ import { RootState } from '../../../../../store';
 export interface SectionCreatorProps {
     position: number;
     lable: string;
+    children: React.ReactNode;
 }
 
-const SectionCreator = ({ position, lable }: SectionCreatorProps) => {
+const SectionCreator = ({ position, lable, children }: SectionCreatorProps) => {
     const addCourseState = useSelector((state: RootState) => state.course.addCourse);
 
     const [isHovered, setIsHovered] = useState(false);
     const [sectionLable, setSectionLable] = useState(lable);
     const [isEdit, setIsEdit] = useState(false);
-    const handleOnEditClick = () => {
-        setIsEdit(true);
-    };
 
     const handleOnRemoveClick = () => {};
     return (
@@ -75,6 +73,7 @@ const SectionCreator = ({ position, lable }: SectionCreatorProps) => {
                     </div>
                 )}
             </div>
+            <div className="mt-4 flex flex-col gap-3">{children}</div>
         </div>
     );
 };

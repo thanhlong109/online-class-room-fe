@@ -9,15 +9,17 @@ export interface Course {
     isPublic: boolean;
     createAt: string;
     publicAt: string;
-    updateAt: string;
+    updateAt: any;
     totalDuration: number;
     courseIsActive: boolean;
     knowdledgeDescription: string;
+    linkCertificated: any;
     courseCategories: CourseCategory[];
     orders: any[];
     registrationCourses: any[];
-    sections: Section[];
+    sections: any[];
     wishLists: any[];
+    linkCertificateAccounts: any[];
 }
 
 export interface Section {
@@ -42,6 +44,22 @@ export interface Step {
 }
 
 export interface AddCourseRequest {
+    title: string;
+    description: string;
+    imageUrl: string;
+    videoPreviewUrl: string;
+    price: number;
+    salesCampaign: number;
+    isPublic: boolean;
+    totalDuration: number;
+    courseIsActive: boolean;
+    knowdledgeDescription: string;
+    linkCertificated: string;
+    categoryList: number[];
+}
+
+export interface UpdateCourseRequest {
+    courseId: number;
     title: string;
     description: string;
     imageUrl: string;

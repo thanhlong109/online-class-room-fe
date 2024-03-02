@@ -9,7 +9,7 @@ interface courseState {
         data: AddCourseRequest;
         currentStep: number;
         navStatus: StepProps[];
-        courseCreatedData?: Course | null;
+        courseCreatedData: Course;
     };
 }
 
@@ -32,12 +32,33 @@ const initialState: courseState = {
         },
         currentStep: 0,
         navStatus: [
-            { title: 'Tiêu đề', status: 'process' },
-            { title: 'Mô tả tổng quan', status: 'wait' },
-            { title: 'Thể loại', status: 'wait' },
-            { title: 'Mục tiêu học tập', status: 'wait' },
+            { title: 'Hiển thị', status: 'process' },
+            { title: 'Chu trình học', status: 'wait' },
+            { title: 'Xuất bản khóa học', status: 'wait' },
         ],
-        courseCreatedData: null,
+        courseCreatedData: {
+            courseIsActive: false,
+            description: '',
+            imageUrl: 'string',
+            isPublic: false,
+            knowdledgeDescription: '',
+            linkCertificated: 'string',
+            price: 0,
+            salesCampaign: 0,
+            title: '',
+            totalDuration: 0,
+            videoPreviewUrl: 'string',
+            courseCategories: [],
+            courseId: 0,
+            createAt: '',
+            linkCertificateAccounts: [],
+            orders: [],
+            publicAt: '',
+            registrationCourses: [],
+            sections: [],
+            updateAt: '',
+            wishLists: [],
+        },
     },
 };
 
@@ -67,6 +88,7 @@ export const courseSlice = createSlice({
             state.addCourse = {
                 ...action.payload,
                 navStatus: state.addCourse.navStatus,
+                courseCreatedData: state.addCourse.courseCreatedData,
             };
         },
         setCourseContentCurrent: (state, action: PayloadAction<number>) => {
@@ -80,6 +102,8 @@ export const courseSlice = createSlice({
         },
         setCourseCreatedData: (state, action: PayloadAction<Course>) => {
             state.addCourse.courseCreatedData = action.payload;
+            console.log('set course');
+            console.log(action.payload);
         },
     },
 });
