@@ -1,6 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import { AddCourseRequest, Course } from '../types/Course.type';
+import {
+    AddCourseRequest,
+    Course,
+    Section,
+    SectionReqest,
+    Step,
+    UpdateStepRequest,
+} from '../types/Course.type';
 import { StepProps } from 'antd';
 
 interface courseState {
@@ -11,6 +18,7 @@ interface courseState {
         navStatus: StepProps[];
         courseCreatedData: Course;
     };
+    addSection: SectionReqest[];
 }
 
 const initialState: courseState = {
@@ -39,7 +47,7 @@ const initialState: courseState = {
         courseCreatedData: {
             courseIsActive: false,
             description: '',
-            imageUrl: 'string',
+            imageUrl: '',
             isPublic: false,
             knowdledgeDescription: '',
             linkCertificated: 'string',
@@ -60,6 +68,7 @@ const initialState: courseState = {
             wishLists: [],
         },
     },
+    addSection: [],
 };
 
 export const courseSlice = createSlice({
@@ -102,8 +111,59 @@ export const courseSlice = createSlice({
         },
         setCourseCreatedData: (state, action: PayloadAction<Course>) => {
             state.addCourse.courseCreatedData = action.payload;
-            console.log('set course');
-            console.log(action.payload);
+        },
+        addCourseSection: (state, action: PayloadAction<Section>) => {
+            state.addCourse.courseCreatedData.sections.push(action.payload);
+        },
+        updateSectionId: (state, action: PayloadAction<{ title: string; sectionId: number }>) => {
+            const index = state.addCourse.courseCreatedData.sections.findIndex(
+                (value) => value.sectionId === action.payload.sectionId,
+            );
+            if (index >= 0) {
+                state.addCourse.courseCreatedData.sections[index] = {
+                    ...state.addCourse.courseCreatedData.sections[index],
+                    title: action.payload.title,
+                };
+            }
+        },
+        addCourseStep: (state, action: PayloadAction<Step>) => {
+            const index = state.addCourse.courseCreatedData.sections.findIndex(
+                (value) => value.sectionId === action.payload.sectionId,
+            );
+            if (index >= 0) {
+                state.addCourse.courseCreatedData.sections[index].steps.push(action.payload);
+            }
+        },
+        setStep: (state, action: PayloadAction<Step>) => {
+            const index = state.addCourse.courseCreatedData.sections.findIndex(
+                (value) => value.sectionId === action.payload.sectionId,
+            );
+            if (index >= 0) {
+                const stepIndex = state.addCourse.courseCreatedData.sections[index].steps.findIndex(
+                    (value) => value.stepId === action.payload.stepId,
+                );
+                if (stepIndex >= 0) {
+                    state.addCourse.courseCreatedData.sections[index].steps[stepIndex] =
+                        action.payload;
+                }
+            }
+        },
+        updateStepTitle: (
+            state,
+            action: PayloadAction<{ sectionId: number; stepId: number; title: string }>,
+        ) => {
+            const index = state.addCourse.courseCreatedData.sections.findIndex(
+                (value) => value.sectionId === action.payload.sectionId,
+            );
+            if (index >= 0) {
+                const stepIndex = state.addCourse.courseCreatedData.sections[index].steps.findIndex(
+                    (value) => value.stepId === action.payload.stepId,
+                );
+                if (stepIndex >= 0) {
+                    state.addCourse.courseCreatedData.sections[index].steps[stepIndex].title =
+                        action.payload.title;
+                }
+            }
         },
     },
 });
@@ -118,6 +178,11 @@ export const {
     setCourseContentCurrent,
     setCourseContentDone,
     setCourseCreatedData,
+    addCourseSection,
+    updateSectionId,
+    addCourseStep,
+    setStep,
+    updateStepTitle,
 } = courseSlice.actions;
 
 export default courseSlice.reducer;

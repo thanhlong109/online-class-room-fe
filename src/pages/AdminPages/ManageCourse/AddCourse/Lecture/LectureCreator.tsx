@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button, Input } from 'antd';
 import { IconButton } from '@mui/material';
@@ -9,10 +9,17 @@ import AddIcon from '@mui/icons-material/Add';
 import LectureContentType, { LectureType } from './LectureContentType';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import ArticleIcon from '@mui/icons-material/Article';
+import CloseIcon from '@mui/icons-material/Close';
+import { useAddStepMutation } from '../../../../../services/step.services';
+import { useDispatch } from 'react-redux';
+import { addCourseStep, setStep, updateStepTitle } from '../../../../../slices/courseSlice';
 
 interface LectureProps {
     position: number;
     lable: string;
+    isCreate: boolean;
+    sectionId: number;
+    stepId: number;
 }
 
 export enum LectureState {
@@ -21,13 +28,48 @@ export enum LectureState {
     SELECTED_CONTENT,
 }
 
-const LectureCreator = ({ lable, position }: LectureProps) => {
-    const [lectureLable, setLectureLable] = useState(lable);
-    const [isEdit, setIsEdit] = useState(false);
+const LectureCreator = ({ lable, position, isCreate, sectionId, stepId }: LectureProps) => {
+    const dispatch = useDispatch();
+    const [isCreateFirst, setIsCreateFirst] = useState(isCreate);
+    const [tempLable, setTempLable] = useState('');
+    const [addStepMutation, { isSuccess, isLoading, data }] = useAddStepMutation();
+    const [isEdit, setIsEdit] = useState(isCreate);
     const [isHovered, setIsHovered] = useState(false);
     const [lectureState, setLectureState] = useState(LectureState.DEFAULT);
     const [lectureSelectedType, setLectureSelectedType] = useState(LectureType.VIDEO);
     const handleOnRemoveClick = () => {};
+    const handleOnClickDone = () => {
+        if (isCreateFirst) {
+            addStepMutation({
+                duration: 0,
+                position: position,
+                sectionId: sectionId,
+                stepDescription: 'string',
+                title: tempLable,
+                videoUrl: 'string',
+            });
+            setIsCreateFirst(false);
+        } else {
+            setIsEdit(false);
+        }
+    };
+
+    const handleOnTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (isCreateFirst) {
+            setTempLable(e.target.value);
+        } else {
+            dispatch(updateStepTitle({ sectionId, stepId, title: e.target.value }));
+        }
+    };
+
+    useEffect(() => {
+        if (isSuccess && data) {
+            dispatch(addCourseStep(data));
+            dispatch(setStep(data));
+            setIsEdit(false);
+        }
+    }, [isSuccess]);
+
     const handleOnSelectLectureType = (lectureSelectedType: LectureType) => {
         setLectureSelectedType(lectureSelectedType);
         setLectureState(LectureState.SELECTED_CONTENT);
@@ -44,13 +86,19 @@ const LectureCreator = ({ lable, position }: LectureProps) => {
                         <p className="text-base font-medium">Bài {position}: </p>
                         {isEdit ? (
                             <div className="flex items-center gap-4 font-medium">
-                                <Input value={lectureLable} maxLength={200} showCount />
-                                <IconButton>
+                                <Input
+                                    minLength={6}
+                                    onChange={handleOnTitleChange}
+                                    value={isCreateFirst ? tempLable : lable}
+                                    maxLength={200}
+                                    showCount
+                                />
+                                <IconButton onClick={handleOnClickDone}>
                                     <DoneIcon />
                                 </IconButton>
                             </div>
                         ) : (
-                            <span className="">{' ' + lectureLable}</span>
+                            <span className="">{' ' + lable}</span>
                         )}
                         {!isEdit && (
                             <div>
@@ -97,7 +145,16 @@ const LectureCreator = ({ lable, position }: LectureProps) => {
                 </div>
                 <div>
                     {LectureState.SELECT_CONTENT === lectureState && (
-                        <div className="border-t-[1px] border-[#c3c4c4] bg-[#ffffff] px-4 py-4">
+                        <div className="relative border-t-[1px] border-[#c3c4c4] bg-[#ffffff] px-4 py-4">
+                            <div className="absolute right-4 top-0 flex h-8 w-fit translate-y-[-100%] items-center justify-end  gap-2 border-x-[1px] border-t-[1px] border-[#c3c4c4] bg-white px-2">
+                                <p className="text-sm">Lựa chọn loại nội dung</p>
+                                <IconButton
+                                    size="small"
+                                    onClick={() => setLectureState(LectureState.DEFAULT)}
+                                >
+                                    <CloseIcon className="!text-base" />
+                                </IconButton>
+                            </div>
                             <p className="text-center">
                                 Lựa chọn loại nội dung chính trong bài học này:
                             </p>

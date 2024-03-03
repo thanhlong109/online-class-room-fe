@@ -47,7 +47,6 @@ const AddCourseContent = () => {
 
     useEffect(() => {
         if (isUpdateSuccess && data) {
-            console.log(data);
             dispatch(setCourseCreatedData(data));
         }
     }, [isUpdateSuccess]);

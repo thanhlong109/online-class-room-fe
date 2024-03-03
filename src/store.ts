@@ -7,6 +7,8 @@ import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } fro
 import sessionStorage from 'redux-persist/es/storage/session';
 import { wishlistApi } from './services/wishlist.services';
 import courseSlice from './slices/courseSlice';
+import { sectionApi } from './services/section.services';
+import { stepApi } from './services/step.services';
 
 export const persistConfig = {
     key: 'root',
@@ -21,6 +23,8 @@ const rootReducer = combineReducers({
     [coursesApi.reducerPath]: coursesApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [wishlistApi.reducerPath]: wishlistApi.reducer,
+    [sectionApi.reducerPath]: sectionApi.reducer,
+    [stepApi.reducerPath]: stepApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -35,7 +39,9 @@ export const store = configureStore({
         })
             .concat(authApi.middleware)
             .concat(coursesApi.middleware)
-            .concat(wishlistApi.middleware),
+            .concat(wishlistApi.middleware)
+            .concat(sectionApi.middleware)
+            .concat(stepApi.middleware),
 });
 
 // get roostate and appdispatch from store handle for typescript

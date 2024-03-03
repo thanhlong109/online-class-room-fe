@@ -17,7 +17,7 @@ export interface Course {
     courseCategories: CourseCategory[];
     orders: any[];
     registrationCourses: any[];
-    sections: any[];
+    sections: Section[];
     wishLists: any[];
     linkCertificateAccounts: any[];
 }
@@ -41,6 +41,24 @@ export interface Step {
     stepDescription: string;
     quizzes: any[];
     section: any;
+}
+
+export interface AddStepRequest {
+    sectionId: number;
+    duration: number;
+    position: number;
+    title: string;
+    videoUrl: string;
+    stepDescription: string;
+}
+
+export interface UpdateStepRequest {
+    stepId: number;
+    duration: number;
+    position: number;
+    title: string;
+    videoUrl: string;
+    stepDescription: string;
 }
 
 export interface AddCourseRequest {
@@ -86,4 +104,10 @@ export interface CourseCategory {
     categoryId: number;
     category: any;
     course: any;
+}
+
+export interface SectionReqest {
+    courseId: number;
+    title: string;
+    position: number;
 }

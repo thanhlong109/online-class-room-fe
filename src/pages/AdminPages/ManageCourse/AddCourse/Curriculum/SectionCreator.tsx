@@ -2,27 +2,32 @@ import { IconButton } from '@mui/material';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DoneIcon from '@mui/icons-material/Done';
-import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Input } from 'antd';
-import { useSelector } from 'react-redux';
+import { Button, Input } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../../store';
+import { updateSectionId } from '../../../../../slices/courseSlice';
+import AddIcon from '@mui/icons-material/Add';
+import LectureCreator from '../Lecture/LectureCreator';
+import { Section } from '../../../../../types/Course.type';
 
 export interface SectionCreatorProps {
     position: number;
-    lable: string;
-    children: React.ReactNode;
+    section: Section;
 }
 
-const SectionCreator = ({ position, lable, children }: SectionCreatorProps) => {
+const SectionCreator = ({ position, section }: SectionCreatorProps) => {
+    const dispatch = useDispatch();
     const addCourseState = useSelector((state: RootState) => state.course.addCourse);
-
+    const courseCreatedData = addCourseState.courseCreatedData;
     const [isHovered, setIsHovered] = useState(false);
-    const [sectionLable, setSectionLable] = useState(lable);
     const [isEdit, setIsEdit] = useState(false);
-
+    const [totalSteps, setTotalStep] = useState(section.steps.length);
     const handleOnRemoveClick = () => {};
+    const handleOnTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        dispatch(updateSectionId({ title: e.target.value, sectionId: section.sectionId }));
+    };
     return (
         <div className="bg-[#f7f9fa] p-4">
             <div
@@ -33,13 +38,18 @@ const SectionCreator = ({ position, lable, children }: SectionCreatorProps) => {
                 <p className="text-base font-bold">Chương {position}: </p>
                 {isEdit ? (
                     <div className="flex items-center gap-4 font-medium">
-                        <Input value={sectionLable} maxLength={200} showCount />
-                        <IconButton>
+                        <Input
+                            value={section.title}
+                            maxLength={200}
+                            onChange={handleOnTitleChange}
+                            showCount
+                        />
+                        <IconButton onClick={() => setIsEdit(false)}>
                             <DoneIcon />
                         </IconButton>
                     </div>
                 ) : (
-                    <span className="font-medium">{sectionLable}</span>
+                    <span className="font-medium">{section.title}</span>
                 )}
                 {!isEdit && (
                     <div>
@@ -73,7 +83,31 @@ const SectionCreator = ({ position, lable, children }: SectionCreatorProps) => {
                     </div>
                 )}
             </div>
-            <div className="mt-4 flex flex-col gap-3">{children}</div>
+            <div>
+                <div className="mt-4 flex flex-col gap-3">
+                    {Array.from({ length: totalSteps }, (_, index) => (
+                        <LectureCreator
+                            sectionId={section.sectionId}
+                            isCreate={index > section.steps.length - 1}
+                            lable={
+                                index > section.steps.length - 1 ? '' : section.steps[index].title
+                            }
+                            stepId={
+                                index > section.steps.length - 1 ? -1 : section.steps[index].stepId
+                            }
+                            key={index}
+                            position={index + 1}
+                        />
+                    ))}
+                </div>
+                <Button
+                    className="mt-3 bg-white"
+                    icon={<AddIcon />}
+                    onClick={() => setTotalStep(totalSteps + 1)}
+                >
+                    Thêm bài học
+                </Button>
+            </div>
         </div>
     );
 };

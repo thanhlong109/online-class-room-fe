@@ -1,15 +1,22 @@
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../../store';
 import LectureCreator from '../Lecture/LectureCreator';
 import SectionCreator from './SectionCreator';
 
 const Curriculum = () => {
+    const sectionList = useSelector(
+        (state: RootState) => state.course.addCourse.courseCreatedData.sections,
+    );
     return (
         <div>
             <p className="mb-4 text-xl font-bold text-[#1677ff]">Chu trình học</p>
-            <SectionCreator position={1} lable="Giới thiệu khóa học">
-                <LectureCreator position={1} lable="Set up môi trường" />
-                <LectureCreator position={1} lable="Set up môi trường" />
-                <LectureCreator position={1} lable="Set up môi trường" />
-            </SectionCreator>
+            {sectionList.map((section) => (
+                <SectionCreator
+                    position={section.position}
+                    key={section.sectionId}
+                    section={section}
+                />
+            ))}
         </div>
     );
 };

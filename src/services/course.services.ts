@@ -54,7 +54,6 @@ export const coursesApi = createApi({
             }),
             transformResponse: (response) => {
                 const data = (response as any).dataObject;
-                console.log(data);
                 return {
                     ...data,
                 };

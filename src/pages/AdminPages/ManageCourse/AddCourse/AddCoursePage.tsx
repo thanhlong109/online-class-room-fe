@@ -3,11 +3,16 @@ import { Input, StepProps, Steps, Tag, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
-import { setAddCourse, setCourseCreatedData } from '../../../../slices/courseSlice';
+import {
+    addCourseSection,
+    setAddCourse,
+    setCourseCreatedData,
+} from '../../../../slices/courseSlice';
 import { CategoryRespone } from '../../../../types/Course.type';
 import { MultipleInput } from '../../../../components';
 import AddCourseContent from './AddCourseContent';
 import { useAddNewCourseMutation } from '../../../../services/course.services';
+import { useAddSectionMutation } from '../../../../services/section.services';
 
 const totalSteps: StepProps[] = [
     { title: 'Tiêu đề' },
@@ -34,14 +39,25 @@ const AddCoursePage = () => {
     const dispatch = useDispatch();
     const addCourseState = useSelector((state: RootState) => state.course.addCourse);
     const [addCourseMutation, { isLoading, isSuccess, data }] = useAddNewCourseMutation();
+    const [
+        addSection,
+        { isLoading: isAddSectionLoading, isSuccess: isAddSectionSuccess, data: sectionData },
+    ] = useAddSectionMutation();
     const addCourseData = addCourseState.data;
     const addCourseStep = addCourseState.currentStep;
     const [currentStep, setCurrentStep] = useState(addCourseStep);
 
     useEffect(() => {
         if (isSuccess && data) {
-            message.success('Tạo khóa học thành công!');
             dispatch(setCourseCreatedData(data));
+            addSection({ courseId: data.courseId, title: 'Giới thiệu khóa học', position: 1 });
+        }
+    }, [isSuccess]);
+
+    useEffect(() => {
+        if (isAddSectionSuccess && sectionData) {
+            console.log(sectionData);
+            dispatch(addCourseSection(sectionData));
             next();
             dispatch(
                 setAddCourse({
@@ -49,8 +65,9 @@ const AddCoursePage = () => {
                     data: { ...addCourseData },
                 }),
             );
+            message.success('Tạo khóa học thành công!');
         }
-    }, [isSuccess]);
+    }, [isAddSectionSuccess]);
 
     const next = () => {
         setCurrentStep(currentStep + 1);
