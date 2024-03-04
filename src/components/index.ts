@@ -11,3 +11,5 @@ export { FavoriteButton } from './FavoriteButton';
 export { default as MultipleInputItem } from './MultipleInput/MultipleInputItem';
 export { default as MultipleInput } from './MultipleInput/MultipleInput';
 export { default as UploadFileCustom } from './UploadFile/UploadFileCustom';
+export { default as RichTextEditor } from './RichTextEditor/RichTextEditor';
+export { default as EditorToolbar } from './EditorToolbar/EditorToolbar';

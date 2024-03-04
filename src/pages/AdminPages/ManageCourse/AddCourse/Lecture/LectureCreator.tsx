@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button, Input } from 'antd';
-import { IconButton } from '@mui/material';
+import { CircularProgress, IconButton } from '@mui/material';
 import DoneIcon from '@mui/icons-material/Done';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -16,6 +16,9 @@ import { addCourseStep, setStep, updateStepTitle } from '../../../../../slices/c
 import LectureVideoContent from './LectureVideoContent';
 import LectureQuizzContent from './LectureQuizzContent';
 import { Step } from '../../../../../types/Course.type';
+import { Button as MuiButton } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { RichTextEditor } from '../../../../../components';
 
 interface LectureProps {
     position: number;
@@ -27,6 +30,7 @@ export enum LectureState {
     DEFAULT,
     SELECT_CONTENT,
     SELECTED_CONTENT,
+    COLLAPSE_CONTENT,
 }
 
 const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
@@ -43,6 +47,7 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
     const [isHovered, setIsHovered] = useState(false);
     const [lectureState, setLectureState] = useState(LectureState.DEFAULT);
     const [lectureSelectedType, setLectureSelectedType] = useState(LectureType.VIDEO);
+    const [isAddDescription, setIsAddDescription] = useState(false);
     const handleOnRemoveClick = () => {};
     const handleOnClickDone = () => {
         if (isCreateFirst) {
@@ -72,10 +77,12 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
         if (step?.quizId && step?.videoUrl) {
             if (step.quizId != 1) {
                 setLectureSelectedType(LectureType.QUIZZ);
-                setLectureState(LectureState.SELECTED_CONTENT);
+                setLectureState(LectureState.COLLAPSE_CONTENT);
             } else if (step.videoUrl.length > 10) {
                 setLectureSelectedType(LectureType.VIDEO);
-                setLectureState(LectureState.SELECTED_CONTENT);
+                setLectureState(LectureState.COLLAPSE_CONTENT);
+            } else {
+                setLectureState(LectureState.DEFAULT);
             }
         }
     }, [step]);
@@ -124,6 +131,15 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
                 break;
             }
             case LectureState.SELECTED_CONTENT: {
+                if (step?.quizId != 1) {
+                    setLectureSelectedType(LectureType.QUIZZ);
+                    setLectureState(LectureState.COLLAPSE_CONTENT);
+                } else if (step?.videoUrl.length > 10) {
+                    setLectureSelectedType(LectureType.VIDEO);
+                    setLectureState(LectureState.COLLAPSE_CONTENT);
+                } else {
+                    setLectureState(LectureState.DEFAULT);
+                }
                 break;
             }
         }
@@ -148,8 +164,15 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
                                     maxLength={200}
                                     showCount
                                 />
-                                <IconButton onClick={handleOnClickDone}>
-                                    <DoneIcon />
+                                <IconButton
+                                    disabled={isLoading || isUpdateLoading}
+                                    onClick={handleOnClickDone}
+                                >
+                                    {!isLoading && !isUpdateLoading && <DoneIcon />}
+                                    {isLoading ||
+                                        (isUpdateLoading && (
+                                            <CircularProgress className="!h-[18px] !w-[18px]" />
+                                        ))}
                                 </IconButton>
                             </div>
                         ) : (
@@ -196,59 +219,88 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
                                 Thêm nội dung
                             </Button>
                         )}
+                        {lectureState === LectureState.COLLAPSE_CONTENT && (
+                            <MuiButton
+                                variant="outlined"
+                                startIcon={<CheckCircleIcon />}
+                                className="!border-[#333] !text-[#333]"
+                                onClick={() => setLectureState(LectureState.SELECTED_CONTENT)}
+                            >
+                                {lectureSelectedType === LectureType.VIDEO ? 'Video' : 'Quizz'}
+                            </MuiButton>
+                        )}
                     </div>
                 </div>
                 <div>
-                    {lectureState != LectureState.DEFAULT && (
-                        <div className="relative border-t-[1px] border-[#c3c4c4] bg-[#ffffff] px-4 py-4">
-                            <div className="absolute right-4 top-0 flex h-8 w-fit translate-y-[-100%] items-center justify-end  gap-2 border-x-[1px] border-t-[1px] border-[#c3c4c4] bg-white px-2">
-                                {LectureState.SELECT_CONTENT === lectureState && (
-                                    <p className="text-sm">Lựa chọn loại nội dung</p>
-                                )}
-                                {LectureState.SELECTED_CONTENT === lectureState &&
-                                    LectureType.QUIZZ === lectureSelectedType && (
-                                        <p className="text-sm">Quizz</p>
+                    {lectureState != LectureState.DEFAULT &&
+                        lectureState != LectureState.COLLAPSE_CONTENT && (
+                            <div className="relative border-t-[1px] border-[#c3c4c4] bg-[#ffffff] px-4 py-4">
+                                <div className="absolute right-4 top-0 flex h-8 w-fit translate-y-[-100%] items-center justify-end  gap-2 border-x-[1px] border-t-[1px] border-[#c3c4c4] bg-white px-2">
+                                    {LectureState.SELECT_CONTENT === lectureState && (
+                                        <p className="text-sm">Lựa chọn loại nội dung</p>
                                     )}
-                                {LectureState.SELECTED_CONTENT === lectureState &&
-                                    LectureType.VIDEO === lectureSelectedType && (
-                                        <p className="text-sm">Video</p>
-                                    )}
-                                <IconButton size="small" onClick={handleOnCloseLecture}>
-                                    <CloseIcon className="!text-base" />
-                                </IconButton>
-                            </div>
-                            {LectureState.SELECT_CONTENT === lectureState && (
-                                <div>
-                                    {' '}
-                                    <p className="text-center">
-                                        Lựa chọn loại nội dung chính trong bài học này:
-                                    </p>
-                                    <div className="mt-2 flex items-center justify-center gap-8">
-                                        <LectureContentType
-                                            onSelect={handleOnSelectLectureType}
-                                            icon={<PlayCircleIcon />}
-                                            lectureType={LectureType.VIDEO}
-                                            lable="Video"
-                                        />
-                                        <LectureContentType
-                                            onSelect={handleOnSelectLectureType}
-                                            icon={<ArticleIcon />}
-                                            lectureType={LectureType.QUIZZ}
-                                            lable="Quiz"
-                                        />
-                                    </div>
+                                    {LectureState.SELECTED_CONTENT === lectureState &&
+                                        LectureType.QUIZZ === lectureSelectedType && (
+                                            <p className="text-sm">Quizz</p>
+                                        )}
+                                    {LectureState.SELECTED_CONTENT === lectureState &&
+                                        LectureType.VIDEO === lectureSelectedType && (
+                                            <p className="text-sm">Video</p>
+                                        )}
+                                    <IconButton size="small" onClick={handleOnCloseLecture}>
+                                        <CloseIcon className="!text-base" />
+                                    </IconButton>
                                 </div>
-                            )}
-                            {LectureState.SELECTED_CONTENT === lectureState &&
-                                lectureSelectedType === LectureType.VIDEO && (
-                                    <LectureVideoContent step={step!} />
+                                {LectureState.SELECT_CONTENT === lectureState && (
+                                    <div>
+                                        {' '}
+                                        <p className="text-center">
+                                            Lựa chọn loại nội dung chính trong bài học này:
+                                        </p>
+                                        <div className="mt-2 flex items-center justify-center gap-8">
+                                            <LectureContentType
+                                                onSelect={handleOnSelectLectureType}
+                                                icon={<PlayCircleIcon />}
+                                                lectureType={LectureType.VIDEO}
+                                                lable="Video"
+                                            />
+                                            <LectureContentType
+                                                onSelect={handleOnSelectLectureType}
+                                                icon={<ArticleIcon />}
+                                                lectureType={LectureType.QUIZZ}
+                                                lable="Quiz"
+                                            />
+                                        </div>
+                                    </div>
                                 )}
-                            {LectureState.SELECTED_CONTENT === lectureState &&
-                                lectureSelectedType === LectureType.QUIZZ && (
-                                    <LectureQuizzContent />
+                                {LectureState.SELECTED_CONTENT === lectureState &&
+                                    lectureSelectedType === LectureType.VIDEO && (
+                                        <LectureVideoContent step={step!} />
+                                    )}
+                                {LectureState.SELECTED_CONTENT === lectureState &&
+                                    lectureSelectedType === LectureType.QUIZZ && (
+                                        <LectureQuizzContent />
+                                    )}
+                                {!isAddDescription && (
+                                    <div className="flex flex-col gap-4">
+                                        <MuiButton
+                                            startIcon={<AddIcon />}
+                                            variant="outlined"
+                                            className="!border-[#333] !text-[#333]"
+                                            onClick={() => setIsAddDescription(true)}
+                                        >
+                                            Thêm miêu tả
+                                        </MuiButton>
+                                    </div>
                                 )}
-                        </div>
-                    )}
+                                {isAddDescription && (
+                                    <RichTextEditor
+                                        initialValue=""
+                                        onValueChange={(e) => console.log(e)}
+                                    />
+                                )}
+                            </div>
+                        )}
                 </div>
             </div>
         </div>

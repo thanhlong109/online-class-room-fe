@@ -10,7 +10,7 @@ import CreateIcon from '@mui/icons-material/Create';
 import { Button, CircularProgress } from '@mui/material';
 import { deleteFile } from '../../../../../utils/FirebaseUtils';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Popconfirm, message, ButtonProps } from 'antd';
+import { Popconfirm, message } from 'antd';
 
 interface LectureVideoContentProps {
     step: Step;
@@ -40,7 +40,6 @@ const LectureVideoContent = ({ step }: LectureVideoContentProps) => {
 
     useEffect(() => {
         if (isSuccess && data) {
-            console.log('success');
             dispatch(setStep(data));
             setIsUpdate(false);
         }
@@ -67,17 +66,30 @@ const LectureVideoContent = ({ step }: LectureVideoContentProps) => {
     return (
         <div className="p-4">
             {(step.videoUrl.length < 10 || isUpdate) && (
-                <UploadFileCustom
-                    fileName={fileName}
-                    fileType={UploadFileType.VIDEO}
-                    onUploadFileError={(e) => {
-                        console.log(e);
-                    }}
-                    onUploadFileSuccess={onUploadFileSuccess}
-                    storePath={storagePath}
-                    uploadStyle={UploadStyle.SMALL}
-                    showPreview={false}
-                />
+                <div className="flex">
+                    <div className="flex-1">
+                        <UploadFileCustom
+                            fileName={fileName}
+                            fileType={UploadFileType.VIDEO}
+                            onUploadFileError={(e) => {
+                                console.log(e);
+                            }}
+                            onUploadFileSuccess={onUploadFileSuccess}
+                            storePath={storagePath}
+                            uploadStyle={UploadStyle.SMALL}
+                            showPreview={false}
+                        />
+                    </div>
+                    {isUpdate && (
+                        <Button
+                            variant="contained"
+                            className="!bg-[#333]"
+                            onClick={() => setIsUpdate(false)}
+                        >
+                            Hủy
+                        </Button>
+                    )}
+                </div>
             )}
 
             {step.videoUrl.length > 10 && !isUpdate && (

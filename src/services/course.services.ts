@@ -23,7 +23,7 @@ export const coursesApi = createApi({
                 `api/Course/TopFavoritesCourseBaseStudentJoined?numberOfCourses=${number}`,
         }),
         getCourseID: build.query<Course, string>({
-            query: (id) => `api/Course/GetCourseDetailById?courseId=${id}`,
+            query: (id) => `api/Course/GetCourseDetailById/${id}`,
         }),
         getCoursesBaseRating: build.query<Course[], number>({
             query: (number: number) =>
