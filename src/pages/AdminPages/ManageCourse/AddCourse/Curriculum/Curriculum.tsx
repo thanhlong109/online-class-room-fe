@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../../store';
-import LectureCreator from '../Lecture/LectureCreator';
 import SectionCreator from './SectionCreator';
 
 const Curriculum = () => {

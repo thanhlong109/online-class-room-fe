@@ -10,16 +10,17 @@ import LectureContentType, { LectureType } from './LectureContentType';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import ArticleIcon from '@mui/icons-material/Article';
 import CloseIcon from '@mui/icons-material/Close';
-import { useAddStepMutation } from '../../../../../services/step.services';
+import { useAddStepMutation, useUpdateStepMutation } from '../../../../../services/step.services';
 import { useDispatch } from 'react-redux';
 import { addCourseStep, setStep, updateStepTitle } from '../../../../../slices/courseSlice';
+import LectureVideoContent from './LectureVideoContent';
+import LectureQuizzContent from './LectureQuizzContent';
+import { Step } from '../../../../../types/Course.type';
 
 interface LectureProps {
     position: number;
-    lable: string;
     isCreate: boolean;
-    sectionId: number;
-    stepId: number;
+    step?: Step | null;
 }
 
 export enum LectureState {
@@ -28,11 +29,16 @@ export enum LectureState {
     SELECTED_CONTENT,
 }
 
-const LectureCreator = ({ lable, position, isCreate, sectionId, stepId }: LectureProps) => {
+const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
     const dispatch = useDispatch();
+
     const [isCreateFirst, setIsCreateFirst] = useState(isCreate);
     const [tempLable, setTempLable] = useState('');
     const [addStepMutation, { isSuccess, isLoading, data }] = useAddStepMutation();
+    const [
+        updateStepMutation,
+        { isSuccess: isUpdateSucess, isLoading: isUpdateLoading, data: updateData },
+    ] = useUpdateStepMutation();
     const [isEdit, setIsEdit] = useState(isCreate);
     const [isHovered, setIsHovered] = useState(false);
     const [lectureState, setLectureState] = useState(LectureState.DEFAULT);
@@ -43,22 +49,50 @@ const LectureCreator = ({ lable, position, isCreate, sectionId, stepId }: Lectur
             addStepMutation({
                 duration: 0,
                 position: position,
-                sectionId: sectionId,
+                quizId: 1,
+                sectionId: step!.sectionId,
                 stepDescription: 'string',
                 title: tempLable,
                 videoUrl: 'string',
             });
-            setIsCreateFirst(false);
         } else {
-            setIsEdit(false);
+            updateStepMutation({
+                duration: step!.duration,
+                position: position,
+                quizId: step!.quizId,
+                stepDescription: step!.stepDescription,
+                stepId: step!.stepId,
+                title: step!.title,
+                videoUrl: step!.videoUrl,
+            });
         }
     };
+
+    useEffect(() => {
+        if (step?.quizId && step?.videoUrl) {
+            if (step.quizId != 1) {
+                setLectureSelectedType(LectureType.QUIZZ);
+                setLectureState(LectureState.SELECTED_CONTENT);
+            } else if (step.videoUrl.length > 10) {
+                setLectureSelectedType(LectureType.VIDEO);
+                setLectureState(LectureState.SELECTED_CONTENT);
+            }
+        }
+    }, [step]);
 
     const handleOnTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (isCreateFirst) {
             setTempLable(e.target.value);
         } else {
-            dispatch(updateStepTitle({ sectionId, stepId, title: e.target.value }));
+            if (step?.stepId && step.sectionId) {
+                dispatch(
+                    updateStepTitle({
+                        sectionId: step.sectionId,
+                        stepId: step.stepId,
+                        title: e.target.value,
+                    }),
+                );
+            }
         }
     };
 
@@ -66,14 +100,35 @@ const LectureCreator = ({ lable, position, isCreate, sectionId, stepId }: Lectur
         if (isSuccess && data) {
             dispatch(addCourseStep(data));
             dispatch(setStep(data));
+            setIsCreateFirst(false);
             setIsEdit(false);
         }
     }, [isSuccess]);
+
+    useEffect(() => {
+        if (isUpdateSucess && updateData) {
+            dispatch(setStep(updateData));
+            setIsEdit(false);
+        }
+    }, [isUpdateSucess]);
 
     const handleOnSelectLectureType = (lectureSelectedType: LectureType) => {
         setLectureSelectedType(lectureSelectedType);
         setLectureState(LectureState.SELECTED_CONTENT);
     };
+
+    const handleOnCloseLecture = () => {
+        switch (lectureState) {
+            case LectureState.SELECT_CONTENT: {
+                setLectureState(LectureState.DEFAULT);
+                break;
+            }
+            case LectureState.SELECTED_CONTENT: {
+                break;
+            }
+        }
+    };
+
     return (
         <div>
             <div className="border-[1px] border-[#c3c4c4] bg-[#ffffff]">
@@ -89,7 +144,7 @@ const LectureCreator = ({ lable, position, isCreate, sectionId, stepId }: Lectur
                                 <Input
                                     minLength={6}
                                     onChange={handleOnTitleChange}
-                                    value={isCreateFirst ? tempLable : lable}
+                                    value={isCreateFirst ? tempLable : step?.title}
                                     maxLength={200}
                                     showCount
                                 />
@@ -98,7 +153,7 @@ const LectureCreator = ({ lable, position, isCreate, sectionId, stepId }: Lectur
                                 </IconButton>
                             </div>
                         ) : (
-                            <span className="">{' ' + lable}</span>
+                            <span className="">{' ' + step?.title}</span>
                         )}
                         {!isEdit && (
                             <div>
@@ -144,40 +199,56 @@ const LectureCreator = ({ lable, position, isCreate, sectionId, stepId }: Lectur
                     </div>
                 </div>
                 <div>
-                    {LectureState.SELECT_CONTENT === lectureState && (
+                    {lectureState != LectureState.DEFAULT && (
                         <div className="relative border-t-[1px] border-[#c3c4c4] bg-[#ffffff] px-4 py-4">
                             <div className="absolute right-4 top-0 flex h-8 w-fit translate-y-[-100%] items-center justify-end  gap-2 border-x-[1px] border-t-[1px] border-[#c3c4c4] bg-white px-2">
-                                <p className="text-sm">Lựa chọn loại nội dung</p>
-                                <IconButton
-                                    size="small"
-                                    onClick={() => setLectureState(LectureState.DEFAULT)}
-                                >
+                                {LectureState.SELECT_CONTENT === lectureState && (
+                                    <p className="text-sm">Lựa chọn loại nội dung</p>
+                                )}
+                                {LectureState.SELECTED_CONTENT === lectureState &&
+                                    LectureType.QUIZZ === lectureSelectedType && (
+                                        <p className="text-sm">Quizz</p>
+                                    )}
+                                {LectureState.SELECTED_CONTENT === lectureState &&
+                                    LectureType.VIDEO === lectureSelectedType && (
+                                        <p className="text-sm">Video</p>
+                                    )}
+                                <IconButton size="small" onClick={handleOnCloseLecture}>
                                     <CloseIcon className="!text-base" />
                                 </IconButton>
                             </div>
-                            <p className="text-center">
-                                Lựa chọn loại nội dung chính trong bài học này:
-                            </p>
-                            <div className="mt-2 flex items-center justify-center gap-8">
-                                <LectureContentType
-                                    onSelect={handleOnSelectLectureType}
-                                    icon={<PlayCircleIcon />}
-                                    lectureType={LectureType.VIDEO}
-                                    lable="Video"
-                                />
-                                <LectureContentType
-                                    onSelect={handleOnSelectLectureType}
-                                    icon={<ArticleIcon />}
-                                    lectureType={LectureType.QUIZZ}
-                                    lable="Quiz"
-                                />
-                            </div>
+                            {LectureState.SELECT_CONTENT === lectureState && (
+                                <div>
+                                    {' '}
+                                    <p className="text-center">
+                                        Lựa chọn loại nội dung chính trong bài học này:
+                                    </p>
+                                    <div className="mt-2 flex items-center justify-center gap-8">
+                                        <LectureContentType
+                                            onSelect={handleOnSelectLectureType}
+                                            icon={<PlayCircleIcon />}
+                                            lectureType={LectureType.VIDEO}
+                                            lable="Video"
+                                        />
+                                        <LectureContentType
+                                            onSelect={handleOnSelectLectureType}
+                                            icon={<ArticleIcon />}
+                                            lectureType={LectureType.QUIZZ}
+                                            lable="Quiz"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                            {LectureState.SELECTED_CONTENT === lectureState &&
+                                lectureSelectedType === LectureType.VIDEO && (
+                                    <LectureVideoContent step={step!} />
+                                )}
+                            {LectureState.SELECTED_CONTENT === lectureState &&
+                                lectureSelectedType === LectureType.QUIZZ && (
+                                    <LectureQuizzContent />
+                                )}
                         </div>
                     )}
-                    {LectureState.SELECTED_CONTENT === lectureState &&
-                        lectureSelectedType === LectureType.VIDEO && <div>video</div>}
-                    {LectureState.SELECTED_CONTENT === lectureState &&
-                        lectureSelectedType === LectureType.QUIZZ && <div>Quiz</div>}
                 </div>
             </div>
         </div>

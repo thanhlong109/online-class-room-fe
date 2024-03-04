@@ -39,10 +39,8 @@ const AddCoursePage = () => {
     const dispatch = useDispatch();
     const addCourseState = useSelector((state: RootState) => state.course.addCourse);
     const [addCourseMutation, { isLoading, isSuccess, data }] = useAddNewCourseMutation();
-    const [
-        addSection,
-        { isLoading: isAddSectionLoading, isSuccess: isAddSectionSuccess, data: sectionData },
-    ] = useAddSectionMutation();
+    const [addSection, { isSuccess: isAddSectionSuccess, data: sectionData }] =
+        useAddSectionMutation();
     const addCourseData = addCourseState.data;
     const addCourseStep = addCourseState.currentStep;
     const [currentStep, setCurrentStep] = useState(addCourseStep);

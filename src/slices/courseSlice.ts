@@ -1,13 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import {
-    AddCourseRequest,
-    Course,
-    Section,
-    SectionReqest,
-    Step,
-    UpdateStepRequest,
-} from '../types/Course.type';
+import { AddCourseRequest, Course, Section, SectionReqest, Step } from '../types/Course.type';
 import { StepProps } from 'antd';
 
 interface courseState {
@@ -47,7 +40,7 @@ const initialState: courseState = {
         courseCreatedData: {
             courseIsActive: false,
             description: '',
-            imageUrl: '',
+            imageUrl: 'string',
             isPublic: false,
             knowdledgeDescription: '',
             linkCertificated: 'string',
@@ -165,6 +158,12 @@ export const courseSlice = createSlice({
                 }
             }
         },
+        updateCourseImageUrl: (state, action: PayloadAction<string>) => {
+            state.addCourse.courseCreatedData.imageUrl = action.payload;
+        },
+        updateCoursePreviewUrl: (state, action: PayloadAction<string>) => {
+            state.addCourse.courseCreatedData.videoPreviewUrl = action.payload;
+        },
     },
 });
 
@@ -183,6 +182,8 @@ export const {
     addCourseStep,
     setStep,
     updateStepTitle,
+    updateCourseImageUrl,
+    updateCoursePreviewUrl,
 } = courseSlice.actions;
 
 export default courseSlice.reducer;

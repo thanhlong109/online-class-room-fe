@@ -5,7 +5,11 @@ import { UploadFileType } from '../../../../components/UploadFile/UploadFileCust
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
 import Curriculum from './Curriculum/Curriculum';
-import { setCourseContentCurrent, setCourseCreatedData } from '../../../../slices/courseSlice';
+import {
+    setCourseContentCurrent,
+    updateCourseImageUrl,
+    updateCoursePreviewUrl,
+} from '../../../../slices/courseSlice';
 import { useUpdateCourseMutation } from '../../../../services/course.services';
 import { UpdateCourseRequest } from '../../../../types/Course.type';
 import { useEffect } from 'react';
@@ -47,7 +51,8 @@ const AddCourseContent = () => {
 
     useEffect(() => {
         if (isUpdateSuccess && data) {
-            dispatch(setCourseCreatedData(data));
+            dispatch(updateCourseImageUrl(data.imageUrl));
+            dispatch(updateCoursePreviewUrl(data.videoPreviewUrl));
         }
     }, [isUpdateSuccess]);
     return (
@@ -77,6 +82,7 @@ const AddCourseContent = () => {
                                     fileName={`course${addCourseState.courseCreatedData.courseId}`}
                                     fileType={UploadFileType.IMAGE}
                                     showPreview
+                                    imgLink={courseCreatedData.imageUrl}
                                     storePath="images/courseThumbnail/"
                                     buttonText="Lưu"
                                 />
@@ -92,6 +98,7 @@ const AddCourseContent = () => {
                                     fileType={UploadFileType.VIDEO}
                                     showPreview
                                     storePath="videos/coursesPreview/"
+                                    imgLink={courseCreatedData.videoPreviewUrl}
                                     buttonText="Lưu"
                                     isLoading={isUpdateLoading}
                                 />

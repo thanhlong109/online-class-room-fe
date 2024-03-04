@@ -34,12 +34,13 @@ export interface Section {
 export interface Step {
     stepId: number;
     sectionId: number;
+    quizId: number;
     duration: number;
     position: number;
     title: string;
     videoUrl: string;
     stepDescription: string;
-    quizzes: any[];
+    quiz: any;
     section: any;
 }
 
@@ -50,6 +51,7 @@ export interface AddStepRequest {
     title: string;
     videoUrl: string;
     stepDescription: string;
+    quizId: number;
 }
 
 export interface UpdateStepRequest {
@@ -59,6 +61,7 @@ export interface UpdateStepRequest {
     title: string;
     videoUrl: string;
     stepDescription: string;
+    quizId: number;
 }
 
 export interface AddCourseRequest {

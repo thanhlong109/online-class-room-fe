@@ -10,7 +10,7 @@ import { RootState } from '../../../../../store';
 import { updateSectionId } from '../../../../../slices/courseSlice';
 import AddIcon from '@mui/icons-material/Add';
 import LectureCreator from '../Lecture/LectureCreator';
-import { Section } from '../../../../../types/Course.type';
+import { Section, Step } from '../../../../../types/Course.type';
 
 export interface SectionCreatorProps {
     position: number;
@@ -20,13 +20,24 @@ export interface SectionCreatorProps {
 const SectionCreator = ({ position, section }: SectionCreatorProps) => {
     const dispatch = useDispatch();
     const addCourseState = useSelector((state: RootState) => state.course.addCourse);
-    const courseCreatedData = addCourseState.courseCreatedData;
     const [isHovered, setIsHovered] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [totalSteps, setTotalStep] = useState(section.steps.length);
     const handleOnRemoveClick = () => {};
     const handleOnTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         dispatch(updateSectionId({ title: e.target.value, sectionId: section.sectionId }));
+    };
+    const initialStepValue: Step = {
+        duration: 0,
+        position: 0,
+        quizId: 0,
+        section: undefined,
+        sectionId: section.sectionId,
+        stepDescription: 'string',
+        stepId: 0,
+        title: 'string',
+        videoUrl: 'string',
+        quiz: undefined,
     };
     return (
         <div className="bg-[#f7f9fa] p-4">
@@ -87,13 +98,11 @@ const SectionCreator = ({ position, section }: SectionCreatorProps) => {
                 <div className="mt-4 flex flex-col gap-3">
                     {Array.from({ length: totalSteps }, (_, index) => (
                         <LectureCreator
-                            sectionId={section.sectionId}
                             isCreate={index > section.steps.length - 1}
-                            lable={
-                                index > section.steps.length - 1 ? '' : section.steps[index].title
-                            }
-                            stepId={
-                                index > section.steps.length - 1 ? -1 : section.steps[index].stepId
+                            step={
+                                index > section.steps.length - 1
+                                    ? initialStepValue
+                                    : section.steps[index]
                             }
                             key={index}
                             position={index + 1}

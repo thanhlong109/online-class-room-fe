@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { AddStepRequest, Step } from '../types/Course.type';
+import { AddStepRequest, Step, UpdateStepRequest } from '../types/Course.type';
 
 export const stepApi = createApi({
     reducerPath: 'stepApi',
@@ -30,7 +30,20 @@ export const stepApi = createApi({
                 };
             },
         }),
+        updateStep: build.mutation<Step, UpdateStepRequest>({
+            query: (body: UpdateStepRequest) => ({
+                url: 'api/Step/UpdateStep',
+                body,
+                method: 'put',
+            }),
+            transformResponse: (response) => {
+                const data = (response as any).dataObject;
+                return {
+                    ...data,
+                };
+            },
+        }),
     }),
 });
 
-export const { useAddStepMutation } = stepApi;
+export const { useAddStepMutation, useUpdateStepMutation } = stepApi;
