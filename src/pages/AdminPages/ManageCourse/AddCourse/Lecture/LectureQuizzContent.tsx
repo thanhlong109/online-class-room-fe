@@ -1,5 +1,5 @@
 const LectureQuizzContent = () => {
-    return <div>LectureQuizzContent</div>;
+    return <div>Comming soon</div>;
 };
 
 export default LectureQuizzContent;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Button, Input } from 'antd';
+import { Button, Input, message } from 'antd';
 import { CircularProgress, IconButton } from '@mui/material';
 import DoneIcon from '@mui/icons-material/Done';
 import CreateIcon from '@mui/icons-material/Create';
@@ -11,8 +11,13 @@ import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import ArticleIcon from '@mui/icons-material/Article';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAddStepMutation, useUpdateStepMutation } from '../../../../../services/step.services';
-import { useDispatch } from 'react-redux';
-import { addCourseStep, setStep, updateStepTitle } from '../../../../../slices/courseSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    addCourseStep,
+    setStep,
+    updateStepDescription,
+    updateStepTitle,
+} from '../../../../../slices/courseSlice';
 import LectureVideoContent from './LectureVideoContent';
 import LectureQuizzContent from './LectureQuizzContent';
 import { Step } from '../../../../../types/Course.type';
@@ -122,6 +127,19 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
     const handleOnSelectLectureType = (lectureSelectedType: LectureType) => {
         setLectureSelectedType(lectureSelectedType);
         setLectureState(LectureState.SELECTED_CONTENT);
+    };
+
+    const handleOnSaveDescription = (value: string) => {
+        updateStepMutation({
+            duration: step!.duration,
+            position: position,
+            quizId: step!.quizId,
+            stepDescription: value,
+            stepId: step!.stepId,
+            title: step!.title,
+            videoUrl: step!.videoUrl,
+        });
+        message.success('Cập nhật thành công!');
     };
 
     const handleOnCloseLecture = () => {
@@ -281,23 +299,30 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
                                     lectureSelectedType === LectureType.QUIZZ && (
                                         <LectureQuizzContent />
                                     )}
-                                {!isAddDescription && (
-                                    <div className="flex flex-col gap-4">
-                                        <MuiButton
-                                            startIcon={<AddIcon />}
-                                            variant="outlined"
-                                            className="!border-[#333] !text-[#333]"
-                                            onClick={() => setIsAddDescription(true)}
-                                        >
-                                            Thêm miêu tả
-                                        </MuiButton>
-                                    </div>
-                                )}
+                                {!isAddDescription &&
+                                    LectureState.SELECTED_CONTENT === lectureState && (
+                                        <div className="mt-4 flex flex-col gap-4">
+                                            <MuiButton
+                                                startIcon={<AddIcon />}
+                                                variant="outlined"
+                                                className="!border-[#333] !text-[#333]"
+                                                onClick={() => setIsAddDescription(true)}
+                                            >
+                                                Thêm miêu tả
+                                            </MuiButton>
+                                        </div>
+                                    )}
                                 {isAddDescription && (
-                                    <RichTextEditor
-                                        initialValue=""
-                                        onValueChange={(e) => console.log(e)}
-                                    />
+                                    <div className="mt-4">
+                                        <RichTextEditor
+                                            initialValue={
+                                                step?.stepDescription! === 'string'
+                                                    ? ''
+                                                    : step?.stepDescription!
+                                            }
+                                            onSave={handleOnSaveDescription}
+                                        />
+                                    </div>
                                 )}
                             </div>
                         )}

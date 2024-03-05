@@ -1,21 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import {
-    Editor,
-    EditorState,
-    ContentState,
-    convertToRaw,
-    convertFromRaw,
-    RichUtils,
-} from 'draft-js';
+import { Editor, EditorState, convertToRaw, convertFromRaw, RichUtils } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import { EditorToolbar } from '..';
+import { Button } from 'antd';
 
 interface RichTextEditorProps {
     initialValue: string;
-    onValueChange: (value: string) => void;
+    onSave: (value: string) => void;
 }
 
-const RichTextEditor: React.FC<RichTextEditorProps> = ({ initialValue, onValueChange }) => {
+const RichTextEditor: React.FC<RichTextEditorProps> = ({ initialValue, onSave }) => {
     const [editorState, setEditorState] = useState(() => {
         if (initialValue) {
             const contentState = convertFromRaw(JSON.parse(initialValue));
@@ -24,12 +18,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ initialValue, onValueCh
         return EditorState.createEmpty();
     });
 
-    useEffect(() => {
-        const contentState = editorState.getCurrentContent();
-        const rawContentState = convertToRaw(contentState);
-        const json = JSON.stringify(rawContentState);
-        onValueChange(json);
-    }, [editorState, onValueChange]);
+    useEffect(() => {}, [editorState]);
 
     const handleEditorChange = (state: EditorState) => {
         setEditorState(state);
@@ -39,16 +28,26 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ initialValue, onValueCh
         setEditorState(RichUtils.toggleInlineStyle(editorState, style));
     };
 
+    const handleOnSaveDescription = () => {
+        const contentState = editorState.getCurrentContent();
+        const rawContentState = convertToRaw(contentState);
+        const json = JSON.stringify(rawContentState);
+        onSave(json);
+    };
+
     return (
-        <div>
-            <EditorToolbar
-                editorState={editorState}
-                onEditorStateChange={setEditorState}
-                onStyleButtonClick={handleStyleButtonClick}
-            />
-            <div style={{ border: '1px solid #ccc', padding: '5px' }}>
+        <div className="border-[1px]  p-4">
+            <div className="border-b-[1px] border-[#ccc]">
+                <EditorToolbar
+                    editorState={editorState}
+                    onEditorStateChange={setEditorState}
+                    onStyleButtonClick={handleStyleButtonClick}
+                />
+            </div>
+            <div className="my-2 bg-[#f7f9fa] p-4">
                 <Editor editorState={editorState} onChange={handleEditorChange} />
             </div>
+            <Button onClick={handleOnSaveDescription}>Lưu</Button>
         </div>
     );
 };

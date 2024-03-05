@@ -164,6 +164,24 @@ export const courseSlice = createSlice({
         updateCoursePreviewUrl: (state, action: PayloadAction<string>) => {
             state.addCourse.courseCreatedData.videoPreviewUrl = action.payload;
         },
+        updateStepDescription: (
+            state,
+            action: PayloadAction<{ sectionId: number; stepId: number; description: string }>,
+        ) => {
+            const index = state.addCourse.courseCreatedData.sections.findIndex(
+                (value) => value.sectionId === action.payload.sectionId,
+            );
+            if (index >= 0) {
+                const stepIndex = state.addCourse.courseCreatedData.sections[index].steps.findIndex(
+                    (value) => value.stepId === action.payload.stepId,
+                );
+                if (stepIndex >= 0) {
+                    state.addCourse.courseCreatedData.sections[index].steps[
+                        stepIndex
+                    ].stepDescription = action.payload.description;
+                }
+            }
+        },
     },
 });
 
@@ -184,6 +202,7 @@ export const {
     updateStepTitle,
     updateCourseImageUrl,
     updateCoursePreviewUrl,
+    updateStepDescription,
 } = courseSlice.actions;
 
 export default courseSlice.reducer;
