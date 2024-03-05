@@ -59,6 +59,10 @@ export const coursesApi = createApi({
                 };
             },
         }),
+        getAllCourses: build.query<Course[], number>({
+            query: (number: number) =>
+                `api/Course/SelectCourselistPagination?page=${number}&limit=10`,
+        }),
     }),
 });
 
@@ -69,4 +73,5 @@ export const {
     useGetCoursesBaseSalesQuery,
     useAddNewCourseMutation,
     useUpdateCourseMutation,
+    useGetAllCoursesQuery,
 } = coursesApi;

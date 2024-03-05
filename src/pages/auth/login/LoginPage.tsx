@@ -142,13 +142,17 @@ function LoginPage() {
                     <div>
                         Đã có tài khoản?{' '}
                         <Link to={'/register'} className="text-red-500">
-                            Đăng kí ngay.
+                            Đăng ký ngay.
                         </Link>
                     </div>
                 </form>
             </div>
-            <div className="hidden sm:block sm:w-[70%]">
-                <img src="" alt="logo" className="absolute right-1 w-[100px]" />
+            <div className="hidden justify-end sm:block sm:w-[70%]">
+                <img
+                    src="https://firebasestorage.googleapis.com/v0/b/estudyhub-a1699.appspot.com/o/logo%2Flogo-black-tail.png?alt=media&token=e65f65a8-94a6-4504-a370-730b122ba42e"
+                    alt="logo"
+                    className="absolute right-1 top-2 w-[100px]"
+                />
                 <MyCarouselLogin></MyCarouselLogin>
             </div>
         </div>

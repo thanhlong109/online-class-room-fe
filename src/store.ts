@@ -9,6 +9,7 @@ import { wishlistApi } from './services/wishlist.services';
 import courseSlice from './slices/courseSlice';
 import { sectionApi } from './services/section.services';
 import { stepApi } from './services/step.services';
+import getCourseAllSlice from './slices/getCourseAllSlice';
 
 export const persistConfig = {
     key: 'root',
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
     [wishlistApi.reducerPath]: wishlistApi.reducer,
     [sectionApi.reducerPath]: sectionApi.reducer,
     [stepApi.reducerPath]: stepApi.reducer,
+    courseAll: getCourseAllSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
