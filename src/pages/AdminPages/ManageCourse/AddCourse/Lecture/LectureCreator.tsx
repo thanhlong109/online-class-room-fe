@@ -11,13 +11,8 @@ import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import ArticleIcon from '@mui/icons-material/Article';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAddStepMutation, useUpdateStepMutation } from '../../../../../services/step.services';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-    addCourseStep,
-    setStep,
-    updateStepDescription,
-    updateStepTitle,
-} from '../../../../../slices/courseSlice';
+import { useDispatch } from 'react-redux';
+import { addCourseStep, setStep, updateStepTitle } from '../../../../../slices/courseSlice';
 import LectureVideoContent from './LectureVideoContent';
 import LectureQuizzContent from './LectureQuizzContent';
 import { Step } from '../../../../../types/Course.type';
@@ -40,7 +35,6 @@ export enum LectureState {
 
 const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
     const dispatch = useDispatch();
-
     const [isCreateFirst, setIsCreateFirst] = useState(isCreate);
     const [tempLable, setTempLable] = useState('');
     const [addStepMutation, { isSuccess, isLoading, data }] = useAddStepMutation();

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import { AddCourseRequest, Course, Section, SectionReqest, Step } from '../types/Course.type';
+import { AddCourseRequest, Course, Section, Step } from '../types/Course.type';
 import { StepProps } from 'antd';
 
 interface courseState {
@@ -11,7 +11,6 @@ interface courseState {
         navStatus: StepProps[];
         courseCreatedData: Course;
     };
-    addSection: SectionReqest[];
 }
 
 const initialState: courseState = {
@@ -61,7 +60,6 @@ const initialState: courseState = {
             wishLists: [],
         },
     },
-    addSection: [],
 };
 
 export const courseSlice = createSlice({
@@ -182,6 +180,25 @@ export const courseSlice = createSlice({
                 }
             }
         },
+        setStepList: (state, action: PayloadAction<{ sectionId: number; steps: Step[] }>) => {
+            const index = state.addCourse.courseCreatedData.sections.findIndex(
+                (value) => value.sectionId === action.payload.sectionId,
+            );
+            if (index >= 0) {
+                state.addCourse.courseCreatedData.sections[index].steps = action.payload.steps;
+            }
+        },
+        setSection: (state, action: PayloadAction<Section>) => {
+            const index = state.addCourse.courseCreatedData.sections.findIndex(
+                (value) => value.sectionId === action.payload.sectionId,
+            );
+            if (index >= 0) {
+                state.addCourse.courseCreatedData.sections[index] = action.payload;
+            }
+        },
+        setSectionList: (state, action: PayloadAction<Section[]>) => {
+            state.addCourse.courseCreatedData.sections = action.payload;
+        },
     },
 });
 
@@ -203,6 +220,9 @@ export const {
     updateCourseImageUrl,
     updateCoursePreviewUrl,
     updateStepDescription,
+    setStepList,
+    setSection,
+    setSectionList,
 } = courseSlice.actions;
 
 export default courseSlice.reducer;

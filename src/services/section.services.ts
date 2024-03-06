@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Section, SectionReqest } from '../types/Course.type';
+import { Section, AddSectionReqest, UpdateSectionRequest } from '../types/Course.type';
 
 export const sectionApi = createApi({
     reducerPath: 'sectionApi',
@@ -17,8 +17,8 @@ export const sectionApi = createApi({
         },
     }),
     endpoints: (build) => ({
-        addSection: build.mutation<Section, SectionReqest>({
-            query: (body: SectionReqest) => ({
+        addSection: build.mutation<Section, AddSectionReqest>({
+            query: (body: AddSectionReqest) => ({
                 url: 'api/Section/AddSection',
                 body,
                 method: 'post',
@@ -30,7 +30,20 @@ export const sectionApi = createApi({
                 };
             },
         }),
+        updateSection: build.mutation<Section, UpdateSectionRequest>({
+            query: (body: UpdateSectionRequest) => ({
+                url: 'api/Section/UpdateSection',
+                body,
+                method: 'put',
+            }),
+            transformResponse: (response) => {
+                const data = (response as any).dataObject;
+                return {
+                    ...data,
+                };
+            },
+        }),
     }),
 });
 
-export const { useAddSectionMutation } = sectionApi;
+export const { useAddSectionMutation, useUpdateSectionMutation } = sectionApi;

@@ -10,7 +10,7 @@ import {
 } from '../../../../slices/courseSlice';
 import { CategoryRespone } from '../../../../types/Course.type';
 import { MultipleInput } from '../../../../components';
-import AddCourseContent from './AddCourseContent';
+import CourseContent from './CourseContent';
 import { useAddNewCourseMutation } from '../../../../services/course.services';
 import { useAddSectionMutation } from '../../../../services/section.services';
 
@@ -260,7 +260,7 @@ const AddCoursePage = () => {
                     </div>
                 </div>
             )}
-            {currentStep === 4 && <AddCourseContent />}
+            {currentStep === 4 && <CourseContent />}
         </div>
     );
 };
