@@ -149,7 +149,7 @@ const GetStudentList = () => {
             <div className="mb-4" onMouseLeave={handleMouseLeave}>
                 <div className="flex items-center justify-between">
                     <h1 className="mb-5 text-2xl font-bold text-gray-800">
-                        Danh sách các khóa học:
+                        Danh sách học sinh:
                     </h1>
                     <Button type="primary" className="bg-blue-500">
                         <Link to={''}>Thêm mới học sinh</Link>
