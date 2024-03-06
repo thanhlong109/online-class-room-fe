@@ -48,7 +48,7 @@ const columns = [
                             </Button>
                         </Tooltip>
                     </Link>
-                    <Tooltip title="Xóa khóa học" color="red">
+                    <Tooltip title="Xóa người dùng này" color="red">
                         <Button danger type="link" onClick={() => ''}>
                             <DeleteOutlined style={{ fontSize: '20px' }} />
                         </Button>
@@ -101,17 +101,19 @@ const GetStudentList = () => {
     const [sortBy, setSortBy] = useState('name');
     const [sortOrder, setSortOrder] = useState('ascend');
     const { Search } = Input;
+
     const handleSort = (column, order) => {
         setSortBy(column.dataIndex);
         setSortOrder(order);
     };
+
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = parseInt(e.target.value);
-        // setSearchValue(value);
         if (value) {
-            //setMinPrice(value); // Cập nhật giá trị minPrice
+            
         }
     };
+    
     const sortedData = data.sort((a, b) => {
         if (sortBy === 'name') {
             return a.name.localeCompare(b.name);
