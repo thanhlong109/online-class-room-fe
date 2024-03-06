@@ -1,6 +1,6 @@
 export interface PagingParam {
-    id: string;
-    page: number;
-    limit: number;
-    search: string;
+    // categoryId: number;
+    pageNumber: number;
+    pageSize: number;
+    minPrice: number;
 }

@@ -1,13 +1,14 @@
+import { PagingParam } from './../types/TableParam';
 import { courseAllFailure, courseAllStart, courseAllSuccess } from '../slices/getCourseAllSlice';
 import { useAppDispatch, useAppSelector } from './appHook';
 import { useGetAllCoursesQuery } from '../services/course.services'; // Import the specific query hook
 import { useEffect } from 'react';
 
-export function useCourseAll() {
+export function useCourseAll(input: PagingParam) {
     const state = useAppSelector((state) => state.courseAll);
     const dispatch = useAppDispatch();
 
-    const { data: response, error, isLoading } = useGetAllCoursesQuery(1); // Call the specific query hook
+    const { data: response, error, isLoading } = useGetAllCoursesQuery(input); // Call the specific query hook
 
     // useEffect to dispatch actions based on the state of the query
     useEffect(() => {

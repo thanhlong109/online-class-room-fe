@@ -40,7 +40,7 @@ const adminRoutes: RouteProps[] = [
     { path: '/admin/addCourse/', component: AddCoursePage, layout: DefaultLayoutAdmin },
     { path: '/admin/getAllCourse/', component: GetAllCourse, layout: DefaultLayoutAdmin },
     {
-        path: '/admin//getAllCourse/details/:id',
+        path: '/admin/getAllCourse/details/:id',
         component: ViewCourseDetails,
         layout: DefaultLayoutAdmin,
     },

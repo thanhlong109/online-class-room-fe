@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Course } from '../types/Course.type';
+import { Course, GetAllCourse } from '../types/Course.type';
+import { PagingParam } from '../types/TableParam';
 
 export const coursesApi = createApi({
     reducerPath: 'coursesApi',
@@ -20,9 +21,12 @@ export const coursesApi = createApi({
             query: (number: number) =>
                 `api/Course/TopFavoritesCourseBaseSales?numberOfCourses=${number}`,
         }),
-        getAllCourses: build.query<Course[], number>({
-            query: (number: number) =>
-                `api/Course/SelectCourselistPagination?page=${number}&limit=10`,
+        getAllCourses: build.query<GetAllCourse, PagingParam>({
+            query: (input: PagingParam) =>
+                `api/Course/SelectCourselistPagination?pageNumber=${input.pageNumber}&pageSize=${input.pageSize}&minPrice=${input.minPrice}`,
+        }),
+        deleteCourse: build.query<Course, number>({
+            query: (id) => `api/Course/DeleteCourse?courseId=${id}`,
         }),
     }),
 });
