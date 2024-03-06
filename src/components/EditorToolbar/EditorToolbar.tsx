@@ -4,7 +4,6 @@ import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined';
 import StrikethroughSIcon from '@mui/icons-material/StrikethroughS';
-import { useState } from 'react';
 
 interface EditorToolbarTools {
     style: string;
@@ -22,7 +21,7 @@ const EditorToolbar: React.FC<{
     editorState: EditorState;
     onEditorStateChange: (state: EditorState) => void;
     onStyleButtonClick: (style: string) => void;
-}> = ({ editorState, onEditorStateChange, onStyleButtonClick }) => {
+}> = ({ onStyleButtonClick }) => {
     return (
         <div style={{ marginBottom: '10px' }} className="flex gap-2">
             {defaultDisplayTools.map((tool, index) => (

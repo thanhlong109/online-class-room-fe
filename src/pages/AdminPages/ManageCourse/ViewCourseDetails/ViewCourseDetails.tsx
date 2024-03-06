@@ -71,7 +71,7 @@ const ViewCourseDetails = () => {
                             </div>
                             <div className="flex items-center justify-between">
                                 <h4 className="text-base font-medium">Thể loại:</h4>
-                                <p className="text-sm">{course?.courseCategories}</p>
+                                <p className="text-sm"></p>
                             </div>
                             <div className="flex items-start justify-between">
                                 <h4 className="text-base font-medium">Mô tả khóa học:</h4>
