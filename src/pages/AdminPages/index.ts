@@ -1,3 +1,3 @@
 export { DashboardPage } from './Dashboard';
 export { AddCoursePage } from './ManageCourse';
-export { GetStudentList } from './ManageUser';
+export { GetStudentList, GetParentList } from './ManageUser';
