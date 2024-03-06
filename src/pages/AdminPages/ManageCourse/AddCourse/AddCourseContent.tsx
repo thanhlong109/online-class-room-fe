@@ -1,21 +1,60 @@
 import { Paper } from '@mui/material';
-import { StepProps, Steps } from 'antd';
-import { useState } from 'react';
+import { Steps } from 'antd';
 import { UploadFileCustom } from '../../../../components';
 import { UploadFileType } from '../../../../components/UploadFile/UploadFileCustom';
-
-const totalSteps: StepProps[] = [
-    { title: 'Hiển thị' },
-    { title: 'Chu trình học', status: 'finish' },
-    { title: 'Thể loại' },
-    { title: 'Mục tiêu học tập', status: 'finish' },
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../../store';
+import Curriculum from './Curriculum/Curriculum';
+import {
+    setCourseContentCurrent,
+    updateCourseImageUrl,
+    updateCoursePreviewUrl,
+} from '../../../../slices/courseSlice';
+import { useUpdateCourseMutation } from '../../../../services/course.services';
+import { UpdateCourseRequest } from '../../../../types/Course.type';
+import { useEffect } from 'react';
 
 const AddCourseContent = () => {
-    const [current, setCurrent] = useState(0);
+    const dispatch = useDispatch();
+    const [updatecourse, { isSuccess: isUpdateSuccess, isLoading: isUpdateLoading, data }] =
+        useUpdateCourseMutation();
+    const addCourseState = useSelector((state: RootState) => state.course.addCourse);
+    const courseCreatedData = addCourseState.courseCreatedData;
+    const current = addCourseState.navStatus.findIndex((value) => value.status === 'process');
+    const totalSteps = addCourseState.navStatus;
     const onStepChange = (value: number) => {
-        setCurrent(value);
+        dispatch(setCourseContentCurrent(value));
     };
+
+    const handleOnUploadThumbnailSuccess = (dowloadUrl: string) => {
+        if (courseCreatedData.courseId) {
+            var udpateCourseData: UpdateCourseRequest = {
+                ...addCourseState.data,
+                imageUrl: dowloadUrl,
+                courseId: courseCreatedData.courseId,
+                videoPreviewUrl: courseCreatedData.videoPreviewUrl,
+            };
+            updatecourse(udpateCourseData);
+        }
+    };
+    const handleOnUploadVideoPreviewSuccess = (dowloadUrl: string) => {
+        if (courseCreatedData.courseId) {
+            var udpateCourseData: UpdateCourseRequest = {
+                ...addCourseState.data,
+                imageUrl: courseCreatedData.imageUrl,
+                videoPreviewUrl: dowloadUrl,
+                courseId: courseCreatedData.courseId,
+            };
+            updatecourse(udpateCourseData);
+        }
+    };
+
+    useEffect(() => {
+        if (isUpdateSuccess && data) {
+            dispatch(updateCourseImageUrl(data.imageUrl));
+            dispatch(updateCoursePreviewUrl(data.videoPreviewUrl));
+        }
+    }, [isUpdateSuccess]);
     return (
         <div className="flex ">
             <div className="h-full w-fit">
@@ -38,16 +77,35 @@ const AddCourseContent = () => {
                             </p>
                             <div>
                                 <UploadFileCustom
-                                    onUploadFileSuccess={(url) => console.log(url)}
+                                    onUploadFileSuccess={handleOnUploadThumbnailSuccess}
                                     onUploadFileError={(e) => console.log(e)}
-                                    fileName="fileTest"
+                                    fileName={`course${addCourseState.courseCreatedData.courseId}`}
                                     fileType={UploadFileType.IMAGE}
                                     showPreview
-                                    storePath="images/test/"
+                                    imgLink={courseCreatedData.imageUrl}
+                                    storePath="images/courseThumbnail/"
+                                    buttonText="Lưu"
+                                />
+                            </div>
+                            <p className="mb-6 mt-12 text-xl font-bold text-[#1677ff]">
+                                Thêm video video giới thiệu ngắn cho khóa học
+                            </p>
+                            <div>
+                                <UploadFileCustom
+                                    onUploadFileSuccess={handleOnUploadVideoPreviewSuccess}
+                                    onUploadFileError={(e) => console.log(e)}
+                                    fileName={`course${addCourseState.courseCreatedData.courseId}`}
+                                    fileType={UploadFileType.VIDEO}
+                                    showPreview
+                                    storePath="videos/coursesPreview/"
+                                    imgLink={courseCreatedData.videoPreviewUrl}
+                                    buttonText="Lưu"
+                                    isLoading={isUpdateLoading}
                                 />
                             </div>
                         </div>
                     )}
+                    {current === 1 && <Curriculum />}
                 </Paper>
             </div>
         </div>
