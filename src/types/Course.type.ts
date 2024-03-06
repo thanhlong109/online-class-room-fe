@@ -101,6 +101,14 @@ export interface CategoryRespone {
     categoryDescription: string;
 }
 
+export interface GetAllCourse {
+    courses: Course[];
+    currentPage: number;
+    pageSize: number;
+    totalCourses: number;
+    totalPages: number;
+}
+
 export interface CourseCategory {
     courseCategoryId: number;
     courseId: number;
