@@ -51,7 +51,6 @@ export default function MySider() {
             getItem('Quản lý khóa học', 'sub1', <Person2Outlined />, [
                 getItem('Tất cả khóa học', '3', <PieChartOutlined />),
                 getItem('Thêm khóa học mới', '4', <DesktopOutlined />),
-                getItem('Xóa khóa học', '5', <Person2Outlined />),
             ]),
             getItem('Quản lý tài khoản', 'sub2', <Person3Outlined />, [
                 getItem('Học sinh', 'student', <Person2Outlined />),
@@ -61,11 +60,7 @@ export default function MySider() {
         ];
     };
     const navUrl = new Map<string, string>();
-    navUrl
-        .set('1', '/admin/')
-        .set('3', '/admin/getAllCourse')
-        .set('4', '/admin/addCourse/')
-        .set('5', '/admin/deleteCourse');
+    navUrl.set('1', '/admin/').set('3', '/admin/getAllCourse').set('4', '/admin/addCourse/');
 
     // useEffect(() => {
     //   const fetchData = async () => {

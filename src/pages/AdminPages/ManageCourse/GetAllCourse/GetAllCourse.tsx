@@ -1,4 +1,4 @@
-import { Button, Input, Modal, Pagination, Table, Tag, message } from 'antd';
+import { Button, Input, Modal, Pagination, Table, Tag, Tooltip, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Course } from '../../../../types/Course.type';
 import { ColumnType } from 'antd/es/table';
@@ -129,20 +129,24 @@ const columns = ({
             return (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <Link to={`/admin/getAllCourse/details/${courseId}`}>
-                        <Button type="link">
-                            <EyeOutlined style={{ fontSize: '20px' }} />
-                        </Button>
+                        <Tooltip title="Xem chi tiết">
+                            <Button type="link">
+                                <EyeOutlined style={{ fontSize: '20px' }} />
+                            </Button>
+                        </Tooltip>
                     </Link>
-                    <Button danger type="link" onClick={() => handleDelete(courseId)}>
-                        <DeleteOutlined style={{ fontSize: '20px' }} />
-                    </Button>
+                    <Tooltip title="Xóa khóa học" color="red">
+                        <Button danger type="link" onClick={() => handleDelete(courseId)}>
+                            <DeleteOutlined style={{ fontSize: '20px' }} />
+                        </Button>
+                    </Tooltip>
                 </div>
             );
         },
     },
 ];
 const GetAllCourse = () => {
-    const [data, setData] = useState<Course[]>([]);
+    const [database, setDatabase] = useState<Course[]>([]);
 
     const displayData = 8;
     // const [searchValue, setSearchValue] = useState(0);
@@ -154,7 +158,20 @@ const GetAllCourse = () => {
     });
     const { Search } = Input;
     const [deleteModalVisible, setDeleteModalVisible] = useState(false); // State để điều khiển hiển thị của modal xác nhận xóa
-    // const [deletingItemId, setDeletingItemId] = useState<number | null>(null); // State để lưu id của item đang được chọn để xóa
+    // const [courseId, setCourseId] = useState('');
+    // const location = useLocation();
+    // const [course, setCourse] = useState<Course | null>(null);
+    // useEffect(() => {
+    //     const getCourseId = location.pathname.split('/').pop();
+    //     if (getCourseId) {
+    //         setCourseId(getCourseId);
+    //     }
+    // }, []);
+    // const {data, isSuccess} = useDeleteCourseQuery(courseId);
+    // useEffect(() => {
+    //     if (data) setCourse(data);
+    //     console.log(data);
+    // }, [isSuccess]);
 
     const input: PagingParam = {
         // categoryId: 1,
@@ -166,12 +183,12 @@ const GetAllCourse = () => {
     const { state, response } = useCourseAll(input);
 
     useEffect(() => {
-        response && setData(response.courses);
+        response && setDatabase(response.courses);
     }, [response]);
 
     useEffect(() => {
         if (state.currentCourse) {
-            setData(state.currentCourse.courses);
+            setDatabase(state.currentCourse.courses);
             setPagination({
                 ...pagination,
                 total: state.currentCourse.currentPage * 10,
@@ -234,12 +251,12 @@ const GetAllCourse = () => {
                     <div>
                         <div className="flex items-center justify-between">
                             <Search
-                                placeholder="Nhập giá tiền tối đa"
+                                placeholder="Nhập giá tiền tối thiểu để tìm kiếm"
                                 className="w-[30%]"
                                 size="large"
                                 onChange={handleSearchChange}
                                 // onKeyDown={handleSearchKeyPress}
-                                value={minPrice}
+                                // value={minPrice}
                             />
                         </div>
                     </div>
@@ -247,7 +264,7 @@ const GetAllCourse = () => {
                 <Table
                     columns={tableColumns}
                     rowKey={(record) => record.courseId}
-                    dataSource={data}
+                    dataSource={database}
                     pagination={false}
                 />
                 <Pagination
