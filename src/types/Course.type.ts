@@ -117,8 +117,14 @@ export interface CourseCategory {
     course: any;
 }
 
-export interface SectionReqest {
+export interface AddSectionReqest {
     courseId: number;
+    title: string;
+    position: number;
+}
+
+export interface UpdateSectionRequest {
+    sectionId: number;
     title: string;
     position: number;
 }

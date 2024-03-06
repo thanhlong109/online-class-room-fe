@@ -14,7 +14,7 @@ import { useUpdateCourseMutation } from '../../../../services/course.services';
 import { UpdateCourseRequest } from '../../../../types/Course.type';
 import { useEffect } from 'react';
 
-const AddCourseContent = () => {
+const CourseContent = () => {
     const dispatch = useDispatch();
     const [updatecourse, { isSuccess: isUpdateSuccess, isLoading: isUpdateLoading, data }] =
         useUpdateCourseMutation();
@@ -112,4 +112,4 @@ const AddCourseContent = () => {
     );
 };
 
-export default AddCourseContent;
+export default CourseContent;
