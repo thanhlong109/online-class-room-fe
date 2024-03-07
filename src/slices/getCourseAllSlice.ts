@@ -1,14 +1,16 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Course } from '../types/Course.type';
+import { GetAllCourse } from '../types/Course.type';
 
 export interface courseAll {
-    currentCourse: Course[] | null; // Change currentCourse to allow null or Course[]
+    // currentCourse: Course[] | null; // Change currentCourse to allow null or Course[]
+    currentCourse: GetAllCourse;
     isFetching: boolean;
     error: boolean;
 }
 
 const initialState: courseAll = {
-    currentCourse: null, // Change to null
+    // currentCourse: null, // Change to null
+    currentCourse: {} as GetAllCourse,
     isFetching: false,
     error: false,
 };
@@ -20,7 +22,7 @@ const courseAllSlice = createSlice({
         courseAllStart: (state) => {
             state.isFetching = true;
         },
-        courseAllSuccess: (state, action: PayloadAction<Course[]>) => {
+        courseAllSuccess: (state, action: PayloadAction<GetAllCourse>) => {
             // Accept Course[]
             state.isFetching = false;
             state.currentCourse = action.payload;

@@ -33,7 +33,7 @@ function RegisterPage() {
                 <form className="mt-3 flex flex-col items-center justify-center space-y-5">
                     <section className="w-[70%] space-y-5 ">
                         <div className="mb-12 ml-1 mt-[40%] ">
-                            <h1 className="text-3xl">Đăng kí</h1>
+                            <h1 className="text-3xl">Đăng ký</h1>
                             <p className="sm:max-xl:text-md mt-2 text-base text-grayLine">
                                 Mừng đến với hệ thống! Vui lòng điền thông tin bên dưới để tiếp tục
                             </p>
@@ -99,7 +99,7 @@ function RegisterPage() {
                         type="primary"
                         className="text-md  h-11 w-[70%] bg-greenHome font-bold"
                     >
-                        Đăng kí
+                        Đăng ký
                     </Button>
                     <div>Hay</div>
                     <Button
@@ -118,7 +118,11 @@ function RegisterPage() {
                 </form>
             </div>
             <div className="hidden sm:block sm:w-[70%]">
-                <img src="" alt="logo" className="absolute right-1 w-[100px]" />
+                <img
+                    src="https://firebasestorage.googleapis.com/v0/b/estudyhub-a1699.appspot.com/o/logo%2Flogo-black-tail.png?alt=media&token=e65f65a8-94a6-4504-a370-730b122ba42e"
+                    alt="logo"
+                    className="absolute right-1 top-2 w-[100px]"
+                />
                 <MyCarouselLogin></MyCarouselLogin>
             </div>
         </div>

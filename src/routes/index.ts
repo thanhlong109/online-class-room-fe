@@ -13,7 +13,10 @@ import RegisterPage from '../pages/auth/login/RegisterPage';
 import NotFoundPage from '../pages/errorPage/NotFoundPage';
 import PaymentPage from '../pages/ClientPages/CheckoutPage/PaymentPage';
 import GetAllCourse from '../pages/AdminPages/ManageCourse/GetAllCourse/GetAllCourse';
-import GetStudentList from '../pages/AdminPages/ManageStudent/GetStudent/GetStudentList';
+import ViewCourseDetails from '../pages/AdminPages/ManageCourse/ViewCourseDetails/ViewCourseDetails';
+import GetStudentList from '../pages/AdminPages/ManageUser/GetStudent/GetStudentList';
+import GetParentList from '../pages/AdminPages/ManageUser/GetParent/GetParentList';
+
 interface RouteProps {
     path: string;
     component: () => JSX.Element;
@@ -37,8 +40,14 @@ const privateRoutes: RouteProps[] = [
 const adminRoutes: RouteProps[] = [
     { path: '/admin/', component: DashboardPage, layout: DefaultLayoutAdmin },
     { path: '/admin/addCourse/', component: AddCoursePage, layout: DefaultLayoutAdmin },
-    { path: '/admin/getAllCourse', component: GetAllCourse, layout: DefaultLayoutAdmin },
-    { path: '/admin/studentList', component: GetStudentList, layout: DefaultLayoutAdmin },
+    { path: '/admin/getAllCourse/', component: GetAllCourse, layout: DefaultLayoutAdmin },
+    {
+        path: '/admin/getAllCourse/details/:id',
+        component: ViewCourseDetails,
+        layout: DefaultLayoutAdmin,
+    },
+    { path: '/admin/getStudentList', component: GetStudentList, layout: DefaultLayoutAdmin },
+    { path: '/admin/getParentList', component: GetParentList, layout: DefaultLayoutAdmin },
 ];
 
 const staffRoutes: RouteProps[] = [];
