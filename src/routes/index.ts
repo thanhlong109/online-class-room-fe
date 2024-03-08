@@ -14,6 +14,8 @@ import NotFoundPage from '../pages/errorPage/NotFoundPage';
 import PaymentPage from '../pages/ClientPages/CheckoutPage/PaymentPage';
 import GetAllCourse from '../pages/AdminPages/ManageCourse/GetAllCourse/GetAllCourse';
 import ViewCourseDetails from '../pages/AdminPages/ManageCourse/ViewCourseDetails/ViewCourseDetails';
+import GetStudentList from '../pages/AdminPages/ManageUser/GetStudent/GetStudentList';
+import GetParentList from '../pages/AdminPages/ManageUser/GetParent/GetParentList';
 
 interface RouteProps {
     path: string;
@@ -44,6 +46,8 @@ const adminRoutes: RouteProps[] = [
         component: ViewCourseDetails,
         layout: DefaultLayoutAdmin,
     },
+    { path: '/admin/getStudentList', component: GetStudentList, layout: DefaultLayoutAdmin },
+    { path: '/admin/getParentList', component: GetParentList, layout: DefaultLayoutAdmin },
 ];
 
 const staffRoutes: RouteProps[] = [];

@@ -60,7 +60,8 @@ export default function MySider() {
         ];
     };
     const navUrl = new Map<string, string>();
-    navUrl.set('1', '/admin/').set('3', '/admin/getAllCourse').set('4', '/admin/addCourse/');
+    navUrl.set('1', '/admin/').set('3', '/admin/getAllCourse').set('4', '/admin/addCourse/').set('student', '/admin/getStudentList').set('family', '/admin/getParentList');
+
 
     // useEffect(() => {
     //   const fetchData = async () => {
