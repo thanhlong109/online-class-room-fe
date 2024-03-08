@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { AddCourseRequest, Course, UpdateCourseRequest } from '../types/Course.type';
+import { PagingParam } from '../types/TableParam';
+import { AddCourseRequest, Course, UpdateCourseRequest, GetAllCourse } from '../types/Course.type';
 
 export const coursesApi = createApi({
     reducerPath: 'coursesApi',
@@ -33,6 +34,7 @@ export const coursesApi = createApi({
             query: (number: number) =>
                 `api/Course/TopFavoritesCourseBaseSales?numberOfCourses=${number}`,
         }),
+
         addNewCourse: build.mutation<Course, AddCourseRequest>({
             query: (body: AddCourseRequest) => ({
                 url: 'api/Course/AddCourse',
@@ -59,9 +61,12 @@ export const coursesApi = createApi({
                 };
             },
         }),
-        getAllCourses: build.query<Course[], number>({
-            query: (number: number) =>
-                `api/Course/SelectCourselistPagination?page=${number}&limit=10`,
+        getAllCourses: build.query<GetAllCourse, PagingParam>({
+            query: (input: PagingParam) =>
+                `api/Course/CourselistPagination?&pageNumber=${input.pageNumber}&pageSize=${input.pageSize}&search=${input.search}`,
+        }),
+        deleteCourse: build.query<Course, string>({
+            query: (id) => `api/Course/DeleteCourse/${id}`,
         }),
     }),
 });
@@ -74,4 +79,5 @@ export const {
     useAddNewCourseMutation,
     useUpdateCourseMutation,
     useGetAllCoursesQuery,
+    useDeleteCourseQuery,
 } = coursesApi;
