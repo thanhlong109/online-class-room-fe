@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import { AddCourseRequest, Course, Section, Step } from '../types/Course.type';
+import { AddCourseRequest, Course, CourseCategory, Section, Step } from '../types/Course.type';
 import { StepProps } from 'antd';
 
 export enum CouseMode {
@@ -250,6 +250,15 @@ export const courseSlice = createSlice({
         setCourseUpdate: (state, action: PayloadAction<Course>) => {
             state.tempData.tempCourse = action.payload;
         },
+        updateCourseCategory: (state, action: PayloadAction<CourseCategory[]>) => {
+            state.addCourse.courseCreatedData.courseCategories = action.payload;
+        },
+        setCourseDescription: (state, action: PayloadAction<string>) => {
+            state.addCourse.courseCreatedData.description = action.payload;
+        },
+        setCourseKnowledge: (state, action: PayloadAction<string>) => {
+            state.addCourse.courseCreatedData.knowdledgeDescription = action.payload;
+        },
     },
 });
 
@@ -276,6 +285,9 @@ export const {
     setSectionList,
     setCourseMode,
     setCourseUpdate,
+    updateCourseCategory,
+    setCourseDescription,
+    setCourseKnowledge,
 } = courseSlice.actions;
 
 export default courseSlice.reducer;

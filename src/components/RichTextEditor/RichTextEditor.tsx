@@ -12,13 +12,17 @@ interface RichTextEditorProps {
 const RichTextEditor: React.FC<RichTextEditorProps> = ({ initialValue, onSave }) => {
     const [editorState, setEditorState] = useState(() => {
         if (initialValue) {
-            const contentState = convertFromRaw(JSON.parse(initialValue));
+            let contentState;
+            try {
+                contentState = convertFromRaw(JSON.parse(initialValue));
+            } catch (e: any) {
+                return EditorState.createEmpty();
+            }
+
             return EditorState.createWithContent(contentState);
         }
         return EditorState.createEmpty();
     });
-
-    useEffect(() => {}, [editorState]);
 
     const handleEditorChange = (state: EditorState) => {
         setEditorState(state);

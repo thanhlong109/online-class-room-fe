@@ -20,12 +20,11 @@ const UpdateCoursePage = () => {
 
     useEffect(() => {
         if (isSuccess && data) {
-            console.log(data);
             dispatch(setCourseUpdate(data));
             dispatch(setCourseMode(CouseMode.UPDATE));
         }
     }, [isSuccess]);
-    console.log(courseMode);
+
     return <div>{courseMode === CouseMode.UPDATE && <CourseContent />}</div>;
 };
 
