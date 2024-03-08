@@ -65,8 +65,11 @@ export const coursesApi = createApi({
             query: (input: PagingParam) =>
                 `api/Course/CourselistPagination?&pageNumber=${input.pageNumber}&pageSize=${input.pageSize}&search=${input.search}`,
         }),
-        deleteCourse: build.query<Course, string>({
-            query: (id) => `api/Course/DeleteCourse/${id}`,
+        deleteCourse: build.mutation<Course, number>({
+            query: (id) => ({
+                url: `api/Course/DeleteCourse?courseId=${id}`,
+                method: 'delete',
+            }),
         }),
     }),
 });
@@ -79,5 +82,5 @@ export const {
     useAddNewCourseMutation,
     useUpdateCourseMutation,
     useGetAllCoursesQuery,
-    useDeleteCourseQuery,
+    useDeleteCourseMutation,
 } = coursesApi;

@@ -8,6 +8,7 @@ import { formatNumberWithCommas } from '../../../../utils/NumberFormater';
 import { Link } from 'react-router-dom';
 import { PagingParam } from '../../../../types/TableParam';
 import { DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { useDeleteCourseMutation } from '../../../../services/course.services';
 
 type GetAllCourseProps = {
     pagination: { current: number; total: number };
@@ -147,30 +148,16 @@ const columns = ({
 ];
 const GetAllCourse = () => {
     const [database, setDatabase] = useState<Course[]>([]);
-
     const displayData = 8;
     const [searchValue, setSearchValue] = useState('');
-
     const [pagination, setPagination] = useState({
         current: 1,
         total: 0,
     });
     const { Search } = Input;
     const [deleteModalVisible, setDeleteModalVisible] = useState(false); // State để điều khiển hiển thị của modal xác nhận xóa
-    // const [courseId, setCourseId] = useState('');
-    // const location = useLocation();
-    // const [course, setCourse] = useState<Course | null>(null);
-    // useEffect(() => {
-    //     const getCourseId = location.pathname.split('/').pop();
-    //     if (getCourseId) {
-    //         setCourseId(getCourseId);
-    //     }
-    // }, []);
-    // const {data, isSuccess} = useDeleteCourseQuery(courseId);
-    // useEffect(() => {
-    //     if (data) setCourse(data);
-    //     console.log(data);
-    // }, [isSuccess]);
+    const [deletingItemId, setDeletingItemId] = useState<number | null>(null);
+    const [deleteCourse] = useDeleteCourseMutation();
 
     const input: PagingParam = {
         pageSize: displayData,
@@ -210,19 +197,29 @@ const GetAllCourse = () => {
             }
         }
     };
-    const handleDelete = () => {
+    const handleDelete = (courseId: number) => {
         // Xử lý xóa ở đây
-        // setDeletingItemId(id); // Lưu id của item đang được chọn để xóa
+        setDeletingItemId(courseId); // Lưu id của item đang được chọn để xóa
         setDeleteModalVisible(true); // Hiển thị modal xác nhận xóa
     };
 
-    const confirmDelete = () => {
+    const confirmDelete = async () => {
         // Xác nhận xóa ở đây
+        if (!deletingItemId) return;
         // Sau khi xóa xong, đóng modal và cập nhật lại dữ liệu
         setDeleteModalVisible(false);
         // Gọi hàm xóa hoặc cập nhật dữ liệu ở đây
+        try {
+            await deleteCourse(deletingItemId);
+            const updatedCourses = database.map((course) =>
+                course.courseId === deletingItemId ? { ...course, courseIsActive: false } : course,
+            );
+            setDatabase(updatedCourses);
+            message.success('Bạn đã xóa thành công khóa học');
+        } catch (error) {
+            message.error('Xóa khóa học thất bại');
+        }
         // fetchData(); // Nếu cần refetch dữ liệu sau khi xóa
-        message.success('Bạn đã xóa thành công khóa học');
     };
 
     const cancelDelete = () => {
