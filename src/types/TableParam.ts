@@ -2,5 +2,5 @@ export interface PagingParam {
     // categoryId: number;
     pageNumber: number;
     pageSize: number;
-    minPrice: number;
+    search: string;
 }

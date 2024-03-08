@@ -105,12 +105,12 @@ const columns = ({
     },
     {
         title: 'Trạng thái',
-        dataIndex: 'isPublic',
-        render: (isPublic) => {
+        dataIndex: 'courseIsActive',
+        render: (courseIsActive) => {
             return (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <span>
-                        {isPublic ? (
+                        {courseIsActive ? (
                             <Tag color="green">Hoạt động</Tag>
                         ) : (
                             <Tag color="red">Không hoạt động</Tag>
@@ -149,8 +149,7 @@ const GetAllCourse = () => {
     const [database, setDatabase] = useState<Course[]>([]);
 
     const displayData = 8;
-    // const [searchValue, setSearchValue] = useState(0);
-    const [minPrice, setMinPrice] = useState<number>(0); // Khởi tạo giá trị minPrice là 0
+    const [searchValue, setSearchValue] = useState('');
 
     const [pagination, setPagination] = useState({
         current: 1,
@@ -174,45 +173,43 @@ const GetAllCourse = () => {
     // }, [isSuccess]);
 
     const input: PagingParam = {
-        // categoryId: 1,
         pageSize: displayData,
         pageNumber: pagination.current,
-        minPrice: minPrice,
+        search: searchValue,
     };
 
     const { state, response } = useCourseAll(input);
 
     useEffect(() => {
-        response && setDatabase(response.courses);
-    }, [response]);
-
-    useEffect(() => {
-        if (state.currentCourse) {
-            setDatabase(state.currentCourse.courses);
+        if (response) {
+            setDatabase(response.courses);
             setPagination({
                 ...pagination,
-                total: state.currentCourse.currentPage * 10,
+                total: response.totalCourses,
             });
         }
-    }, [state.currentCourse]);
+    }, [response]);
 
     const handlePageChange = (page: number) => {
         setPagination({ ...pagination, current: page });
     };
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(e.target.value);
-        // setSearchValue(value);
-        if (value) {
-            setMinPrice(value); // Cập nhật giá trị minPrice
-        }
+        const value = e.target.value;
+        setSearchValue(value);
     };
 
-    // const handleSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    //     if (e.key === 'Enter') {
-
-    //     }
-    // };
+    const handleSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            if (response) {
+                setDatabase(response.courses);
+                setPagination({
+                    ...pagination,
+                    total: response.totalCourses,
+                });
+            }
+        }
+    };
     const handleDelete = () => {
         // Xử lý xóa ở đây
         // setDeletingItemId(id); // Lưu id của item đang được chọn để xóa
@@ -251,12 +248,12 @@ const GetAllCourse = () => {
                     <div>
                         <div className="flex items-center justify-between">
                             <Search
-                                placeholder="Nhập giá tiền tối thiểu để tìm kiếm"
+                                placeholder="Nhập tên khóa học để tìm kiếm"
                                 className="w-[30%]"
                                 size="large"
                                 onChange={handleSearchChange}
-                                // onKeyDown={handleSearchKeyPress}
-                                // value={minPrice}
+                                onKeyDown={handleSearchKeyPress}
+                                value={searchValue}
                             />
                         </div>
                     </div>
