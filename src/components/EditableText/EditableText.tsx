@@ -5,14 +5,18 @@ import DoneIcon from '@mui/icons-material/Done';
 import { motion } from 'framer-motion';
 import CreateIcon from '@mui/icons-material/Create';
 
-interface EditableTextProps {
-    value: string;
-    onChage: (value: string) => void;
+export interface EditableTextProps {
+    value: string | number;
+    onChage: (value: string | number) => void;
     maxLength?: number | undefined;
     showCount?: boolean;
     onDoneClick: () => void;
     isLoading?: boolean;
     textCSS?: string;
+    type?: string;
+    isError?: boolean;
+    errorMessage?: string;
+    displayValue?: string;
 }
 
 const EditableText = ({
@@ -23,11 +27,17 @@ const EditableText = ({
     showCount = false,
     isLoading = false,
     textCSS = '',
+    type = 'string',
+    isError = false,
+    errorMessage = '',
+    displayValue = undefined,
 }: EditableTextProps) => {
     const [isEdit, setIsEdit] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+
     const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onChage(e.target.value);
+        const value = type === 'string' ? e.target.value : parseInt(e.target.value);
+        onChage(value);
     };
     const handleOnDoneClick = () => {
         onDoneClick();
@@ -40,21 +50,26 @@ const EditableText = ({
             onMouseLeave={() => setIsHovered(false)}
         >
             {isEdit ? (
-                <div className={`flex w-full items-center gap-4 ${textCSS}`}>
-                    <Input
-                        value={value}
-                        maxLength={maxLength}
-                        onChange={handleOnChange}
-                        showCount={showCount}
-                        className="flex-1"
-                    />
-                    <IconButton disabled={isLoading} onClick={handleOnDoneClick}>
-                        {!isLoading && <DoneIcon />}
-                        {isLoading && <CircularProgress className="!h-[18px] !w-[18px]" />}
-                    </IconButton>
+                <div>
+                    <div className={`flex w-full items-center gap-4 ${textCSS}`}>
+                        <Input
+                            value={value}
+                            maxLength={maxLength}
+                            onChange={handleOnChange}
+                            showCount={showCount}
+                            className="flex-1"
+                            type={type}
+                            status={isError ? 'error' : undefined}
+                        />
+                        <IconButton disabled={isLoading} onClick={handleOnDoneClick}>
+                            {!isLoading && <DoneIcon />}
+                            {isLoading && <CircularProgress className="!h-[18px] !w-[18px]" />}
+                        </IconButton>
+                    </div>
+                    {isError && <p>{errorMessage}</p>}
                 </div>
             ) : (
-                <span className={textCSS}>{value}</span>
+                <span className={textCSS}>{displayValue ? displayValue : value}</span>
             )}
             {!isEdit && (
                 <div>

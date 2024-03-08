@@ -1,5 +1,5 @@
 import { IconButton, Paper } from '@mui/material';
-import { Button, Input, Skeleton, Steps, Tag, message } from 'antd';
+import { Skeleton, Steps, Tag, message } from 'antd';
 import {
     EditableText,
     MultipleInput,
@@ -33,6 +33,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useGetCategoryQuery } from '../../../../services/categoryService';
 import { LoadingButton } from '@mui/lab';
+import Publication from './Publication';
 
 const { CheckableTag } = Tag;
 
@@ -167,7 +168,7 @@ const CourseContent = () => {
                                                 dispatch(
                                                     setCourseCreatedData({
                                                         ...addCourseState.courseCreatedData,
-                                                        title: value,
+                                                        title: value + '',
                                                     }),
                                                 )
                                             }
@@ -186,7 +187,7 @@ const CourseContent = () => {
                                     </p>
                                     <div className="px-4">
                                         {!isGetCategoryLoading && (
-                                            <div className="m-auto mt-8 flex max-w-[700px] flex-wrap gap-3">
+                                            <div className="mt-4 flex flex-wrap gap-3">
                                                 {tagsData.map((category) => (
                                                     <CheckableTag
                                                         className="select-none p-1 text-sm"
@@ -297,6 +298,7 @@ const CourseContent = () => {
                                                     dispatch(setCourseKnowledge(data))
                                                 }
                                                 values={courseCreatedData.knowdledgeDescription}
+                                                size="middle"
                                             />
                                         </div>
                                     </div>
@@ -308,41 +310,49 @@ const CourseContent = () => {
                     {((currentMode === CouseMode.CREATE && current === 0) ||
                         (currentMode === CouseMode.UPDATE && current === 1)) && (
                         <div>
-                            <p className="text-xl font-bold text-[#1677ff]">
-                                Thêm Thumbnail cho video
-                            </p>
-                            <div>
-                                <UploadFileCustom
-                                    onUploadFileSuccess={handleOnUploadThumbnailSuccess}
-                                    onUploadFileError={(e) => console.log(e)}
-                                    fileName={`course${addCourseState.courseCreatedData.courseId}`}
-                                    fileType={UploadFileType.IMAGE}
-                                    showPreview
-                                    imgLink={courseCreatedData.imageUrl}
-                                    storePath="images/courseThumbnail/"
-                                    buttonText="Lưu"
-                                />
+                            <p className="text-xl font-bold text-[#1677ff]">Hiển thị</p>
+                            <div className="mt-8 flex flex-col gap-4 bg-[#f7f9fa] px-4 py-2">
+                                <p className="text-base font-medium text-[#1677ff]">
+                                    Thêm Thumbnail cho khóa học
+                                </p>
+                                <div>
+                                    <UploadFileCustom
+                                        onUploadFileSuccess={handleOnUploadThumbnailSuccess}
+                                        onUploadFileError={(e) => console.log(e)}
+                                        fileName={`course${addCourseState.courseCreatedData.courseId}`}
+                                        fileType={UploadFileType.IMAGE}
+                                        showPreview
+                                        imgLink={courseCreatedData.imageUrl}
+                                        storePath="images/courseThumbnail/"
+                                        buttonText="Lưu"
+                                    />
+                                </div>
                             </div>
-                            <p className="mb-6 mt-12 text-xl font-bold text-[#1677ff]">
-                                Thêm video video giới thiệu ngắn cho khóa học
-                            </p>
-                            <div>
-                                <UploadFileCustom
-                                    onUploadFileSuccess={handleOnUploadVideoPreviewSuccess}
-                                    onUploadFileError={(e) => console.log(e)}
-                                    fileName={`course${addCourseState.courseCreatedData.courseId}`}
-                                    fileType={UploadFileType.VIDEO}
-                                    showPreview
-                                    storePath="videos/coursesPreview/"
-                                    imgLink={courseCreatedData.videoPreviewUrl}
-                                    buttonText="Lưu"
-                                    isLoading={isUpdateLoading}
-                                />
+                            <div className="mt-8 flex flex-col gap-4 bg-[#f7f9fa] px-4 py-2">
+                                <p className="text-base font-medium text-[#1677ff]">
+                                    Thêm video video giới thiệu ngắn cho khóa học
+                                </p>
+                                <div>
+                                    <UploadFileCustom
+                                        onUploadFileSuccess={handleOnUploadVideoPreviewSuccess}
+                                        onUploadFileError={(e) => console.log(e)}
+                                        fileName={`course${addCourseState.courseCreatedData.courseId}`}
+                                        fileType={UploadFileType.VIDEO}
+                                        showPreview
+                                        storePath="videos/coursesPreview/"
+                                        imgLink={courseCreatedData.videoPreviewUrl}
+                                        buttonText="Lưu"
+                                        isLoading={isUpdateLoading}
+                                    />
+                                </div>
                             </div>
                         </div>
                     )}
                     {((currentMode === CouseMode.CREATE && current === 1) ||
                         (currentMode === CouseMode.UPDATE && current === 2)) && <Curriculum />}
+
+                    {((currentMode === CouseMode.CREATE && current === 2) ||
+                        (currentMode === CouseMode.UPDATE && current === 3)) && <Publication />}
                 </Paper>
             </div>
         </div>

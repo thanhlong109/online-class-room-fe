@@ -259,6 +259,15 @@ export const courseSlice = createSlice({
         setCourseKnowledge: (state, action: PayloadAction<string>) => {
             state.addCourse.courseCreatedData.knowdledgeDescription = action.payload;
         },
+        setCoursePrice: (state, action: PayloadAction<number>) => {
+            state.addCourse.courseCreatedData.price = action.payload;
+        },
+        setSalesCampaign: (state, action: PayloadAction<number>) => {
+            state.addCourse.courseCreatedData.salesCampaign = action.payload;
+        },
+        setCoursePublish: (state, action: PayloadAction<boolean>) => {
+            state.addCourse.courseCreatedData.isPublic = action.payload;
+        },
     },
 });
 
@@ -288,6 +297,9 @@ export const {
     updateCourseCategory,
     setCourseDescription,
     setCourseKnowledge,
+    setCoursePrice,
+    setSalesCampaign,
+    setCoursePublish,
 } = courseSlice.actions;
 
 export default courseSlice.reducer;
