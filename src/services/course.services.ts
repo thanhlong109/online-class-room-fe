@@ -63,7 +63,7 @@ export const coursesApi = createApi({
         }),
         getAllCourses: build.query<GetAllCourse, PagingParam>({
             query: (input: PagingParam) =>
-                `api/Course/CourselistPagination?&pageNumber=${input.pageNumber}&pageSize=${input.pageSize}&search=${input.search}`,
+                `api/Course/CourselistPagination?pageNumber=${input.pageNumber}&pageSize=${input.pageSize}&search=${input.search}`,
         }),
         deleteCourse: build.mutation<Course, number>({
             query: (id) => ({

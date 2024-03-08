@@ -1,3 +1,4 @@
+import getAllAccountSlice from './slices/getAllAccountSlice';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { coursesApi } from './services/course.services';
 import { authApi } from './services/auth.services';
@@ -10,6 +11,7 @@ import courseSlice from './slices/courseSlice';
 import { sectionApi } from './services/section.services';
 import { stepApi } from './services/step.services';
 import getCourseAllSlice from './slices/getCourseAllSlice';
+import { accountApi } from './services/account.services';
 
 export const persistConfig = {
     key: 'root',
@@ -27,6 +29,8 @@ const rootReducer = combineReducers({
     [sectionApi.reducerPath]: sectionApi.reducer,
     [stepApi.reducerPath]: stepApi.reducer,
     courseAll: getCourseAllSlice,
+    [accountApi.reducerPath]: accountApi.reducer,
+    accountAll: getAllAccountSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -43,7 +47,8 @@ export const store = configureStore({
             .concat(coursesApi.middleware)
             .concat(wishlistApi.middleware)
             .concat(sectionApi.middleware)
-            .concat(stepApi.middleware),
+            .concat(stepApi.middleware)
+            .concat(accountApi.middleware),
 });
 
 // get roostate and appdispatch from store handle for typescript
