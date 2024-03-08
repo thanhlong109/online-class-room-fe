@@ -1,12 +1,14 @@
 import { Paper } from '@mui/material';
-import { Steps } from 'antd';
+import { Input, Steps } from 'antd';
 import { UploadFileCustom } from '../../../../components';
 import { UploadFileType } from '../../../../components/UploadFile/UploadFileCustom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
 import Curriculum from './Curriculum/Curriculum';
 import {
+    CouseMode,
     setCourseContentCurrent,
+    setCourseCreatedData,
     updateCourseImageUrl,
     updateCoursePreviewUrl,
 } from '../../../../slices/courseSlice';
@@ -19,6 +21,7 @@ const CourseContent = () => {
     const [updatecourse, { isSuccess: isUpdateSuccess, isLoading: isUpdateLoading, data }] =
         useUpdateCourseMutation();
     const addCourseState = useSelector((state: RootState) => state.course.addCourse);
+    const currentMode = useSelector((state: RootState) => state.course.currentMode);
     const courseCreatedData = addCourseState.courseCreatedData;
     const current = addCourseState.navStatus.findIndex((value) => value.status === 'process');
     const totalSteps = addCourseState.navStatus;
@@ -70,7 +73,30 @@ const CourseContent = () => {
             </div>
             <div className="p-x-4 p-y-2 ml-4 flex-1">
                 <Paper elevation={1} className="h-full p-6">
-                    {current === 0 && (
+                    {currentMode === CouseMode.UPDATE && current === 0 && (
+                        <div>
+                            <p className="text-xl font-bold text-[#1677ff]">Thông Tin cơ bản</p>
+                            <div>
+                                <p>Tiêu đề khóa học:</p>
+                                <div></div>
+                            </div>
+
+                            <Input
+                                className="text-base"
+                                onChange={(e) =>
+                                    dispatch(
+                                        setCourseCreatedData({
+                                            ...addCourseState.courseCreatedData,
+                                            title: e.target.value,
+                                        }),
+                                    )
+                                }
+                            />
+                        </div>
+                    )}
+
+                    {((currentMode === CouseMode.CREATE && current === 0) ||
+                        (currentMode === CouseMode.UPDATE && current === 1)) && (
                         <div>
                             <p className="text-xl font-bold text-[#1677ff]">
                                 Thêm Thumbnail cho video
@@ -105,7 +131,8 @@ const CourseContent = () => {
                             </div>
                         </div>
                     )}
-                    {current === 1 && <Curriculum />}
+                    {((currentMode === CouseMode.CREATE && current === 1) ||
+                        (currentMode === CouseMode.UPDATE && current === 2)) && <Curriculum />}
                 </Paper>
             </div>
         </div>

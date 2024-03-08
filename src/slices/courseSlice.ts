@@ -3,6 +3,11 @@ import { RootState } from '../store';
 import { AddCourseRequest, Course, Section, Step } from '../types/Course.type';
 import { StepProps } from 'antd';
 
+export enum CouseMode {
+    CREATE,
+    UPDATE,
+}
+
 interface courseState {
     wishList: number[];
     addCourse: {
@@ -11,7 +16,49 @@ interface courseState {
         navStatus: StepProps[];
         courseCreatedData: Course;
     };
+    currentMode: CouseMode;
+    tempData: {
+        tempCourse: Course;
+        tempNavStatus: StepProps[];
+    };
 }
+
+const initialCourse: Course = {
+    courseIsActive: false,
+    description: '',
+    imageUrl: 'string',
+    isPublic: false,
+    knowdledgeDescription: '',
+    linkCertificated: 'string',
+    price: 0,
+    salesCampaign: 0,
+    title: '',
+    totalDuration: 0,
+    videoPreviewUrl: 'string',
+    courseCategories: [],
+    courseId: 0,
+    createAt: '',
+    linkCertificateAccounts: [],
+    orders: [],
+    publicAt: '',
+    registrationCourses: [],
+    sections: [],
+    updateAt: '',
+    wishLists: [],
+};
+
+const initialCreateNavStatus: StepProps[] = [
+    { title: 'Hiển thị', status: 'process' },
+    { title: 'Chu trình học', status: 'wait' },
+    { title: 'Xuất bản khóa học', status: 'wait' },
+];
+
+const initialUpdateNavStatus: StepProps[] = [
+    { title: 'Thông tin cơ bản', status: 'process' },
+    { title: 'Hiển thị', status: 'wait' },
+    { title: 'Chu trình học', status: 'wait' },
+    { title: 'Xuất bản khóa học', status: 'wait' },
+];
 
 const initialState: courseState = {
     wishList: [],
@@ -31,34 +78,13 @@ const initialState: courseState = {
             videoPreviewUrl: 'string',
         },
         currentStep: 0,
-        navStatus: [
-            { title: 'Hiển thị', status: 'process' },
-            { title: 'Chu trình học', status: 'wait' },
-            { title: 'Xuất bản khóa học', status: 'wait' },
-        ],
-        courseCreatedData: {
-            courseIsActive: false,
-            description: '',
-            imageUrl: 'string',
-            isPublic: false,
-            knowdledgeDescription: '',
-            linkCertificated: 'string',
-            price: 0,
-            salesCampaign: 0,
-            title: '',
-            totalDuration: 0,
-            videoPreviewUrl: 'string',
-            courseCategories: [],
-            courseId: 0,
-            createAt: '',
-            linkCertificateAccounts: [],
-            orders: [],
-            publicAt: '',
-            registrationCourses: [],
-            sections: [],
-            updateAt: '',
-            wishLists: [],
-        },
+        navStatus: initialCreateNavStatus,
+        courseCreatedData: initialCourse,
+    },
+    currentMode: CouseMode.CREATE,
+    tempData: {
+        tempCourse: initialCourse,
+        tempNavStatus: [],
     },
 };
 
@@ -199,6 +225,31 @@ export const courseSlice = createSlice({
         setSectionList: (state, action: PayloadAction<Section[]>) => {
             state.addCourse.courseCreatedData.sections = action.payload;
         },
+        setCourseMode: (state, action: PayloadAction<CouseMode>) => {
+            if (action.payload != state.currentMode) {
+                const temp = state.addCourse.courseCreatedData;
+                state.addCourse.courseCreatedData = state.tempData.tempCourse;
+                state.tempData.tempCourse = temp;
+                state.currentMode = action.payload;
+                if (state.tempData.tempNavStatus.length === 0) {
+                    state.tempData.tempNavStatus =
+                        action.payload === CouseMode.CREATE
+                            ? initialUpdateNavStatus
+                            : initialCreateNavStatus;
+                    state.addCourse.navStatus =
+                        action.payload === CouseMode.CREATE
+                            ? initialCreateNavStatus
+                            : initialUpdateNavStatus;
+                } else {
+                    const navTemp = state.addCourse.navStatus;
+                    state.addCourse.navStatus = state.tempData.tempNavStatus;
+                    state.tempData.tempNavStatus = navTemp;
+                }
+            }
+        },
+        setCourseUpdate: (state, action: PayloadAction<Course>) => {
+            state.tempData.tempCourse = action.payload;
+        },
     },
 });
 
@@ -223,6 +274,8 @@ export const {
     setStepList,
     setSection,
     setSectionList,
+    setCourseMode,
+    setCourseUpdate,
 } = courseSlice.actions;
 
 export default courseSlice.reducer;

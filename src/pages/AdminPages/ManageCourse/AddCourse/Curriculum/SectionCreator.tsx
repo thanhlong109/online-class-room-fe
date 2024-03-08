@@ -79,7 +79,7 @@ const SectionCreator = ({ position, section, isCreate }: SectionCreatorProps) =>
     useEffect(() => {
         if (isAddSectionSuccess && addSectionRespone) {
             dispatch(addCourseSection(addSectionRespone));
-            dispatch(setSection(addSectionRespone));
+            //dispatch(setSection(addSectionRespone));
             setIsCreateFirst(false);
             setIsEdit(false);
         }
@@ -164,7 +164,7 @@ const SectionCreator = ({ position, section, isCreate }: SectionCreatorProps) =>
                                 <LectureCreator
                                     isCreate={item.stepId === -1}
                                     step={item}
-                                    position={index}
+                                    position={index + 1}
                                 />
                             </Reorder.Item>
                         ))}

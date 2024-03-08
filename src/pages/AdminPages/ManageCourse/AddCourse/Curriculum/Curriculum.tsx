@@ -40,7 +40,7 @@ const Curriculum = () => {
                         >
                             <SectionCreator
                                 isCreate={section.sectionId === -1}
-                                position={index}
+                                position={index + 1}
                                 key={section.sectionId}
                                 section={section}
                             />

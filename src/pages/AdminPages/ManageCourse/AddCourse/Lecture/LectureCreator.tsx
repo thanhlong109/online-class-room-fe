@@ -105,7 +105,7 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
     useEffect(() => {
         if (isSuccess && data) {
             dispatch(addCourseStep(data));
-            dispatch(setStep(data));
+            //dispatch(setStep(data));
             setIsCreateFirst(false);
             setIsEdit(false);
         }

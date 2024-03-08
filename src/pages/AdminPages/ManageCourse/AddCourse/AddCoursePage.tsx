@@ -4,9 +4,11 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
 import {
+    CouseMode,
     addCourseSection,
     setAddCourse,
     setCourseCreatedData,
+    setCourseMode,
 } from '../../../../slices/courseSlice';
 import { CategoryRespone } from '../../../../types/Course.type';
 import { MultipleInput } from '../../../../components';
@@ -51,6 +53,10 @@ const AddCoursePage = () => {
             addSection({ courseId: data.courseId, title: 'Giới thiệu khóa học', position: 1 });
         }
     }, [isSuccess]);
+
+    useEffect(() => {
+        dispatch(setCourseMode(CouseMode.CREATE));
+    }, []);
 
     useEffect(() => {
         if (isAddSectionSuccess && sectionData) {

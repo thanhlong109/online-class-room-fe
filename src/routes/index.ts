@@ -1,7 +1,7 @@
 import DefaultLayoutAdmin from '../layouts/adminLayouts/DefaultLayoutAdmin';
 import { DefaultLayout, LayoutWithRightSideBar } from '../layouts/clientLayouts';
 import LoginLayout from '../layouts/clientLayouts/LoginLayout';
-import { AddCoursePage, DashboardPage } from '../pages/AdminPages';
+import { AddCoursePage, DashboardPage, UpdateCoursePage } from '../pages/AdminPages';
 import {
     CourseDetailsPage,
     HomePage,
@@ -38,6 +38,7 @@ const privateRoutes: RouteProps[] = [
 const adminRoutes: RouteProps[] = [
     { path: '/admin/', component: DashboardPage, layout: DefaultLayoutAdmin },
     { path: '/admin/addCourse/', component: AddCoursePage, layout: DefaultLayoutAdmin },
+    { path: '/admin/updateCourse/:id', component: UpdateCoursePage, layout: DefaultLayoutAdmin },
     { path: '/admin/getAllCourse/', component: GetAllCourse, layout: DefaultLayoutAdmin },
     {
         path: '/admin//getAllCourse/details/:id',
