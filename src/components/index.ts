@@ -15,3 +15,6 @@ export { default as RichTextEditor } from './RichTextEditor/RichTextEditor';
 export { default as EditorToolbar } from './EditorToolbar/EditorToolbar';
 export { default as EditableText } from './EditableText/EditableText';
 export { default as RenderRichText } from './RenderRichText/RenderRichText';
+export { default as MultipleQuestionInput } from './MultipleQuestionInput/MultipleQuestionInput';
+export { default as MultipleQuestionInputItem } from './MultipleQuestionInput/MultipleQuestionInputItem';
+export { default as EditableItem } from './EditableItem/EditableItem';

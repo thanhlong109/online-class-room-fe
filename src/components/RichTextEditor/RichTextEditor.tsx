@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Editor, EditorState, convertToRaw, convertFromRaw, RichUtils } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import { EditorToolbar } from '..';
@@ -6,10 +6,15 @@ import { Button } from 'antd';
 
 interface RichTextEditorProps {
     initialValue: string;
-    onSave: (value: string) => void;
+    onSave?: (value: string) => void;
+    onChange?: (value: string) => void;
 }
 
-const RichTextEditor: React.FC<RichTextEditorProps> = ({ initialValue, onSave }) => {
+const RichTextEditor: React.FC<RichTextEditorProps> = ({
+    initialValue,
+    onSave = undefined,
+    onChange = undefined,
+}) => {
     const [editorState, setEditorState] = useState(() => {
         if (initialValue) {
             let contentState;
@@ -26,6 +31,12 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ initialValue, onSave })
 
     const handleEditorChange = (state: EditorState) => {
         setEditorState(state);
+        if (onChange) {
+            const contentState = editorState.getCurrentContent();
+            const rawContentState = convertToRaw(contentState);
+            const json = JSON.stringify(rawContentState);
+            onChange(json);
+        }
     };
 
     const handleStyleButtonClick = (style: string) => {
@@ -33,10 +44,12 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ initialValue, onSave })
     };
 
     const handleOnSaveDescription = () => {
-        const contentState = editorState.getCurrentContent();
-        const rawContentState = convertToRaw(contentState);
-        const json = JSON.stringify(rawContentState);
-        onSave(json);
+        if (onSave) {
+            const contentState = editorState.getCurrentContent();
+            const rawContentState = convertToRaw(contentState);
+            const json = JSON.stringify(rawContentState);
+            onSave(json);
+        }
     };
 
     return (
@@ -51,7 +64,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({ initialValue, onSave })
             <div className="my-2 bg-[#f7f9fa] p-4">
                 <Editor editorState={editorState} onChange={handleEditorChange} />
             </div>
-            <Button onClick={handleOnSaveDescription}>Lưu</Button>
+            {onSave && <Button onClick={handleOnSaveDescription}>Lưu</Button>}
         </div>
     );
 };

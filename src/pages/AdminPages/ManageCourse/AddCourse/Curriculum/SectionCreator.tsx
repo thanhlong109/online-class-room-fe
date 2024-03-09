@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DoneIcon from '@mui/icons-material/Done';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Button, Input } from 'antd';
+import { Button, Input, Popconfirm } from 'antd';
 import { useDispatch } from 'react-redux';
 import {
     addCourseSection,
@@ -53,7 +53,7 @@ const SectionCreator = ({ position, section, isCreate }: SectionCreatorProps) =>
     const initialStepValue: Step = {
         duration: 0,
         position: 0,
-        quizId: 0,
+        quizId: 1,
         section: undefined,
         sectionId: section.sectionId,
         stepDescription: 'string',
@@ -113,7 +113,7 @@ const SectionCreator = ({ position, section, isCreate }: SectionCreatorProps) =>
                         </IconButton>
                     </div>
                 ) : (
-                    <span className="font-medium">{section.title}</span>
+                    <span className="text-base font-medium">{section.title}</span>
                 )}
                 {!isEdit && (
                     <div>
@@ -133,16 +133,28 @@ const SectionCreator = ({ position, section, isCreate }: SectionCreatorProps) =>
                                 disabled={!isHovered}
                                 onClick={() => setIsEdit(true)}
                                 size="small"
+                                color="info"
                             >
                                 <CreateIcon />
                             </IconButton>
-                            <IconButton
-                                disabled={!isHovered}
-                                onClick={handleOnRemoveClick}
-                                size="small"
+                            <Popconfirm
+                                title="Xác nhận xóa"
+                                description="Bạn có chắc là muốn xóa ? toàn bộ nội dung trong chương này sẽ bị mất!"
+                                onConfirm={() => {}}
+                                onCancel={() => {}}
+                                okText="Yes"
+                                cancelText="No"
+                                okButtonProps={{ style: { background: '#d32f2f' } }}
                             >
-                                <DeleteIcon />
-                            </IconButton>
+                                <IconButton
+                                    disabled={!isHovered}
+                                    onClick={handleOnRemoveClick}
+                                    color="error"
+                                    size="small"
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Popconfirm>
                         </motion.div>
                     </div>
                 )}

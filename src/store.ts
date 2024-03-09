@@ -11,6 +11,9 @@ import { sectionApi } from './services/section.services';
 import { stepApi } from './services/step.services';
 import getCourseAllSlice from './slices/getCourseAllSlice';
 import { categoryApi } from './services/categoryService';
+import { quizApi } from './services/quiz.services';
+import quizSlice from './slices/quizSlice';
+import { questionApi } from './services/question.services';
 
 export const persistConfig = {
     key: 'root',
@@ -22,12 +25,15 @@ const rootReducer = combineReducers({
     auth: authSlice,
     user: userSlice,
     course: courseSlice,
+    quiz: quizSlice,
     [coursesApi.reducerPath]: coursesApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [wishlistApi.reducerPath]: wishlistApi.reducer,
     [sectionApi.reducerPath]: sectionApi.reducer,
     [stepApi.reducerPath]: stepApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
+    [quizApi.reducerPath]: quizApi.reducer,
+    [questionApi.reducerPath]: questionApi.reducer,
     courseAll: getCourseAllSlice,
 });
 
@@ -46,7 +52,9 @@ export const store = configureStore({
             .concat(wishlistApi.middleware)
             .concat(sectionApi.middleware)
             .concat(stepApi.middleware)
-            .concat(categoryApi.middleware),
+            .concat(categoryApi.middleware)
+            .concat(quizApi.middleware)
+            .concat(questionApi.middleware),
 });
 
 // get roostate and appdispatch from store handle for typescript
