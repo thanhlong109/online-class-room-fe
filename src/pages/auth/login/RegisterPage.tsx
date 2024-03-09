@@ -1,63 +1,112 @@
 import { Button, Input } from 'antd';
-// import React, { useState } from 'react';
 import MyCarouselLogin from './MyCarouselLogin';
 import { EyeInvisibleOutlined, EyeTwoTone, GoogleOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useAppDispatch } from '../../../hooks/appHook';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthToken, setUser } from '../../../slices/authSlice';
+import { RegisterUserRequest, useRegisterUserMutation } from '../../../services/auth.services';
+import { checkEmailValidaion, checkEmptyValidation, checkPasswordValidation } from '../../../utils/Validation';
 
-// const initFromData: LoginRequest = {
-//     accountEmail: '',
-//     accountPassword: '',
-// };
+const initFromData: RegisterUserRequest = {
+    accountEmail: '',
+    accountPassword: '',
+    confirmAccountPassword: '',
+};
 
-// interface validationProps {
-//     isError: boolean;
-//     errorMessage: string;
-// }
+interface validationProps {
+    isError: boolean;
+    errorMessage: string;
+}
 
-// const initialValidation: validationProps = {
-//     errorMessage: '',
-//     isError: false,
-// };
+const initialValidation: validationProps = {
+    errorMessage: '',
+    isError: false,
+};
 
 function RegisterPage() {
-    // const useDispatch = useAppDispatch();
-    // const [formData, setFormData] = useState(initFromData);
-    // const [emailValidation, setEmailValidation] = useState(initialValidation);
-    // const [passwordValidation, setPasswordValidation] = useState(initialValidation);
-    // const [errorMessage, setErrorMessage] = useState('');
-    // const navigate = useNavigate();
+    const useDispach = useAppDispatch();
+    const [formData, setFormData] = useState(initFromData);
+    const [emailValidation, setEmailValidation] = useState(initialValidation);
+    const [passwordValidation, setPasswordValidation] = useState(initialValidation);
+    const [confirmPasswordValidation, setConfirmPasswordValidation] = useState(initialValidation);
+    const [errorMessage, setErrorMessage] = useState('');
+    const navigate = useNavigate();
+    const [
+        registerUser,
+        {
+            data: registerData,
+            isLoading: isRegisterLoading,
+            isSuccess: isRegisterSuccess,
+            isError: isRegisterError,
+        },
+    ] = useRegisterUserMutation();
+
+    useEffect(() => {
+        if (isRegisterError) {
+            setErrorMessage('Bad request');
+        }
+    }, [isRegisterError]);
+
+    useEffect(() => {
+        if (isRegisterSuccess) {
+            navigate('/');
+        }
+    }, [isRegisterSuccess]);
+    
+    const handleOnSubmit = async () => {
+        await registerUser(formData);
+    };
+
+    const handleOnEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { isError, message } = checkEmailValidaion(e.target.value);
+        setEmailValidation({ isError: isError, errorMessage: message });
+        setFormData({ ...formData, accountEmail: e.target.value });
+    };
+
+    const handleOnPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { isError, message } = checkPasswordValidation(e.target.value, formData.confirmAccountPassword);
+        setPasswordValidation({ isError: isError, errorMessage: message });
+        setFormData({ ...formData, accountPassword: e.target.value });
+    };
+
+    const handleOnConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { isError, message } = checkPasswordValidation(formData.accountPassword, e.target.value);
+        setConfirmPasswordValidation({ isError: isError, errorMessage: message });
+        setFormData({ ...formData, confirmAccountPassword: e.target.value });
+    };
 
     return (
         <div className="flex bg-greenHome">
             <div className="w-full bg-white sm:w-[30%] sm:rounded-br-xl sm:rounded-tr-xl md:h-screen">
-                <form className="mt-3 flex flex-col items-center justify-center space-y-5">
+                <form className="mt-8 flex flex-col items-center justify-center space-y-5">
                     <section className="w-[70%] space-y-5 ">
                         <div className="mb-12 ml-1 mt-[40%] ">
                             <h1 className="text-3xl">Đăng ký</h1>
                             <p className="sm:max-xl:text-md mt-2 text-base text-grayLine">
-                                Mừng đến với hệ thống! Vui lòng điền thông tin bên dưới để tiếp tục
+                            Mừng đến với hệ thống! Vui lòng điền thông tin bên dưới để tiếp tục
                             </p>
                         </div>
                         <div>
                             <Input
-                                // onChange={handleOnEmailChange}
+                                onChange={handleOnEmailChange}
                                 allowClear
                                 size="large"
                                 className="px-5 py-3"
+                                value={formData.accountEmail}
                                 placeholder="Nhập địa chỉ Email"
-                                // status={emailValidation.isError ? 'error' : undefined}
+                                status={emailValidation.isError ? 'error' : undefined}
                             />
                             <p className="ml-2 mt-1 text-sm text-red-500">
-                                {/* {emailValidation.errorMessage} */}
+                                {emailValidation.errorMessage}
                             </p>
                         </div>
                         <div>
                             <Input.Password
-                                autoComplete="new-password"
-                                // value={formData.accountPassword}
-                                // onChange={handleOnPassworldChange}
+                                onChange={handleOnPasswordChange}
                                 size="large"
-                                // status={passwordValidation.isError ? 'error' : undefined}
+                                status={passwordValidation.isError ? 'error' : undefined}
+                                value={formData.accountPassword}
                                 placeholder="Nhập mật khẩu"
                                 className="px-5 py-3"
                                 iconRender={(visible) =>
@@ -65,37 +114,38 @@ function RegisterPage() {
                                 }
                             />
                             <p className="ml-2 mt-1 text-sm text-red-500">
-                                {/* {passwordValidation.errorMessage} */}
+                                {passwordValidation.errorMessage}
                             </p>
                         </div>
                         <div>
                             <Input.Password
-                                autoComplete="new-password"
-                                // value={formData.accountPassword}
-                                // onChange={handleOnPassworldChange}
+                                onChange={handleOnConfirmPasswordChange}
                                 size="large"
-                                // status={passwordValidation.isError ? 'error' : undefined}
-                                placeholder="Nhập lại mật khẩu"
+                                status={confirmPasswordValidation.isError ? 'error' : undefined}
+                                value={formData.confirmAccountPassword}
+                                placeholder="Xác nhận mật khẩu"
                                 className="px-5 py-3"
                                 iconRender={(visible) =>
                                     visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
                                 }
                             />
                             <p className="ml-2 mt-1 text-sm text-red-500">
-                                {/* {passwordValidation.errorMessage} */}
+                                {confirmPasswordValidation.errorMessage}
                             </p>
                         </div>
                     </section>
-                    {/* <p className="ml-2 text-sm text-red-500">{errorMessage}</p> */}
+                    <p className="ml-2 text-sm text-red-500">{errorMessage}</p>
                     <Button
-                        // disabled={
-                        //     emailValidation.isError ||
-                        //     passwordValidation.isError ||
-                        //     formData.accountEmail.length == 0 ||
-                        //     formData.accountPassword.length == 0
-                        // }
-                        // onClick={handleOnSubmit}
-                        // loading={isRegisterLoading}
+                        disabled={
+                            emailValidation.isError ||
+                            passwordValidation.isError ||
+                            confirmPasswordValidation.isError ||
+                            formData.accountEmail.length === 0 ||
+                            formData.accountPassword.length === 0 ||
+                            formData.confirmAccountPassword.length === 0
+                        }
+                        onClick={handleOnSubmit}
+                        loading={isRegisterLoading}
                         type="primary"
                         className="text-md  h-11 w-[70%] bg-greenHome font-bold"
                     >

@@ -23,6 +23,12 @@ export interface ChangePasswordRequest {
     confirmNewPassword: string;
 }
 
+export interface RegisterUserRequest {
+    accountEmail: string;
+    accountPassword: string;
+    confirmAccountPassword: string;
+}
+
 export const authApi = createApi({
     reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({
@@ -90,6 +96,15 @@ export const authApi = createApi({
                 };
             },
         }),
+        registerUser: build.mutation<RegisterUserRequest, RegisterUserRequest>({
+            query: (body: RegisterUserRequest) => {
+                return {
+                    url: 'api/account/signup',
+                    method: 'post',
+                    body,
+                };
+            },
+        }),
     }),
 });
 
@@ -98,5 +113,6 @@ export const {
     useGetUserInfoQuery,
     useUpdateUserInfoMutation,
     useUpdatePasswordMutation,
+    useRegisterUserMutation,
     endpoints,
 } = authApi;
