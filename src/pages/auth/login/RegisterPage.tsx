@@ -5,7 +5,9 @@ import { useState, useEffect } from 'react';
 import { useAppDispatch } from '../../../hooks/appHook';
 import { Link, useNavigate } from 'react-router-dom';
 import { RegisterUserRequest, useRegisterUserMutation } from '../../../services/auth.services';
-import { checkEmailValidaion, checkEmptyValidation, checkPasswordValidation } from '../../../utils/Validation';
+import { checkEmailValidaion, checkPasswordValidation } from '../../../utils/Validation';
+import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
+import { app } from '../../../firebase/firebase';
 
 const initFromData: RegisterUserRequest = {
     accountEmail: '',
@@ -13,8 +15,8 @@ const initFromData: RegisterUserRequest = {
     confirmAccountPassword: '',
     birthDate: '2024-03-10T04:59:03.327Z',
     lastName: 'string',
-    firstName:'string',
-    accountPhone: 'string'
+    firstName: 'string',
+    accountPhone: 'string',
 };
 
 interface validationProps {
@@ -56,7 +58,7 @@ function RegisterPage() {
             navigate('/login');
         }
     }, [isRegisterSuccess]);
-    
+
     const handleOnSubmit = async () => {
         await registerUser(formData);
     };
@@ -68,15 +70,40 @@ function RegisterPage() {
     };
 
     const handleOnPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { isError, message } = checkPasswordValidation(e.target.value, formData.confirmAccountPassword);
+        const { isError, message } = checkPasswordValidation(
+            e.target.value,
+            formData.confirmAccountPassword,
+        );
         setPasswordValidation({ isError: isError, errorMessage: message });
         setFormData({ ...formData, accountPassword: e.target.value });
     };
 
     const handleOnConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { isError, message } = checkPasswordValidation(formData.accountPassword, e.target.value);
+        const { isError, message } = checkPasswordValidation(
+            formData.accountPassword,
+            e.target.value,
+        );
         setConfirmPasswordValidation({ isError: isError, errorMessage: message });
         setFormData({ ...formData, confirmAccountPassword: e.target.value });
+    };
+
+    const handleLoginWithGoogle = async () => {
+        try {
+            const auth = await getAuth(app);
+            const provider = new GoogleAuthProvider();
+            const userData = await signInWithPopup(auth, provider);
+            console.log(userData);
+            const { displayName, email, photoURL } = userData.user;
+            // Lưu thông tin người dùng vào localStorage
+            localStorage.setItem(
+                'userLogin',
+                JSON.stringify({ name: displayName, email, avatar: photoURL }),
+            );
+
+            navigate('/');
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -87,7 +114,7 @@ function RegisterPage() {
                         <div className="mb-12 ml-1 mt-[40%] ">
                             <h1 className="text-3xl">Đăng ký</h1>
                             <p className="sm:max-xl:text-md mt-2 text-base text-grayLine">
-                            Mừng đến với hệ thống! Vui lòng điền thông tin bên dưới để tiếp tục
+                                Mừng đến với hệ thống! Vui lòng điền thông tin bên dưới để tiếp tục
                             </p>
                         </div>
                         <div>
@@ -158,6 +185,7 @@ function RegisterPage() {
                     <Button
                         type="default"
                         className=" flex h-11 w-[70%] items-center justify-center space-x-2 text-lg"
+                        onClick={handleLoginWithGoogle}
                     >
                         <GoogleOutlined style={{ fontSize: '24px', color: 'red' }} />
                         <span className="text-black">Google</span>
