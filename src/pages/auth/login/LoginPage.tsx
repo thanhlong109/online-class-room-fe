@@ -29,7 +29,7 @@ function LoginPage() {
     const [emailValidation, setEmailValidation] = useState(initialValidation);
     const [passwordValidation, setPasswordValidation] = useState(initialValidation);
     const [errorMessage, setErrorMessage] = useState('');
-    const nagigate = useNavigate();
+    const navigate = useNavigate();
     const [
         loginUser,
         {
@@ -54,7 +54,7 @@ function LoginPage() {
                 isLogin: true,
             };
             useDispach(setUser(userData));
-            nagigate('/');
+            navigate('/');
         }
     }, [isLoginSuccess]);
 
