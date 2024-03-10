@@ -144,7 +144,7 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
                 break;
             }
             case LectureState.SELECTED_CONTENT: {
-                if (step?.quizId != -1) {
+                if (step?.quizId != 1) {
                     setLectureSelectedType(LectureType.QUIZZ);
                     setLectureState(LectureState.COLLAPSE_CONTENT);
                 } else if (step?.videoUrl.length > 10) {

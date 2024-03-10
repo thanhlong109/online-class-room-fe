@@ -20,6 +20,7 @@ import { Button as MuiButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Question } from '../../../../../types/Question.type';
 import { useDeleteQuestionMutation } from '../../../../../services/question.services';
+import { Skeleton } from 'antd';
 
 export interface LectureQuizzContentProps {
     step: Step;
@@ -33,9 +34,11 @@ const LectureQuizzContent = ({ step }: LectureQuizzContentProps) => {
     const quizState = useSelector((state: RootState) =>
         state.quiz.quizList.find((quiz) => quiz.quizId === quizId && !isCreateNew),
     );
-    const { isSuccess: isGetQuizSuccess, data: getQuizData } = useGetQuizDetailQuery(
-        quizId === 1 ? -1 : quizId,
-    );
+    const {
+        isSuccess: isGetQuizSuccess,
+        data: getQuizData,
+        isLoading: isGetQuizLoading,
+    } = useGetQuizDetailQuery(quizId === 1 ? -1 : quizId);
     const [
         updateStepMutation,
         { isSuccess: isUpdateSucess, isLoading: isUpdateLoading, data: updateData },
@@ -158,34 +161,37 @@ const LectureQuizzContent = ({ step }: LectureQuizzContentProps) => {
                     />
                 </div>
             </div>
-            <div className="flex flex-col gap-6 px-6">
-                {quizState?.questions.map((question, index) => (
-                    <MultipleQuestionInput
-                        maxInputItem={10}
-                        onDataChange={(q) => {
-                            dispatch(upsertQuestion({ quizId: quizId, question: q }));
-                        }}
-                        seperator="|"
-                        values={question}
-                        key={index}
-                        position={index + 1}
-                        onDoneClick={handleUpdateQuestions}
-                        onDeleteClick={() => handleOnDeleteQuestion(question.questionId)}
-                        isCreate={question.questionId === -1}
-                    />
-                ))}
+            {!isGetQuizLoading && (
+                <div className="flex flex-col gap-6 px-6">
+                    {quizState?.questions.map((question, index) => (
+                        <MultipleQuestionInput
+                            maxInputItem={10}
+                            onDataChange={(q) => {
+                                dispatch(upsertQuestion({ quizId: quizId, question: q }));
+                            }}
+                            seperator="|"
+                            values={question}
+                            key={index}
+                            position={index + 1}
+                            onDoneClick={handleUpdateQuestions}
+                            onDeleteClick={() => handleOnDeleteQuestion(question.questionId)}
+                            isCreate={question.questionId === -1}
+                        />
+                    ))}
 
-                <MuiButton
-                    onClick={handleOnAddQuestion}
-                    className="!w-fit justify-start"
-                    variant="text"
-                    size="small"
-                    style={{ fontSize: '12px' }}
-                    startIcon={<AddIcon />}
-                >
-                    Thêm câu hỏi
-                </MuiButton>
-            </div>
+                    <MuiButton
+                        onClick={handleOnAddQuestion}
+                        className="!w-fit justify-start"
+                        variant="text"
+                        size="small"
+                        style={{ fontSize: '12px' }}
+                        startIcon={<AddIcon />}
+                    >
+                        Thêm câu hỏi
+                    </MuiButton>
+                </div>
+            )}
+            {isGetQuizLoading && <Skeleton active />}
         </div>
     );
 };

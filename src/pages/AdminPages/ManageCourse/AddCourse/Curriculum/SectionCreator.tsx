@@ -25,9 +25,15 @@ export interface SectionCreatorProps {
     position: number;
     section: Section;
     isCreate: boolean;
+    startStepPosition: number;
 }
 
-const SectionCreator = ({ position, section, isCreate }: SectionCreatorProps) => {
+const SectionCreator = ({
+    position,
+    section,
+    isCreate,
+    startStepPosition,
+}: SectionCreatorProps) => {
     const dispatch = useDispatch();
     const [tempLable, setTempLable] = useState('');
     const [addSection, { isSuccess: isAddSectionSuccess, data: addSectionRespone }] =
@@ -38,6 +44,7 @@ const SectionCreator = ({ position, section, isCreate }: SectionCreatorProps) =>
     const [isHovered, setIsHovered] = useState(false);
     const [isEdit, setIsEdit] = useState(isCreate);
     const handleOnRemoveClick = () => {};
+    const [isProgressAdd, setIsProgressAdd] = useState(false);
     const handleOnTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (isCreateFirst) {
             setTempLable(e.target.value);
@@ -161,7 +168,16 @@ const SectionCreator = ({ position, section, isCreate }: SectionCreatorProps) =>
             </div>
             <div>
                 <div className="mt-4 flex flex-col gap-3">
-                    <Reorder.Group values={steps} onReorder={setSteps}>
+                    <Reorder.Group
+                        values={steps}
+                        onReorder={(arr) => {
+                            const sortedArr = JSON.parse(JSON.stringify(arr));
+                            arr.forEach((_, index) => {
+                                sortedArr[index].position = index + startStepPosition + 1;
+                            });
+                            setSteps(sortedArr);
+                        }}
+                    >
                         {steps.map((item, index) => (
                             <Reorder.Item
                                 key={item.stepId}
@@ -176,19 +192,24 @@ const SectionCreator = ({ position, section, isCreate }: SectionCreatorProps) =>
                                 <LectureCreator
                                     isCreate={item.stepId === -1}
                                     step={item}
-                                    position={index + 1}
+                                    position={index + startStepPosition + 1}
                                 />
                             </Reorder.Item>
                         ))}
                     </Reorder.Group>
                 </div>
-                <Button
-                    className="mt-3 bg-white"
-                    icon={<AddIcon />}
-                    onClick={() => setSteps([...steps, initialStepValue])}
-                >
-                    Thêm bài học
-                </Button>
+                {!isProgressAdd && (
+                    <Button
+                        className="mt-3 bg-white"
+                        icon={<AddIcon />}
+                        onClick={() => {
+                            setSteps([...steps, initialStepValue]);
+                            setIsProgressAdd(true);
+                        }}
+                    >
+                        Thêm bài học
+                    </Button>
+                )}
             </div>
         </div>
     );

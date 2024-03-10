@@ -1,4 +1,4 @@
-import { Input, Radio, Typography } from 'antd';
+import { Input, Typography } from 'antd';
 import { SizeType } from 'antd/es/config-provider/SizeContext';
 import { Dispatch, SetStateAction, useState } from 'react';
 interface MultipleQuestionInputItemProps {

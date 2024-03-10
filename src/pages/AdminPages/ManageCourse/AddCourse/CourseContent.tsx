@@ -34,13 +34,14 @@ import { useEffect, useState } from 'react';
 import { useGetCategoryQuery } from '../../../../services/categoryService';
 import { LoadingButton } from '@mui/lab';
 import Publication from './Publication';
+import { useUpdateStepMutation } from '../../../../services/step.services';
 
 const { CheckableTag } = Tag;
 
 const CourseContent = () => {
     const dispatch = useDispatch();
     const addCourseState = useSelector((state: RootState) => state.course.addCourse);
-
+    const [updateStepMutation, { isLoading: isUpdateStepLoading }] = useUpdateStepMutation();
     ///////////// update course basic infor ///////////////
     const {
         isLoading: isGetCategoryLoading,
@@ -60,7 +61,6 @@ const CourseContent = () => {
             : courseCategories.filter((c) => c.categoryId !== categoryId);
         dispatch(updateCourseCategory(nextSelectedTags));
     };
-
     const [isEditDescription, setEditDescription] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
 
@@ -108,7 +108,22 @@ const CourseContent = () => {
         return udpateCourseData;
     };
 
-    const handleOnSaveBasicInfo = () => {
+    const handleOnSaveAll = () => {
+        courseCreatedData.sections.forEach((section) => {
+            section.steps.forEach(
+                ({ duration, position, quizId, videoUrl, stepDescription, stepId, title }) => {
+                    updateStepMutation({
+                        duration,
+                        position,
+                        quizId,
+                        videoUrl,
+                        stepDescription,
+                        stepId,
+                        title,
+                    });
+                },
+            );
+        });
         const data = getUpdateCourseRequest();
         updatecourse(data);
     };
@@ -143,9 +158,9 @@ const CourseContent = () => {
                 </div>
 
                 <LoadingButton
-                    loading={isUpdateLoading}
+                    loading={isUpdateLoading || isUpdateStepLoading}
                     className="w-full"
-                    onClick={handleOnSaveBasicInfo}
+                    onClick={handleOnSaveAll}
                     size="large"
                     variant="contained"
                 >
