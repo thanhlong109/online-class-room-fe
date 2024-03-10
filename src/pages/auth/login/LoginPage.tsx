@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 import { AuthToken, setUser } from '../../../slices/authSlice';
 import { checkEmailValidaion, checkEmptyValidation } from '../../../utils/Validation';
 import { Link, useNavigate } from 'react-router-dom';
+import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
+import { app } from '../../../firebase/firebase';
 
 const initFromData: LoginRequest = {
     accountEmail: '',
@@ -75,6 +77,25 @@ function LoginPage() {
         setFormData({ ...formData, accountPassword: e.target.value });
     };
 
+    const handleLoginWithGoogle = async () => {
+        try {
+            const auth = await getAuth(app);
+            const provider = new GoogleAuthProvider();
+            const userData = await signInWithPopup(auth, provider);
+            console.log(userData);
+            const { displayName, email, photoURL } = userData.user;
+            // Lưu thông tin người dùng vào localStorage
+            localStorage.setItem(
+                'userLogin',
+                JSON.stringify({ name: displayName, email, avatar: photoURL }),
+            );
+
+            navigate('/');
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <div className="flex bg-greenHome">
             <div className="w-full bg-white sm:w-[30%] sm:rounded-br-xl sm:rounded-tr-xl md:h-screen">
@@ -135,6 +156,7 @@ function LoginPage() {
                     <Button
                         type="default"
                         className=" flex h-11 w-[70%] items-center justify-center space-x-2 text-lg"
+                        onClick={handleLoginWithGoogle}
                     >
                         <GoogleOutlined style={{ fontSize: '24px', color: 'red' }} />
                         <span className="text-black">Google</span>
