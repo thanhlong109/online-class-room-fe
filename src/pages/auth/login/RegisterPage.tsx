@@ -4,7 +4,6 @@ import { EyeInvisibleOutlined, EyeTwoTone, GoogleOutlined } from '@ant-design/ic
 import { useState, useEffect } from 'react';
 import { useAppDispatch } from '../../../hooks/appHook';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthToken, setUser } from '../../../slices/authSlice';
 import { RegisterUserRequest, useRegisterUserMutation } from '../../../services/auth.services';
 import { checkEmailValidaion, checkEmptyValidation, checkPasswordValidation } from '../../../utils/Validation';
 
@@ -12,6 +11,10 @@ const initFromData: RegisterUserRequest = {
     accountEmail: '',
     accountPassword: '',
     confirmAccountPassword: '',
+    birthDate: '2024-03-10T04:59:03.327Z',
+    lastName: 'string',
+    firstName:'string',
+    accountPhone: 'string'
 };
 
 interface validationProps {
@@ -44,13 +47,13 @@ function RegisterPage() {
 
     useEffect(() => {
         if (isRegisterError) {
-            setErrorMessage('Bad request');
+            setErrorMessage('Email đã có người sử dụng');
         }
     }, [isRegisterError]);
 
     useEffect(() => {
         if (isRegisterSuccess) {
-            navigate('/');
+            navigate('/login');
         }
     }, [isRegisterSuccess]);
     

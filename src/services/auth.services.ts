@@ -27,6 +27,10 @@ export interface RegisterUserRequest {
     accountEmail: string;
     accountPassword: string;
     confirmAccountPassword: string;
+    birthDate: string;
+    lastName: string,
+    firstName:string,
+    accountPhone: string
 }
 
 export const authApi = createApi({
