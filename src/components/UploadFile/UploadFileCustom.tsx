@@ -25,7 +25,7 @@ export enum UploadStyle {
 interface UploadFileProps {
     storePath: string;
     fileName: string;
-    onUploadFileSuccess: (downloadURL: string) => void;
+    onUploadFileSuccess: (downloadURL: string, fileSize: number) => void;
     onUploadFileError: (error: FirebaseError) => void;
     fileType: UploadFileType;
     showPreview: boolean;
@@ -83,14 +83,15 @@ const UploadFileCustom = ({
                     },
                     () => {
                         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                            setSelectedFile(null);
                             //
-                            onUploadFileSuccess(downloadURL);
+                            console.log(selectedFile);
+                            onUploadFileSuccess(downloadURL, 10);
                             setPreview(undefined);
                             console.log(`link ${downloadURL}`);
                             message.success('Upload file thành công!');
                             setShowImage(true);
                             setUploadLoading(false);
+                            setSelectedFile(null);
                         });
                     },
                 );

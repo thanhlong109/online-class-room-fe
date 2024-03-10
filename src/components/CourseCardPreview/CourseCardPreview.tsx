@@ -1,6 +1,6 @@
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import { Paper } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LoadingButton } from '@mui/lab';
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
@@ -11,16 +11,36 @@ import { formatNumberWithCommas } from '../../utils/NumberFormater';
 import { FormatType, secondsToTimeString } from '../../utils/TimeFormater';
 import { FavoriteButton, Video } from '..';
 import { Modal } from 'antd';
+import { useAddOrderToDBMutation } from '../../services/order.services';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { setPreOrderData } from '../../slices/orderSlice';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
     course: Course;
 }
 
 const CourseCardPreview = ({ course }: Props) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [loading] = useState<boolean>(false);
     const [openPreviewModal, setOpenPreviewModal] = useState(false);
+    const accountId = useSelector((state: RootState) => state.user.id);
+    const [addOrder, { isSuccess: isAddOrderSuccess, data: addOrderData }] =
+        useAddOrderToDBMutation();
+
+    useEffect(() => {
+        if (isAddOrderSuccess && addOrderData) {
+            dispatch(setPreOrderData({ addOrderRespone: addOrderData, CourseData: course }));
+            navigate('/checkout');
+        }
+    }, [isAddOrderSuccess]);
+
     const handleBuyClick = () => {
-        //bui
+        if (accountId) {
+            addOrder({ accountId, courseId: course.courseId });
+        }
     };
 
     const handlePreviewClick = () => {

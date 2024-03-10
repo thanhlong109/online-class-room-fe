@@ -16,6 +16,8 @@ import { quizApi } from './services/quiz.services';
 import quizSlice from './slices/quizSlice';
 import { questionApi } from './services/question.services';
 import { accountApi } from './services/account.services';
+import { orderApi } from './services/order.services';
+import orderSlice from './slices/orderSlice';
 
 export const persistConfig = {
     key: 'root',
@@ -28,6 +30,7 @@ const rootReducer = combineReducers({
     user: userSlice,
     course: courseSlice,
     quiz: quizSlice,
+    order: orderSlice,
     [coursesApi.reducerPath]: coursesApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [wishlistApi.reducerPath]: wishlistApi.reducer,
@@ -36,6 +39,7 @@ const rootReducer = combineReducers({
     [categoryApi.reducerPath]: categoryApi.reducer,
     [quizApi.reducerPath]: quizApi.reducer,
     [questionApi.reducerPath]: questionApi.reducer,
+    [orderApi.reducerPath]: orderApi.reducer,
     courseAll: getCourseAllSlice,
     [accountApi.reducerPath]: accountApi.reducer,
     accountAll: getAllAccountSlice,
@@ -59,7 +63,8 @@ export const store = configureStore({
             .concat(categoryApi.middleware)
             .concat(quizApi.middleware)
             .concat(questionApi.middleware)
-            .concat(accountApi.middleware),
+            .concat(accountApi.middleware)
+            .concat(orderApi.middleware),
 });
 
 // get roostate and appdispatch from store handle for typescript

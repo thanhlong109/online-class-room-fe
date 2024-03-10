@@ -1,7 +1,105 @@
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import { Button } from 'antd';
+import {
+    FUNDING,
+    PayPalButtons,
+    PayPalButtonsComponentProps,
+    PayPalScriptProvider,
+    usePayPalScriptReducer,
+} from '@paypal/react-paypal-js';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../store';
+import { useAddOrderToDBMutation, useGetClientIdQuery } from '../../../services/order.services';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+interface CartItem {
+    accountId: string;
+    courseId: number;
+}
 
 const PaymentPage = () => {
+    const navigate = useNavigate();
+    const style: PayPalButtonsComponentProps['style'] = { layout: 'vertical' };
+    const accessToken = useSelector((state: RootState) => state.auth.accessToken);
+    const { CourseData, addOrderRespone } = useSelector(
+        (state: RootState) => state.order.preOrderData,
+    );
+    const { data: clientIdData, isSuccess: isGetClientIdSuccess, error } = useGetClientIdQuery();
+    const [clientId, setClientId] = useState<string | null>(null);
+    useEffect(() => {
+        if (isGetClientIdSuccess) {
+            setClientId(clientIdData);
+        }
+        if (error) {
+        }
+    }, [isGetClientIdSuccess, error]);
+
+    const ButtonWrapper: React.FC<{ showSpinner: boolean }> = ({ showSpinner }) => {
+        const [{ isPending }] = usePayPalScriptReducer();
+
+        return (
+            <>
+                {showSpinner && isPending && <div className="spinner" />}
+                <PayPalButtons
+                    style={style}
+                    disabled={false}
+                    forceReRender={[style]}
+                    fundingSource={FUNDING.PAYPAL}
+                    createOrder={() => {
+                        return fetch(
+                            `https://estudyhub.azurewebsites.net/api/Order/CreateOrderWithPaypal?accountId=${addOrderRespone.accountId}&courseId=${addOrderRespone.courseId}`,
+                            {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    Authorization: `Bearer ${accessToken}`,
+                                },
+                            },
+                        )
+                            .then((respone) => {
+                                if (!respone.ok) {
+                                    return respone.json().then((err) => {
+                                        throw err;
+                                    });
+                                }
+                                return respone.json();
+                            })
+                            .then((order) => order.id)
+                            .catch((err) => {
+                                alert(err.message);
+                            });
+                    }}
+                    onApprove={(data) => {
+                        return fetch(
+                            `https://estudyhub.azurewebsites.net/api/Order/createCaptureWithPaypal?transactionId=${data.orderID}`,
+                            {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    Authorization: `Bearer ${accessToken}`,
+                                },
+                            },
+                        )
+                            .then((respone) => {
+                                if (!respone.ok) {
+                                    return respone.json().then((err) => {
+                                        throw err;
+                                    });
+                                }
+                                respone.json();
+                            })
+                            .then((detail) => {
+                                navigate('/');
+                            })
+                            .catch((err) => {
+                                alert(err.message);
+                            });
+                    }}
+                />
+            </>
+        );
+    };
+
     return (
         <div className='className="min-w-screen flex min-h-screen grow justify-center'>
             <div className="w-[50%]  p-10">
@@ -9,12 +107,8 @@ const PaymentPage = () => {
                 <h3 className="mb-8 text-2xl font-black lg:text-2xl">Chi tiết đơn hàng</h3>
                 <div className="mb-4 flex items-center justify-between rounded-lg p-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
                     <div className="flex items-center">
-                        <img
-                            src="https://firebasestorage.googleapis.com/v0/b/online-classroom-fe.appspot.com/o/pngwing.com.png?alt=media&token=de5aa32a-f41a-4768-a23c-7606ab9e6b60"
-                            alt="hinh src"
-                            className="mr-4 h-8 w-8"
-                        />
-                        <h3>Học và làm dự án thực tế</h3>
+                        <img src={CourseData.imageUrl} alt="hinh src" className="mr-4 h-8 w-8" />
+                        <h3>{addOrderRespone.totalPrice}</h3>
                     </div>
                     <div className="flex items-center">
                         <b className="mr-2">499,000 đ</b>
@@ -52,12 +146,18 @@ const PaymentPage = () => {
 
                 <div className="mt-2 flex items-center justify-between border-t-2 border-solid border-gray-300 py-2">
                     <div className="text-lg ">Tổng cộng:</div>
-                    <div className="text-lg ">449,100 đ</div>
+                    <div className="text-lg ">{addOrderRespone.totalPrice}đ</div>
                 </div>
-
-                <Button className="mt-5 flex  items-center justify-center bg-[#A435F0] py-5 text-lg font-bold text-white hover:border-[#D2B4DE] hover:bg-[#D2B4DE] hover:text-white">
-                    Thanh toán
-                </Button>
+                {/**************************** Paypal *****************************/}
+                {clientId && (
+                    <div style={{ maxWidth: '750px', minHeight: '200px' }}>
+                        <PayPalScriptProvider
+                            options={{ clientId: clientId, components: 'buttons', currency: 'USD' }}
+                        >
+                            <ButtonWrapper showSpinner={false} />
+                        </PayPalScriptProvider>
+                    </div>
+                )}
             </div>
         </div>
     );
