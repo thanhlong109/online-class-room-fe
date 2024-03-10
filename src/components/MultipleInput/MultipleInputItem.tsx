@@ -1,4 +1,5 @@
 import { Input } from 'antd';
+import { SizeType } from 'antd/es/config-provider/SizeContext';
 import { Dispatch, SetStateAction, useState } from 'react';
 interface MultipleInputItemProps {
     setStore: Dispatch<SetStateAction<string[]>>;
@@ -6,6 +7,7 @@ interface MultipleInputItemProps {
     placeholder?: string;
     value?: string;
     maxLength?: number;
+    size?: SizeType;
 }
 
 const MultipleInputItem = ({
@@ -14,6 +16,7 @@ const MultipleInputItem = ({
     placeholder,
     value,
     maxLength,
+    size = 'large',
 }: MultipleInputItemProps) => {
     const [data, setData] = useState(value ? value : '');
 
@@ -33,7 +36,7 @@ const MultipleInputItem = ({
                 maxLength={maxLength}
                 showCount
                 allowClear
-                size="large"
+                size={size}
                 className="!max-w-[500px]"
                 placeholder={placeholder}
             />
