@@ -47,6 +47,7 @@ const Curriculum = () => {
             );
         });
     };
+    let prePosisition = 0;
     return (
         <div>
             <p className="mb-4 text-xl font-bold text-[#1677ff]">Chu trình học</p>
@@ -61,24 +62,25 @@ const Curriculum = () => {
                         setSection(sortedArr);
                     }}
                 >
-                    {sections.map((section, index) => (
-                        <Reorder.Item
-                            key={section.sectionId}
-                            value={section}
-                            onDragEnd={() => dispatch(setSectionList(sections))}
-                            className="m-4 active:cursor-move"
-                        >
-                            <SectionCreator
-                                isCreate={section.sectionId === -1}
-                                position={index + 1}
+                    {sections.map((section, index) => {
+                        prePosisition += index === 0 ? 0 : sections[index - 1].steps.length;
+                        return (
+                            <Reorder.Item
                                 key={section.sectionId}
-                                section={section}
-                                startStepPosition={
-                                    index === 0 ? 0 : sections[index - 1].steps.length
-                                }
-                            />
-                        </Reorder.Item>
-                    ))}
+                                value={section}
+                                onDragEnd={() => dispatch(setSectionList(sections))}
+                                className="m-4 active:cursor-move"
+                            >
+                                <SectionCreator
+                                    isCreate={section.sectionId === -1}
+                                    position={index + 1}
+                                    key={section.sectionId}
+                                    section={section}
+                                    startStepPosition={index === 0 ? 0 : prePosisition}
+                                />
+                            </Reorder.Item>
+                        );
+                    })}
                 </Reorder.Group>
             </div>
             <div className="mt-8 flex justify-between">
