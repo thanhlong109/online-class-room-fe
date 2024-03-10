@@ -1,40 +1,40 @@
+import { GetAllAccount } from './../types/Account.type';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { GetAllCourse } from '../types/Course.type';
 
-export interface courseAll {
+export interface accountAll {
     // currentCourse: Course[] | null; // Change currentCourse to allow null or Course[]
-    currentCourse: GetAllCourse;
+    currentCourse: GetAllAccount;
     isFetching: boolean;
     error: boolean;
 }
 
-const initialState: courseAll = {
+const initialState: accountAll = {
     // currentCourse: null, // Change to null
-    currentCourse: {} as GetAllCourse,
+    currentCourse: {} as GetAllAccount,
     isFetching: false,
     error: false,
 };
 
-const courseAllSlice = createSlice({
-    name: 'courseAll',
+const accountAllSlice = createSlice({
+    name: 'accountAll',
     initialState,
     reducers: {
-        courseAllStart: (state) => {
+        accountAllStart: (state) => {
             state.isFetching = true;
         },
-        courseAllSuccess: (state, action: PayloadAction<GetAllCourse>) => {
+        accountAllSuccess: (state, action: PayloadAction<GetAllAccount>) => {
             // Accept Course[]
             state.isFetching = false;
             state.currentCourse = action.payload;
             state.error = false;
         },
-        courseAllFailure: (state) => {
+        accountAllFailure: (state) => {
             state.isFetching = false;
             state.error = true;
         },
     },
 });
 
-export const { courseAllStart, courseAllSuccess, courseAllFailure } = courseAllSlice.actions;
+export const { accountAllStart, accountAllSuccess, accountAllFailure } = accountAllSlice.actions;
 
-export default courseAllSlice.reducer;
+export default accountAllSlice.reducer;

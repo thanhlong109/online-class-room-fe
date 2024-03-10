@@ -47,15 +47,12 @@ export default function MySider() {
     const getConditionalItems = (): MenuItem[] => {
         return [
             getItem('Dashboard', '1', <PieChartOutlined />),
-            getItem('Option 2', 'option-2', <DesktopOutlined />),
             getItem('Quản lý khóa học', 'sub1', <Person2Outlined />, [
                 getItem('Tất cả khóa học', '3', <PieChartOutlined />),
                 getItem('Thêm khóa học mới', '4', <DesktopOutlined />),
-                getItem('Xóa khóa học', '5', <Person2Outlined />),
             ]),
             getItem('Quản lý tài khoản', 'sub2', <Person3Outlined />, [
-                getItem('Học sinh', 'student', <Person2Outlined />),
-                getItem('Gia đình', 'family', <Person3Outlined />),
+                getItem('Xem tất cả tài khoản', 'accountAll', <Person3Outlined />),
             ]),
             getItem('Files', 'file', <FileOpenOutlined />),
         ];
@@ -65,7 +62,7 @@ export default function MySider() {
         .set('1', '/admin/')
         .set('3', '/admin/getAllCourse')
         .set('4', '/admin/addCourse/')
-        .set('5', '/admin/deleteCourse');
+        .set('accountAll', '/admin/getAllAccount');
 
     // useEffect(() => {
     //   const fetchData = async () => {

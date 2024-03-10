@@ -54,6 +54,13 @@ export interface UpdateCourseRequest {
     categoryList: number[];
 }
 
+export interface GetAllCourse {
+    courses: Course[];
+    currentPage: number;
+    pageSize: number;
+    totalCourses: number;
+    totalPages: number;
+}
 /////////////////////// Section ////////////////////////
 export interface Section {
     sectionId: number;
