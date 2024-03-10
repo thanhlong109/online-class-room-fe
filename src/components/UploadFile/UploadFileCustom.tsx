@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { firebaseStorage } from '../../config';
+// import { firebaseStorage } from '../../config';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { FirebaseError } from 'firebase/app';
 import { RcFile, UploadChangeParam, UploadFile } from 'antd/es/upload';
@@ -11,6 +11,7 @@ import { Video } from '..';
 import { motion } from 'framer-motion';
 import { Button } from '@mui/material';
 import { convertFileSize } from '../../utils/NumberFormater';
+import { firebaseStorage } from '../../firebase/firebase';
 
 export enum UploadFileType {
     IMAGE,

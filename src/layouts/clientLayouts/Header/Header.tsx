@@ -62,6 +62,16 @@ function Header() {
     const handleOpenMenuToggle = () => {
         setOpen((pre) => !pre);
     };
+    const [loginGoogle, setLoginGoogle] = useState(false);
+    const [userAvatar, setUserAvatar] = useState('');
+    useEffect(() => {
+        const userDataString = localStorage.getItem('userLogin');
+        if (userDataString) {
+            const userData = JSON.parse(userDataString);
+            setUserAvatar(userData.avatar);
+            setLoginGoogle(true);
+        }
+    }, []);
 
     return (
         <>
@@ -126,7 +136,7 @@ function Header() {
                         <div className="cursor-pointer">
                             <Notification />
                         </div>
-                        {!isLogin && (
+                        {!isLogin && !loginGoogle && (
                             <div className="flex gap-3">
                                 <Button
                                     variant="outlined"
@@ -142,7 +152,7 @@ function Header() {
                                 </Button>
                             </div>
                         )}
-                        {isLogin && (
+                        {/* {isLogin  && (
                             <div>
                                 <Tooltip title="Quản lý tài khoản">
                                     <Link to={'/user/12'}>
@@ -150,6 +160,26 @@ function Header() {
                                     </Link>
                                 </Tooltip>
                             </div>
+                        )} */}
+                        {isLogin ? (
+                            <div>
+                                <Tooltip title="Quản lý tài khoản">
+                                    <Link to={'/user/12'}>
+                                        <UserAvatar className="h-[64px] w-[64px] cursor-pointer md:h-[48px] md:w-[48px]" />
+                                    </Link>
+                                </Tooltip>
+                            </div>
+                        ) : (
+                            loginGoogle && (
+                                <div>
+                                    <Tooltip title="Quản lí tài khoản">
+                                        <img
+                                            src={userAvatar}
+                                            className="h-[64px] w-[64px] cursor-pointer md:h-[48px] md:w-[48px]"
+                                        />
+                                    </Tooltip>
+                                </div>
+                            )
                         )}
                     </div>
                 </div>
