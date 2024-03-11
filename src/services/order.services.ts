@@ -30,6 +30,7 @@ export const orderApi = createApi({
                 };
             },
         }),
+
         getClientId: build.query<string, void>({
             query: () => ({
                 url: 'api/Order/GetClientId',

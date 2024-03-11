@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../store';
 import { AddOrderToDBReSpone } from '../types/Order.type';
 import { Course } from '../types/Course.type';
 
@@ -7,6 +6,9 @@ export interface OrderState {
     preOrderData: {
         addOrderRespone: AddOrderToDBReSpone;
         CourseData: Course;
+    };
+    OrderDone: {
+        orderId: string;
     };
 }
 
@@ -45,10 +47,13 @@ const initialState: OrderState = {
             wishLists: [],
         },
     },
+    OrderDone: {
+        orderId: '',
+    },
 };
 
 export const orderSlice = createSlice({
-    name: 'auth',
+    name: 'order',
     initialState,
     reducers: {
         setPreOrderData: (
@@ -57,9 +62,12 @@ export const orderSlice = createSlice({
         ) => {
             state.preOrderData = action.payload;
         },
+        setOrderId: (state, action: PayloadAction<string>) => {
+            state.OrderDone.orderId = action.payload;
+        },
     },
 });
 
-export const { setPreOrderData } = orderSlice.actions;
+export const { setPreOrderData, setOrderId } = orderSlice.actions;
 
 export default orderSlice.reducer;
