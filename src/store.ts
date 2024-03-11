@@ -18,6 +18,7 @@ import { questionApi } from './services/question.services';
 import { accountApi } from './services/account.services';
 import { orderApi } from './services/order.services';
 import orderSlice from './slices/orderSlice';
+import { registrationCoursesApi } from './services/registrationCourse.services';
 
 export const persistConfig = {
     key: 'root',
@@ -40,6 +41,7 @@ const rootReducer = combineReducers({
     [quizApi.reducerPath]: quizApi.reducer,
     [questionApi.reducerPath]: questionApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
+    [registrationCoursesApi.reducerPath]: registrationCoursesApi.reducer,
     courseAll: getCourseAllSlice,
     [accountApi.reducerPath]: accountApi.reducer,
     accountAll: getAllAccountSlice,
@@ -64,7 +66,8 @@ export const store = configureStore({
             .concat(quizApi.middleware)
             .concat(questionApi.middleware)
             .concat(accountApi.middleware)
-            .concat(orderApi.middleware),
+            .concat(orderApi.middleware)
+            .concat(registrationCoursesApi.middleware),
 });
 
 // get roostate and appdispatch from store handle for typescript

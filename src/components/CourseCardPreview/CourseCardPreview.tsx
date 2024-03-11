@@ -10,12 +10,13 @@ import { Course } from '../../types/Course.type';
 import { formatNumberWithCommas } from '../../utils/NumberFormater';
 import { FormatType, secondsToTimeString } from '../../utils/TimeFormater';
 import { FavoriteButton, Video } from '..';
-import { Modal } from 'antd';
+import { Modal, Skeleton } from 'antd';
 import { useAddOrderToDBMutation } from '../../services/order.services';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { setPreOrderData } from '../../slices/orderSlice';
 import { useNavigate } from 'react-router-dom';
+import { useCheckRegistrationCourseQuery } from '../../services/registrationCourse.services';
 
 interface Props {
     course: Course;
@@ -24,12 +25,20 @@ interface Props {
 const CourseCardPreview = ({ course }: Props) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [loading] = useState<boolean>(false);
     const [openPreviewModal, setOpenPreviewModal] = useState(false);
     const accountId = useSelector((state: RootState) => state.user.id);
-    const [addOrder, { isSuccess: isAddOrderSuccess, data: addOrderData }] =
-        useAddOrderToDBMutation();
-
+    const [
+        addOrder,
+        { isLoading: isAddOrderLoading, isSuccess: isAddOrderSuccess, data: addOrderData },
+    ] = useAddOrderToDBMutation();
+    const {
+        refetch,
+        data: checkRegistrationData,
+        isLoading: isCheckRegistrationLoading,
+    } = useCheckRegistrationCourseQuery({
+        accountId: accountId ? accountId : '',
+        courseId: course.courseId,
+    });
     useEffect(() => {
         if (isAddOrderSuccess && addOrderData) {
             dispatch(setPreOrderData({ addOrderRespone: addOrderData, CourseData: course }));
@@ -37,10 +46,18 @@ const CourseCardPreview = ({ course }: Props) => {
         }
     }, [isAddOrderSuccess]);
 
+    useEffect(() => {
+        refetch();
+    }, [accountId]);
+
     const handleBuyClick = () => {
         if (accountId) {
             addOrder({ accountId, courseId: course.courseId });
         }
+    };
+
+    const handleLearnClick = () => {
+        navigate('/learn/' + course.courseId);
     };
 
     const handlePreviewClick = () => {
@@ -74,15 +91,29 @@ const CourseCardPreview = ({ course }: Props) => {
                             </h2>{' '}
                             <FavoriteButton courseId={course.courseId} />
                         </div>
+                        {!isCheckRegistrationLoading && !checkRegistrationData?.isRegistered && (
+                            <LoadingButton
+                                onClick={handleBuyClick}
+                                loading={isAddOrderLoading}
+                                variant="contained"
+                                className="flex-1 bg-[#a435f0]"
+                            >
+                                Mua khóa học
+                            </LoadingButton>
+                        )}
+                        {!isCheckRegistrationLoading && checkRegistrationData?.isRegistered && (
+                            <LoadingButton
+                                onClick={handleLearnClick}
+                                variant="contained"
+                                className="flex-1 bg-[#a435f0]"
+                            >
+                                Tiếp tục học
+                            </LoadingButton>
+                        )}
+                        {isCheckRegistrationLoading && (
+                            <Skeleton.Input active className="!flex-1" />
+                        )}
 
-                        <LoadingButton
-                            onClick={handleBuyClick}
-                            loading={loading}
-                            variant="contained"
-                            className="bg-[#a435f0]"
-                        >
-                            Mua khóa học
-                        </LoadingButton>
                         <div>
                             <h2 className="mt-4">Khóa học này bao gồm:</h2>
                             <div className="mt-3 flex flex-col gap-2">
