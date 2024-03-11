@@ -37,6 +37,9 @@ export const userSlice = createSlice({
             state.sex = action.payload.sex;
             state.birthDate = action.payload.birthDate;
         },
+        PURGE: (state) => {
+            state = initialState;
+        },
     },
 });
 

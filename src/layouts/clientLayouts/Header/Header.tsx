@@ -12,12 +12,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store';
 import { setUserInfo } from '../../../slices/userSlice';
 import { loadUser } from '../../../slices/authSlice';
-import { useGetAccessTokenLocal } from '../../../hooks/appHook';
+import { LocalUserData } from '../../../types/Account.type';
 
 function Header() {
     //load user data
     const dispatch = useDispatch();
-    const userLocalData = useGetAccessTokenLocal();
+    const [userLocalData, setUserLocalData] = useState<LocalUserData | null>(null);
+
+    useEffect(() => {
+        const user = localStorage.getItem('user');
+        if (user) {
+            setUserLocalData(JSON.parse(user));
+        }
+    }, []);
+
     const { data, isSuccess, refetch } = useGetUserInfoQuery(
         userLocalData
             ? { email: userLocalData.email, accessToken: userLocalData.accessToken }
@@ -74,13 +82,6 @@ function Header() {
                     </div>
                     <h1>
                         <Link to={'/'}>
-                            {/* <Typography.Title
-                                className="!text-xl md:!text-2xl"
-                                style={{ fontWeight: 'bold', margin: '0' }}
-                                level={2}
-                            >
-                                EStudyHub
-                            </Typography.Title> */}
                             <div className="hidden  items-center justify-center md:flex">
                                 <img
                                     className="h-[40px]"

@@ -4,7 +4,16 @@ import { coursesApi } from './services/course.services';
 import { authApi } from './services/auth.services';
 import authSlice from './slices/authSlice';
 import userSlice from './slices/userSlice';
-import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
+import {
+    persistReducer,
+    FLUSH,
+    REHYDRATE,
+    PAUSE,
+    PERSIST,
+    PURGE,
+    REGISTER,
+    persistStore,
+} from 'redux-persist';
 import sessionStorage from 'redux-persist/es/storage/session';
 import { wishlistApi } from './services/wishlist.services';
 import courseSlice from './slices/courseSlice';
@@ -23,7 +32,7 @@ import { registrationCoursesApi } from './services/registrationCourse.services';
 export const persistConfig = {
     key: 'root',
     storage: sessionStorage,
-    whitelist: ['auth', 'user', 'course'],
+    whitelist: ['auth', 'user', 'course', 'quiz', 'order', 'accountAll', 'courseAll'],
 };
 
 const rootReducer = combineReducers({
@@ -75,5 +84,6 @@ export type RootState = ReturnType<typeof store.getState>;
 
 export type AppDispatch = typeof store.dispatch;
 
+export const persistor = persistStore(store);
 //
 //setupListeners(store.dispatch);
