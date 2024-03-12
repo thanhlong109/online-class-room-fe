@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DoneIcon from '@mui/icons-material/Done';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Button, Input } from 'antd';
+import { Button, Input, Popconfirm } from 'antd';
 import { useDispatch } from 'react-redux';
 import {
     addCourseSection,
@@ -25,9 +25,15 @@ export interface SectionCreatorProps {
     position: number;
     section: Section;
     isCreate: boolean;
+    startStepPosition: number;
 }
 
-const SectionCreator = ({ position, section, isCreate }: SectionCreatorProps) => {
+const SectionCreator = ({
+    position,
+    section,
+    isCreate,
+    startStepPosition,
+}: SectionCreatorProps) => {
     const dispatch = useDispatch();
     const [tempLable, setTempLable] = useState('');
     const [addSection, { isSuccess: isAddSectionSuccess, data: addSectionRespone }] =
@@ -38,6 +44,7 @@ const SectionCreator = ({ position, section, isCreate }: SectionCreatorProps) =>
     const [isHovered, setIsHovered] = useState(false);
     const [isEdit, setIsEdit] = useState(isCreate);
     const handleOnRemoveClick = () => {};
+    const [isProgressAdd, setIsProgressAdd] = useState(false);
     const handleOnTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (isCreateFirst) {
             setTempLable(e.target.value);
@@ -53,7 +60,7 @@ const SectionCreator = ({ position, section, isCreate }: SectionCreatorProps) =>
     const initialStepValue: Step = {
         duration: 0,
         position: 0,
-        quizId: 0,
+        quizId: 1,
         section: undefined,
         sectionId: section.sectionId,
         stepDescription: 'string',
@@ -79,7 +86,7 @@ const SectionCreator = ({ position, section, isCreate }: SectionCreatorProps) =>
     useEffect(() => {
         if (isAddSectionSuccess && addSectionRespone) {
             dispatch(addCourseSection(addSectionRespone));
-            dispatch(setSection(addSectionRespone));
+            //dispatch(setSection(addSectionRespone));
             setIsCreateFirst(false);
             setIsEdit(false);
         }
@@ -113,7 +120,7 @@ const SectionCreator = ({ position, section, isCreate }: SectionCreatorProps) =>
                         </IconButton>
                     </div>
                 ) : (
-                    <span className="font-medium">{section.title}</span>
+                    <span className="text-base font-medium">{section.title}</span>
                 )}
                 {!isEdit && (
                     <div>
@@ -133,23 +140,44 @@ const SectionCreator = ({ position, section, isCreate }: SectionCreatorProps) =>
                                 disabled={!isHovered}
                                 onClick={() => setIsEdit(true)}
                                 size="small"
+                                color="info"
                             >
                                 <CreateIcon />
                             </IconButton>
-                            <IconButton
-                                disabled={!isHovered}
-                                onClick={handleOnRemoveClick}
-                                size="small"
+                            <Popconfirm
+                                title="Xác nhận xóa"
+                                description="Bạn có chắc là muốn xóa ? toàn bộ nội dung trong chương này sẽ bị mất!"
+                                onConfirm={() => {}}
+                                onCancel={() => {}}
+                                okText="Yes"
+                                cancelText="No"
+                                okButtonProps={{ style: { background: '#d32f2f' } }}
                             >
-                                <DeleteIcon />
-                            </IconButton>
+                                <IconButton
+                                    disabled={!isHovered}
+                                    onClick={handleOnRemoveClick}
+                                    color="error"
+                                    size="small"
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Popconfirm>
                         </motion.div>
                     </div>
                 )}
             </div>
             <div>
                 <div className="mt-4 flex flex-col gap-3">
-                    <Reorder.Group values={steps} onReorder={setSteps}>
+                    <Reorder.Group
+                        values={steps}
+                        onReorder={(arr) => {
+                            const sortedArr = JSON.parse(JSON.stringify(arr));
+                            arr.forEach((_, index) => {
+                                sortedArr[index].position = index + startStepPosition + 1;
+                            });
+                            setSteps(sortedArr);
+                        }}
+                    >
                         {steps.map((item, index) => (
                             <Reorder.Item
                                 key={item.stepId}
@@ -164,19 +192,24 @@ const SectionCreator = ({ position, section, isCreate }: SectionCreatorProps) =>
                                 <LectureCreator
                                     isCreate={item.stepId === -1}
                                     step={item}
-                                    position={index}
+                                    position={index + startStepPosition + 1}
                                 />
                             </Reorder.Item>
                         ))}
                     </Reorder.Group>
                 </div>
-                <Button
-                    className="mt-3 bg-white"
-                    icon={<AddIcon />}
-                    onClick={() => setSteps([...steps, initialStepValue])}
-                >
-                    Thêm bài học
-                </Button>
+                {!isProgressAdd && (
+                    <Button
+                        className="mt-3 bg-white"
+                        icon={<AddIcon />}
+                        onClick={() => {
+                            setSteps([...steps, initialStepValue]);
+                            setIsProgressAdd(true);
+                        }}
+                    >
+                        Thêm bài học
+                    </Button>
+                )}
             </div>
         </div>
     );

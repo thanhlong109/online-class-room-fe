@@ -4,7 +4,7 @@ import { Divider, Progress, Typography, message } from 'antd';
 import type { UploadFile } from 'antd';
 import { Upload } from 'antd';
 import { useEffect, useState } from 'react';
-import { firebaseStorage } from '../../../../config';
+// import { firebaseStorage } from '../../../../config';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
@@ -12,6 +12,7 @@ import { FirebaseError } from 'firebase/app';
 import { RcFile, UploadChangeParam } from 'antd/es/upload';
 import { useUpdateUserInfoMutation } from '../../../../services/auth.services';
 import { setUserInfo } from '../../../../slices/userSlice';
+import { firebaseStorage } from '../../../../firebase/firebase';
 
 const { Dragger } = Upload;
 

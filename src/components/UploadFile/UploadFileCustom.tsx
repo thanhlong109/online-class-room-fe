@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { firebaseStorage } from '../../config';
+// import { firebaseStorage } from '../../config';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { FirebaseError } from 'firebase/app';
 import { RcFile, UploadChangeParam, UploadFile } from 'antd/es/upload';
@@ -11,6 +11,7 @@ import { Video } from '..';
 import { motion } from 'framer-motion';
 import { Button } from '@mui/material';
 import { convertFileSize } from '../../utils/NumberFormater';
+import { firebaseStorage } from '../../firebase/firebase';
 
 export enum UploadFileType {
     IMAGE,
@@ -25,7 +26,7 @@ export enum UploadStyle {
 interface UploadFileProps {
     storePath: string;
     fileName: string;
-    onUploadFileSuccess: (downloadURL: string) => void;
+    onUploadFileSuccess: (downloadURL: string, fileSize: number) => void;
     onUploadFileError: (error: FirebaseError) => void;
     fileType: UploadFileType;
     showPreview: boolean;
@@ -83,14 +84,15 @@ const UploadFileCustom = ({
                     },
                     () => {
                         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                            setSelectedFile(null);
                             //
-                            onUploadFileSuccess(downloadURL);
+                            console.log(selectedFile);
+                            onUploadFileSuccess(downloadURL, 10);
                             setPreview(undefined);
                             console.log(`link ${downloadURL}`);
                             message.success('Upload file thành công!');
                             setShowImage(true);
                             setUploadLoading(false);
+                            setSelectedFile(null);
                         });
                     },
                 );
