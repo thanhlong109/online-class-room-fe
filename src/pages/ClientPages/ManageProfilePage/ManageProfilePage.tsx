@@ -16,8 +16,6 @@ import { ManageProfileMenu } from './ManageProfile.enum';
 import { Profile, Security, Favorite as FavoriteComponent, UploadAvatar } from './Components';
 import { Divider } from 'antd';
 import { LogoutOutlined } from '@mui/icons-material';
-import { useAppDispatch } from '../../../hooks/appHook';
-import { useNavigate } from 'react-router-dom';
 import { UserAvatar } from '../../../layouts/clientLayouts/Header/Components';
 import { useSelector } from 'react-redux';
 import { RootState, persistor } from '../../../store';
