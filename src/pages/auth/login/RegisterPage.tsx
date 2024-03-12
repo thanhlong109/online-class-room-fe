@@ -1,20 +1,23 @@
-import { Button, Input } from 'antd';
+import { Button, Input, notification } from 'antd';
 import MyCarouselLogin from './MyCarouselLogin';
 import { EyeInvisibleOutlined, EyeTwoTone, GoogleOutlined } from '@ant-design/icons';
-import { useState, useEffect } from 'react';
-import { useAppDispatch } from '../../../hooks/appHook';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { RegisterUserRequest, useRegisterUserMutation } from '../../../services/auth.services';
-import { checkEmailValidaion, checkEmptyValidation, checkPasswordValidation } from '../../../utils/Validation';
+import {
+    checkEmailValidaion,
+    checkEmptyValidation,
+    checkPasswordValidation,
+} from '../../../utils/Validation';
 
 const initFromData: RegisterUserRequest = {
     accountEmail: '',
     accountPassword: '',
     confirmAccountPassword: '',
-    birthDate: '2024-03-10T04:59:03.327Z',
-    lastName: 'string',
-    firstName:'string',
-    accountPhone: 'string'
+    birthDate: new Date().toISOString(),
+    lastName: '',
+    firstName: '',
+    accountPhone: 'null',
 };
 
 interface validationProps {
@@ -28,22 +31,20 @@ const initialValidation: validationProps = {
 };
 
 function RegisterPage() {
-    const useDispach = useAppDispatch();
     const [formData, setFormData] = useState(initFromData);
+    const [emptyValidation, setEmptyValidation] = useState(initialValidation);
     const [emailValidation, setEmailValidation] = useState(initialValidation);
     const [passwordValidation, setPasswordValidation] = useState(initialValidation);
     const [confirmPasswordValidation, setConfirmPasswordValidation] = useState(initialValidation);
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
     const [
-        registerUser,
-        {
-            data: registerData,
-            isLoading: isRegisterLoading,
-            isSuccess: isRegisterSuccess,
-            isError: isRegisterError,
-        },
-    ] = useRegisterUserMutation();
+        registerUser, { 
+            isLoading: isRegisterLoading, 
+            isSuccess: isRegisterSuccess, 
+            isError: isRegisterError 
+        }] = useRegisterUserMutation();
+
 
     useEffect(() => {
         if (isRegisterError) {
@@ -56,10 +57,47 @@ function RegisterPage() {
             navigate('/login');
         }
     }, [isRegisterSuccess]);
-    
-    const handleOnSubmit = async () => {
-        await registerUser(formData);
+
+    const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();  
+        try {
+            // const result = await registerUser(formData).unwrap();  
+            await registerUser(formData).unwrap();  
+            // Display success notification
+            notification.success({
+                message: 'Đăng kí thành công!',
+                description: 'Bạn đã đăng kí thành công. Hãy kiểm tra email đăng kí của bạn để xác thực tài khoản!',
+                duration: 2.5, 
+            });    
+            // Use setTimeout to delay navigation, allowing the user to read the notification
+            // setTimeout(() => {
+            //     navigate('/login');
+            // }, 2500);   
+        } catch (error) {
+            let message = 'Đăng kí thất bại! Hãy thử lại lần nữa.';
+            if (error instanceof Error) {
+                message = error.message;
+            }
+            // Display the error message to the user
+            notification.error({
+                message: 'Đăng kí thất bại',
+                description: message,
+            });
+        }
     };
+
+    const handleOnFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { isError, message } = checkEmptyValidation(e.target.value);
+        setEmptyValidation({isError: isError, errorMessage: message});
+        setFormData({ ...formData, firstName: e.target.value});
+    };
+
+    const handleOnLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { isError, message } = checkEmptyValidation(e.target.value);
+        setEmptyValidation({isError: isError, errorMessage: message});
+        setFormData({ ...formData, lastName: e.target.value});
+    };
+
 
     const handleOnEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { isError, message } = checkEmailValidaion(e.target.value);
@@ -68,13 +106,19 @@ function RegisterPage() {
     };
 
     const handleOnPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { isError, message } = checkPasswordValidation(e.target.value, formData.confirmAccountPassword);
+        const { isError, message } = checkPasswordValidation(
+            e.target.value,
+            formData.confirmAccountPassword,
+        );
         setPasswordValidation({ isError: isError, errorMessage: message });
         setFormData({ ...formData, accountPassword: e.target.value });
     };
 
     const handleOnConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { isError, message } = checkPasswordValidation(formData.accountPassword, e.target.value);
+        const { isError, message } = checkPasswordValidation(
+            formData.accountPassword,
+            e.target.value,
+        );
         setConfirmPasswordValidation({ isError: isError, errorMessage: message });
         setFormData({ ...formData, confirmAccountPassword: e.target.value });
     };
@@ -82,12 +126,42 @@ function RegisterPage() {
     return (
         <div className="flex bg-greenHome">
             <div className="w-full bg-white sm:w-[30%] sm:rounded-br-xl sm:rounded-tr-xl md:h-screen">
-                <form className="mt-8 flex flex-col items-center justify-center space-y-5">
+                <form onSubmit={handleOnSubmit} className="mt-8 flex flex-col items-center justify-center space-y-5">
                     <section className="w-[70%] space-y-5 ">
                         <div className="mb-12 ml-1 mt-[40%] ">
                             <h1 className="text-3xl">Đăng ký</h1>
                             <p className="sm:max-xl:text-md mt-2 text-base text-grayLine">
-                            Mừng đến với hệ thống! Vui lòng điền thông tin bên dưới để tiếp tục
+                                Mừng đến với hệ thống! Vui lòng điền thông tin bên dưới để tiếp tục
+                            </p>
+                        </div>
+                        <div>
+                            <Input
+                                required
+                                onChange={handleOnFirstNameChange}
+                                allowClear
+                                size="large"
+                                className="px-5 py-3"
+                                value={formData.firstName}
+                                placeholder="Nhập họ của bạn"
+                                status={emptyValidation.isError ? 'error' : undefined}
+                            />
+                            <p className="ml-2 mt-1 text-sm text-red-500">
+                                {emptyValidation.errorMessage}
+                            </p>
+                        </div>
+                        <div>
+                            <Input
+                                required
+                                onChange={handleOnLastNameChange}
+                                allowClear
+                                size="large"
+                                className="px-5 py-3"
+                                value={formData.lastName}
+                                placeholder="Nhập tên của bạn"
+                                status={emptyValidation.isError ? 'error' : undefined}
+                            />
+                            <p className="ml-2 mt-1 text-sm text-red-500">
+                                {emptyValidation.errorMessage}
                             </p>
                         </div>
                         <div>
@@ -147,9 +221,9 @@ function RegisterPage() {
                             formData.accountPassword.length === 0 ||
                             formData.confirmAccountPassword.length === 0
                         }
-                        onClick={handleOnSubmit}
+                        htmlType="submit"
                         loading={isRegisterLoading}
-                        type="primary"
+                        type="default"
                         className="text-md  h-11 w-[70%] bg-greenHome font-bold"
                     >
                         Đăng ký
