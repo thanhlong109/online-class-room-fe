@@ -2,10 +2,8 @@ import { List, Typography } from 'antd';
 import { Link } from 'react-router-dom';
 
 const MyLearningPopover = () => {
-  const notifications = [
-    { id: 1, content: 'Bạn chưa đăng ký khóa học nào' },
-  ];
-  return (
+    const notifications = [{ id: 1, content: 'Bạn chưa đăng ký khóa học nào' }];
+    return (
     <div className='w-[300px]'>
       <div className='p-[5px]'>
         <Typography.Text className='text-xl font-bold'> Thông báo </Typography.Text>

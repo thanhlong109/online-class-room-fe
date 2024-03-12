@@ -18,7 +18,8 @@ function Header() {
     //load user data
     const dispatch = useDispatch();
     const [userLocalData, setUserLocalData] = useState<LocalUserData | null>(null);
-
+    const isLogin = useSelector((state: RootState) => state.auth.isLogin);
+    const wishlistState = useSelector((state: RootState) => state.course.wishList);
     useEffect(() => {
         const user = localStorage.getItem('user');
         if (user) {
@@ -31,7 +32,7 @@ function Header() {
             ? { email: userLocalData.email, accessToken: userLocalData.accessToken }
             : { email: null, accessToken: null },
     );
-    const isLogin = useSelector((state: RootState) => state.auth.isLogin);
+
     useEffect(() => {
         if (isSuccess && data) {
             dispatch(loadUser());
@@ -118,7 +119,10 @@ function Header() {
                         <div className="cursor-pointer ">
                             <Popover content={<FavoritePopover />} trigger="hover">
                                 <IconButton>
-                                    <Badge count="14" color="#a435f0">
+                                    <Badge
+                                        count={wishlistState.length > 0 ? wishlistState.length : ''}
+                                        color="#a435f0"
+                                    >
                                         <FavoriteBorderIcon />
                                     </Badge>
                                 </IconButton>

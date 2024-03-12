@@ -27,6 +27,8 @@ const CourseCardPreview = ({ course }: Props) => {
     const navigate = useNavigate();
     const [openPreviewModal, setOpenPreviewModal] = useState(false);
     const accountId = useSelector((state: RootState) => state.user.id);
+    const isLogin = useSelector((state: RootState) => state.auth.isLogin);
+
     const [
         addOrder,
         { isLoading: isAddOrderLoading, isSuccess: isAddOrderSuccess, data: addOrderData },
@@ -51,8 +53,10 @@ const CourseCardPreview = ({ course }: Props) => {
     }, [accountId]);
 
     const handleBuyClick = () => {
-        if (accountId) {
+        if (accountId && isLogin) {
             addOrder({ accountId, courseId: course.courseId });
+        } else {
+            navigate('/login');
         }
     };
 
