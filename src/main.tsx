@@ -9,6 +9,7 @@ import persistStore from 'redux-persist/es/persistStore';
 import { PersistGate } from 'redux-persist/integration/react';
 import Lottie from 'lottie-react';
 import preloaderData from './assets/AnimationPreloader.json';
+import { AuthProvider } from './context/AuthContext.tsx';
 
 let persistor = persistStore(store);
 
@@ -23,9 +24,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 }
                 persistor={persistor}
             >
-                <BrowserRouter>
-                    <App />
-                </BrowserRouter>
+                <AuthProvider>
+                    <BrowserRouter>
+                        <App />
+                    </BrowserRouter>
+                </AuthProvider>
             </PersistGate>
         </Provider>
     </React.StrictMode>,
