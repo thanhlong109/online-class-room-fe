@@ -206,7 +206,7 @@ const Header: React.FC = () => {
                                     <Tooltip title="Quản lí tài khoản">
                                         <img
                                             src={userAvatar}
-                                            className="h-[64px] w-[64px] cursor-pointer md:h-[48px] md:w-[48px]"
+                                            className="h-[64px] w-[64px] cursor-pointer rounded-full md:h-[48px] md:w-[48px]"
                                         />
                                     </Tooltip>
                                 </div>

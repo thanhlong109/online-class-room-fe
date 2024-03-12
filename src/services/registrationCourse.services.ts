@@ -1,14 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
 import {
     CheckRegistrationCourseRequest,
     CheckRegistrationCourseRespone,
+    RegistrationCourse,
 } from '../types/RegistrationCourse.type';
 
-export const registrationCoursesApi = createApi({
-    reducerPath: 'registrationCoursesApi',
+export const registrationCourseApi = createApi({
+    reducerPath: 'registrationCourseApi',
     baseQuery: fetchBaseQuery({
         baseUrl: 'https://estudyhub.azurewebsites.net/',
-        prepareHeaders: (headers, _) => {
+        prepareHeaders: (headers) => {
             // Thêm logic để lấy accessToken từ localStorage và đặt vào header Authorization
             const user = localStorage.getItem('user');
             if (user) {
@@ -20,6 +22,14 @@ export const registrationCoursesApi = createApi({
         },
     }),
     endpoints: (build) => ({
+        getRegisterCourseByAccountId: build.query<RegistrationCourse[], string | null>({
+            query: (accountId: string | null) =>
+                `api/RegistrationCourse/GetRegisterCourseListByAccountId?accountId=${accountId}`,
+            transformResponse: (response) => {
+                const data = (response as any).dataObject;
+                return [...data];
+            },
+        }),
         checkRegistrationCourse: build.query<
             CheckRegistrationCourseRespone,
             CheckRegistrationCourseRequest
@@ -31,5 +41,5 @@ export const registrationCoursesApi = createApi({
         }),
     }),
 });
-
-export const { useCheckRegistrationCourseQuery } = registrationCoursesApi;
+export const { useGetRegisterCourseByAccountIdQuery, useCheckRegistrationCourseQuery } =
+    registrationCourseApi;

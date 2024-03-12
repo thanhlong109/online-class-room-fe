@@ -6,7 +6,7 @@ export interface CheckRegistrationCourseRespone {
     isRegistered: boolean;
 }
 
-export interface GetRegistrationCoursesRespone {
+export interface RegistrationCourse {
     registrationId: number;
     courseId: number;
     accountId: string;
@@ -15,4 +15,5 @@ export interface GetRegistrationCoursesRespone {
     learningProgress: number;
     courseTitle: string;
     courseDescription: string;
+    courseImg: string;
 }
