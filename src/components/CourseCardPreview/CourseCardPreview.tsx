@@ -1,6 +1,6 @@
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import { Paper } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LoadingButton } from '@mui/lab';
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
@@ -10,17 +10,58 @@ import { Course } from '../../types/Course.type';
 import { formatNumberWithCommas } from '../../utils/NumberFormater';
 import { FormatType, secondsToTimeString } from '../../utils/TimeFormater';
 import { FavoriteButton, Video } from '..';
-import { Modal } from 'antd';
+import { Modal, Skeleton } from 'antd';
+import { useAddOrderToDBMutation } from '../../services/order.services';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { setPreOrderData } from '../../slices/orderSlice';
+import { useNavigate } from 'react-router-dom';
+import { useCheckRegistrationCourseQuery } from '../../services/registrationCourse.services';
 
 interface Props {
     course: Course;
 }
 
 const CourseCardPreview = ({ course }: Props) => {
-    const [loading] = useState<boolean>(false);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [openPreviewModal, setOpenPreviewModal] = useState(false);
+    const accountId = useSelector((state: RootState) => state.user.id);
+    const isLogin = useSelector((state: RootState) => state.auth.isLogin);
+
+    const [
+        addOrder,
+        { isLoading: isAddOrderLoading, isSuccess: isAddOrderSuccess, data: addOrderData },
+    ] = useAddOrderToDBMutation();
+    const {
+        refetch,
+        data: checkRegistrationData,
+        isLoading: isCheckRegistrationLoading,
+    } = useCheckRegistrationCourseQuery({
+        accountId: accountId ? accountId : '',
+        courseId: course.courseId,
+    });
+    useEffect(() => {
+        if (isAddOrderSuccess && addOrderData) {
+            dispatch(setPreOrderData({ addOrderRespone: addOrderData, CourseData: course }));
+            navigate('/checkout');
+        }
+    }, [isAddOrderSuccess]);
+
+    useEffect(() => {
+        refetch();
+    }, [accountId]);
+
     const handleBuyClick = () => {
-        //bui
+        if (accountId && isLogin) {
+            addOrder({ accountId, courseId: course.courseId });
+        } else {
+            navigate('/login');
+        }
+    };
+
+    const handleLearnClick = () => {
+        navigate('/learn/' + course.courseId);
     };
 
     const handlePreviewClick = () => {
@@ -54,15 +95,29 @@ const CourseCardPreview = ({ course }: Props) => {
                             </h2>{' '}
                             <FavoriteButton courseId={course.courseId} />
                         </div>
+                        {!isCheckRegistrationLoading && !checkRegistrationData?.isRegistered && (
+                            <LoadingButton
+                                onClick={handleBuyClick}
+                                loading={isAddOrderLoading}
+                                variant="contained"
+                                className="flex-1 bg-[#a435f0]"
+                            >
+                                Mua khóa học
+                            </LoadingButton>
+                        )}
+                        {!isCheckRegistrationLoading && checkRegistrationData?.isRegistered && (
+                            <LoadingButton
+                                onClick={handleLearnClick}
+                                variant="contained"
+                                className="flex-1 bg-[#a435f0]"
+                            >
+                                Tiếp tục học
+                            </LoadingButton>
+                        )}
+                        {isCheckRegistrationLoading && (
+                            <Skeleton.Input active className="!flex-1" />
+                        )}
 
-                        <LoadingButton
-                            onClick={handleBuyClick}
-                            loading={loading}
-                            variant="contained"
-                            className="bg-[#a435f0]"
-                        >
-                            Mua khóa học
-                        </LoadingButton>
                         <div>
                             <h2 className="mt-4">Khóa học này bao gồm:</h2>
                             <div className="mt-3 flex flex-col gap-2">

@@ -1,7 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import { AddCourseRequest, Course, Section, Step } from '../types/Course.type';
+import { AddCourseRequest, Course, CourseCategory, Section, Step } from '../types/Course.type';
 import { StepProps } from 'antd';
+import { GetRegistrationCoursesRespone } from '../types/RegistrationCourse.type';
+
+export enum CouseMode {
+    CREATE,
+    UPDATE,
+}
 
 interface courseState {
     wishList: number[];
@@ -11,7 +17,50 @@ interface courseState {
         navStatus: StepProps[];
         courseCreatedData: Course;
     };
+    currentMode: CouseMode;
+    tempData: {
+        tempCourse: Course;
+        tempNavStatus: StepProps[];
+    };
+    registrationCourses: GetRegistrationCoursesRespone[];
 }
+
+const initialCourse: Course = {
+    courseIsActive: false,
+    description: '',
+    imageUrl: 'string',
+    isPublic: false,
+    knowdledgeDescription: '',
+    linkCertificated: 'string',
+    price: 0,
+    salesCampaign: 0,
+    title: '',
+    totalDuration: 0,
+    videoPreviewUrl: 'string',
+    courseCategories: [],
+    courseId: 0,
+    createAt: '',
+    linkCertificateAccounts: [],
+    orders: [],
+    publicAt: '',
+    registrationCourses: [],
+    sections: [],
+    updateAt: '',
+    wishLists: [],
+};
+
+const initialCreateNavStatus: StepProps[] = [
+    { title: 'Hiển thị', status: 'process' },
+    { title: 'Chu trình học', status: 'wait' },
+    { title: 'Xuất bản khóa học', status: 'wait' },
+];
+
+const initialUpdateNavStatus: StepProps[] = [
+    { title: 'Thông tin cơ bản', status: 'process' },
+    { title: 'Hiển thị', status: 'wait' },
+    { title: 'Chu trình học', status: 'wait' },
+    { title: 'Xuất bản khóa học', status: 'wait' },
+];
 
 const initialState: courseState = {
     wishList: [],
@@ -31,35 +80,15 @@ const initialState: courseState = {
             videoPreviewUrl: 'string',
         },
         currentStep: 0,
-        navStatus: [
-            { title: 'Hiển thị', status: 'process' },
-            { title: 'Chu trình học', status: 'wait' },
-            { title: 'Xuất bản khóa học', status: 'wait' },
-        ],
-        courseCreatedData: {
-            courseIsActive: false,
-            description: '',
-            imageUrl: 'string',
-            isPublic: false,
-            knowdledgeDescription: '',
-            linkCertificated: 'string',
-            price: 0,
-            salesCampaign: 0,
-            title: '',
-            totalDuration: 0,
-            videoPreviewUrl: 'string',
-            courseCategories: [],
-            courseId: 0,
-            createAt: '',
-            linkCertificateAccounts: [],
-            orders: [],
-            publicAt: '',
-            registrationCourses: [],
-            sections: [],
-            updateAt: '',
-            wishLists: [],
-        },
+        navStatus: initialCreateNavStatus,
+        courseCreatedData: initialCourse,
     },
+    currentMode: CouseMode.CREATE,
+    tempData: {
+        tempCourse: initialCourse,
+        tempNavStatus: [],
+    },
+    registrationCourses: [],
 };
 
 export const courseSlice = createSlice({
@@ -199,6 +228,52 @@ export const courseSlice = createSlice({
         setSectionList: (state, action: PayloadAction<Section[]>) => {
             state.addCourse.courseCreatedData.sections = action.payload;
         },
+        setCourseMode: (state, action: PayloadAction<CouseMode>) => {
+            if (action.payload != state.currentMode) {
+                const temp = state.addCourse.courseCreatedData;
+                state.addCourse.courseCreatedData = state.tempData.tempCourse;
+                state.tempData.tempCourse = temp;
+                state.currentMode = action.payload;
+                if (state.tempData.tempNavStatus.length === 0) {
+                    state.tempData.tempNavStatus =
+                        action.payload === CouseMode.CREATE
+                            ? initialUpdateNavStatus
+                            : initialCreateNavStatus;
+                    state.addCourse.navStatus =
+                        action.payload === CouseMode.CREATE
+                            ? initialCreateNavStatus
+                            : initialUpdateNavStatus;
+                } else {
+                    const navTemp = state.addCourse.navStatus;
+                    state.addCourse.navStatus = state.tempData.tempNavStatus;
+                    state.tempData.tempNavStatus = navTemp;
+                }
+            }
+        },
+        setCourseUpdate: (state, action: PayloadAction<Course>) => {
+            state.tempData.tempCourse = action.payload;
+        },
+        updateCourseCategory: (state, action: PayloadAction<CourseCategory[]>) => {
+            state.addCourse.courseCreatedData.courseCategories = action.payload;
+        },
+        setCourseDescription: (state, action: PayloadAction<string>) => {
+            state.addCourse.courseCreatedData.description = action.payload;
+        },
+        setCourseKnowledge: (state, action: PayloadAction<string>) => {
+            state.addCourse.courseCreatedData.knowdledgeDescription = action.payload;
+        },
+        setCoursePrice: (state, action: PayloadAction<number>) => {
+            state.addCourse.courseCreatedData.price = action.payload;
+        },
+        setSalesCampaign: (state, action: PayloadAction<number>) => {
+            state.addCourse.courseCreatedData.salesCampaign = action.payload;
+        },
+        setCoursePublish: (state, action: PayloadAction<boolean>) => {
+            state.addCourse.courseCreatedData.isPublic = action.payload;
+        },
+        setRegistrationCourses: (state, action: PayloadAction<GetRegistrationCoursesRespone[]>) => {
+            state.registrationCourses = action.payload;
+        },
     },
 });
 
@@ -223,6 +298,15 @@ export const {
     setStepList,
     setSection,
     setSectionList,
+    setCourseMode,
+    setCourseUpdate,
+    updateCourseCategory,
+    setCourseDescription,
+    setCourseKnowledge,
+    setCoursePrice,
+    setSalesCampaign,
+    setCoursePublish,
+    setRegistrationCourses,
 } = courseSlice.actions;
 
 export default courseSlice.reducer;

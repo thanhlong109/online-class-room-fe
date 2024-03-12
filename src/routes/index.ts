@@ -1,7 +1,7 @@
 import DefaultLayoutAdmin from '../layouts/adminLayouts/DefaultLayoutAdmin';
 import { DefaultLayout, LayoutWithRightSideBar } from '../layouts/clientLayouts';
 import LoginLayout from '../layouts/clientLayouts/LoginLayout';
-import { AddCoursePage, DashboardPage } from '../pages/AdminPages';
+import { AddCoursePage, DashboardPage, UpdateCoursePage } from '../pages/AdminPages';
 import {
     CourseDetailsPage,
     HomePage,
@@ -28,8 +28,8 @@ const publicRoutes: RouteProps[] = [
     { path: '/courses/:id', component: CourseDetailsPage, layout: DefaultLayout },
     { path: '/login', component: LoginPage, layout: LoginLayout },
     { path: '/register', component: RegisterPage, layout: LoginLayout },
-    { path: '/payment', component: PaymentPage, layout: DefaultLayout },
     { path: '/search/:id', component: SearchPage, layout: DefaultLayout},
+    { path: '/checkout', component: PaymentPage, layout: DefaultLayout },
     { path: '*', component: NotFoundPage, layout: DefaultLayout },
 ];
 
@@ -41,6 +41,7 @@ const privateRoutes: RouteProps[] = [
 const adminRoutes: RouteProps[] = [
     { path: '/admin/', component: DashboardPage, layout: DefaultLayoutAdmin },
     { path: '/admin/addCourse/', component: AddCoursePage, layout: DefaultLayoutAdmin },
+    { path: '/admin/updateCourse/:id', component: UpdateCoursePage, layout: DefaultLayoutAdmin },
     { path: '/admin/getAllCourse/', component: GetAllCourse, layout: DefaultLayoutAdmin },
     {
         path: '/admin/getAllCourse/details/:id',

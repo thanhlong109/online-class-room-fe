@@ -4,20 +4,33 @@ import { EyeInvisibleOutlined, EyeTwoTone, GoogleOutlined } from '@ant-design/ic
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { RegisterUserRequest, useRegisterUserMutation } from '../../../services/auth.services';
+<<<<<<< HEAD
 import {
     checkEmailValidaion,
     checkEmptyValidation,
     checkPasswordValidation,
 } from '../../../utils/Validation';
+=======
+import { checkEmailValidaion, checkPasswordValidation } from '../../../utils/Validation';
+import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
+import { app } from '../../../firebase/firebase';
+>>>>>>> 0af5ec2332470a2cd5fc2e1c846beab1c018ef12
 
 const initFromData: RegisterUserRequest = {
     accountEmail: '',
     accountPassword: '',
     confirmAccountPassword: '',
+<<<<<<< HEAD
     birthDate: new Date().toISOString(),
     lastName: '',
     firstName: '',
     accountPhone: 'null',
+=======
+    birthDate: '2024-03-10T04:59:03.327Z',
+    lastName: 'string',
+    firstName: 'string',
+    accountPhone: 'string',
+>>>>>>> 0af5ec2332470a2cd5fc2e1c846beab1c018ef12
 };
 
 interface validationProps {
@@ -58,6 +71,7 @@ function RegisterPage() {
         }
     }, [isRegisterSuccess]);
 
+<<<<<<< HEAD
     const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();  
         try {
@@ -84,6 +98,10 @@ function RegisterPage() {
                 description: message,
             });
         }
+=======
+    const handleOnSubmit = async () => {
+        await registerUser(formData);
+>>>>>>> 0af5ec2332470a2cd5fc2e1c846beab1c018ef12
     };
 
     const handleOnFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,6 +141,25 @@ function RegisterPage() {
         setFormData({ ...formData, confirmAccountPassword: e.target.value });
     };
 
+    const handleLoginWithGoogle = async () => {
+        try {
+            const auth = await getAuth(app);
+            const provider = new GoogleAuthProvider();
+            const userData = await signInWithPopup(auth, provider);
+            console.log(userData);
+            const { displayName, email, photoURL } = userData.user;
+            // Lưu thông tin người dùng vào localStorage
+            localStorage.setItem(
+                'userLogin',
+                JSON.stringify({ name: displayName, email, avatar: photoURL }),
+            );
+
+            navigate('/');
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <div className="flex bg-greenHome">
             <div className="w-full bg-white sm:w-[30%] sm:rounded-br-xl sm:rounded-tr-xl md:h-screen">
@@ -132,6 +169,7 @@ function RegisterPage() {
                             <h1 className="text-3xl">Đăng ký</h1>
                             <p className="sm:max-xl:text-md mt-2 text-base text-grayLine">
                                 Mừng đến với hệ thống! Vui lòng điền thông tin bên dưới để tiếp tục
+<<<<<<< HEAD
                             </p>
                         </div>
                         <div>
@@ -162,6 +200,8 @@ function RegisterPage() {
                             />
                             <p className="ml-2 mt-1 text-sm text-red-500">
                                 {emptyValidation.errorMessage}
+=======
+>>>>>>> 0af5ec2332470a2cd5fc2e1c846beab1c018ef12
                             </p>
                         </div>
                         <div>
@@ -232,6 +272,7 @@ function RegisterPage() {
                     <Button
                         type="default"
                         className=" flex h-11 w-[70%] items-center justify-center space-x-2 text-lg"
+                        onClick={handleLoginWithGoogle}
                     >
                         <GoogleOutlined style={{ fontSize: '24px', color: 'red' }} />
                         <span className="text-black">Google</span>

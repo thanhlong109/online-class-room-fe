@@ -1,18 +1,21 @@
 import { Button, CircularProgress } from '@mui/material';
-import { Input, StepProps, Steps, Tag, message } from 'antd';
+import { Input, Skeleton, StepProps, Steps, Tag, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
 import {
+    CouseMode,
     addCourseSection,
     setAddCourse,
     setCourseCreatedData,
+    setCourseMode,
 } from '../../../../slices/courseSlice';
-import { CategoryRespone } from '../../../../types/Course.type';
 import { MultipleInput } from '../../../../components';
 import CourseContent from './CourseContent';
 import { useAddNewCourseMutation } from '../../../../services/course.services';
 import { useAddSectionMutation } from '../../../../services/section.services';
+import { useGetCategoryQuery } from '../../../../services/categoryService';
+import { CategoryRespone } from '../../../../types/Course.type';
 
 const totalSteps: StepProps[] = [
     { title: 'Tiêu đề' },
@@ -22,21 +25,15 @@ const totalSteps: StepProps[] = [
 ];
 
 const { CheckableTag } = Tag;
-const tagsData: CategoryRespone[] = [
-    { categoryId: 1, categoryName: 'Lập trình web', categoryDescription: '' },
-    { categoryId: 2, categoryName: 'AI', categoryDescription: '' },
-    { categoryId: 3, categoryName: 'Cơ sở dữ liệu', categoryDescription: '' },
-    { categoryId: 4, categoryName: 'Giải thuật', categoryDescription: '' },
-    { categoryId: 5, categoryName: 'An toàn thông tin', categoryDescription: '' },
-    { categoryId: 6, categoryName: 'Lập trình Mobile', categoryDescription: '' },
-    { categoryId: 7, categoryName: 'Lập trình ứng dụng', categoryDescription: '' },
-    { categoryId: 8, categoryName: 'Blockchain', categoryDescription: '' },
-    { categoryId: 9, categoryName: 'IoT', categoryDescription: '' },
-    { categoryId: 10, categoryName: 'Lập trình game', categoryDescription: '' },
-];
 
 const AddCoursePage = () => {
     const dispatch = useDispatch();
+    const {
+        isLoading: isGetCategoryLoading,
+        isSuccess: isGetCategorySuccess,
+        data: getCategoryData,
+    } = useGetCategoryQuery();
+    const [tagsData, setTagsData] = useState<CategoryRespone[]>([]);
     const addCourseState = useSelector((state: RootState) => state.course.addCourse);
     const [addCourseMutation, { isLoading, isSuccess, data }] = useAddNewCourseMutation();
     const [addSection, { isSuccess: isAddSectionSuccess, data: sectionData }] =
@@ -51,6 +48,16 @@ const AddCoursePage = () => {
             addSection({ courseId: data.courseId, title: 'Giới thiệu khóa học', position: 1 });
         }
     }, [isSuccess]);
+
+    useEffect(() => {
+        if (isGetCategorySuccess && getCategoryData) {
+            setTagsData([...getCategoryData]);
+        }
+    }, [isGetCategorySuccess]);
+
+    useEffect(() => {
+        dispatch(setCourseMode(CouseMode.CREATE));
+    }, []);
 
     useEffect(() => {
         if (isAddSectionSuccess && sectionData) {
@@ -156,20 +163,23 @@ const AddCoursePage = () => {
                                 <p className="mt-3 text-base">
                                     Chọn những lĩnh vực mà khóa học của bạn có liên quan
                                 </p>
-                                <div className="m-auto mt-8 flex max-w-[700px] flex-wrap gap-3">
-                                    {tagsData.map(({ categoryId, categoryName }) => (
-                                        <CheckableTag
-                                            className="select-none p-1 text-sm"
-                                            key={categoryId}
-                                            checked={selectedTags.includes(categoryId)}
-                                            onChange={(checked) =>
-                                                handleTagChange(categoryId, checked)
-                                            }
-                                        >
-                                            {categoryName}
-                                        </CheckableTag>
-                                    ))}
-                                </div>
+                                {!isGetCategoryLoading && (
+                                    <div className="m-auto mt-8 flex max-w-[700px] flex-wrap gap-3">
+                                        {tagsData.map(({ catgoryId, name }) => (
+                                            <CheckableTag
+                                                className="select-none p-1 text-sm"
+                                                key={catgoryId}
+                                                checked={selectedTags.includes(catgoryId)}
+                                                onChange={(checked) =>
+                                                    handleTagChange(catgoryId, checked)
+                                                }
+                                            >
+                                                {name}
+                                            </CheckableTag>
+                                        ))}
+                                    </div>
+                                )}
+                                {isGetCategoryLoading && <Skeleton active />}
                             </>
                         )}
                         {currentStep === 3 && (

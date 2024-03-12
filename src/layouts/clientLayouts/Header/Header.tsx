@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store';
 import { setUserInfo } from '../../../slices/userSlice';
 import { loadUser } from '../../../slices/authSlice';
-import { useGetAccessTokenLocal } from '../../../hooks/appHook';
+import { LocalUserData } from '../../../types/Account.type';
 
 const Header: React.FC = () => {
     const navigate = useNavigate();
@@ -48,13 +48,22 @@ const Header: React.FC = () => {
     
     //load user data
     const dispatch = useDispatch();
-    const userLocalData = useGetAccessTokenLocal();
+    const [userLocalData, setUserLocalData] = useState<LocalUserData | null>(null);
+    const isLogin = useSelector((state: RootState) => state.auth.isLogin);
+    const wishlistState = useSelector((state: RootState) => state.course.wishList);
+    useEffect(() => {
+        const user = localStorage.getItem('user');
+        if (user) {
+            setUserLocalData(JSON.parse(user));
+        }
+    }, []);
+
     const { data, isSuccess, refetch } = useGetUserInfoQuery(
         userLocalData
             ? { email: userLocalData.email, accessToken: userLocalData.accessToken }
             : { email: null, accessToken: null },
     );
-    const isLogin = useSelector((state: RootState) => state.auth.isLogin);
+
     useEffect(() => {
         if (isSuccess && data) {
             dispatch(loadUser());
@@ -93,6 +102,16 @@ const Header: React.FC = () => {
     const handleOpenMenuToggle = () => {
         setOpen((pre) => !pre);
     };
+    const [loginGoogle, setLoginGoogle] = useState(false);
+    const [userAvatar, setUserAvatar] = useState('');
+    useEffect(() => {
+        const userDataString = localStorage.getItem('userLogin');
+        if (userDataString) {
+            const userData = JSON.parse(userDataString);
+            setUserAvatar(userData.avatar);
+            setLoginGoogle(true);
+        }
+    }, []);
 
     return (
         <>
@@ -105,13 +124,6 @@ const Header: React.FC = () => {
                     </div>
                     <h1>
                         <Link to={'/'}>
-                            {/* <Typography.Title
-                                className="!text-xl md:!text-2xl"
-                                style={{ fontWeight: 'bold', margin: '0' }}
-                                level={2}
-                            >
-                                EStudyHub
-                            </Typography.Title> */}
                             <div className="hidden  items-center justify-center md:flex">
                                 <img
                                     className="h-[40px]"
@@ -152,7 +164,10 @@ const Header: React.FC = () => {
                         <div className="cursor-pointer ">
                             <Popover content={<FavoritePopover />} trigger="hover">
                                 <IconButton>
-                                    <Badge count="14" color="#a435f0">
+                                    <Badge
+                                        count={wishlistState.length > 0 ? wishlistState.length : ''}
+                                        color="#a435f0"
+                                    >
                                         <FavoriteBorderIcon />
                                     </Badge>
                                 </IconButton>
@@ -161,7 +176,7 @@ const Header: React.FC = () => {
                         <div className="cursor-pointer">
                             <Notification />
                         </div>
-                        {!isLogin && (
+                        {!isLogin && !loginGoogle && (
                             <div className="flex gap-3">
                                 <Button
                                     variant="outlined"
@@ -177,7 +192,7 @@ const Header: React.FC = () => {
                                 </Button>
                             </div>
                         )}
-                        {isLogin && (
+                        {/* {isLogin  && (
                             <div>
                                 <Tooltip title="Quản lý tài khoản">
                                     <Link to={'/user/12'}>
@@ -185,6 +200,26 @@ const Header: React.FC = () => {
                                     </Link>
                                 </Tooltip>
                             </div>
+                        )} */}
+                        {isLogin ? (
+                            <div>
+                                <Tooltip title="Quản lý tài khoản">
+                                    <Link to={'/user/12'}>
+                                        <UserAvatar className="h-[64px] w-[64px] cursor-pointer md:h-[48px] md:w-[48px]" />
+                                    </Link>
+                                </Tooltip>
+                            </div>
+                        ) : (
+                            loginGoogle && (
+                                <div>
+                                    <Tooltip title="Quản lí tài khoản">
+                                        <img
+                                            src={userAvatar}
+                                            className="h-[64px] w-[64px] cursor-pointer rounded-full md:h-[48px] md:w-[48px]"
+                                        />
+                                    </Tooltip>
+                                </div>
+                            )
                         )}
                     </div>
                 </div>

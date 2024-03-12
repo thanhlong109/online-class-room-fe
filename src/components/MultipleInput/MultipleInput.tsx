@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { MultipleInputItem } from '..';
 import { Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { SizeType } from 'antd/es/config-provider/SizeContext';
 
 interface MultipleInputProps {
     placeholders?: string[];
@@ -10,6 +11,7 @@ interface MultipleInputProps {
     values: string;
     maxInputItem: number;
     maxLengthInput?: number;
+    size?: SizeType;
 }
 
 const MultipleInput = ({
@@ -19,6 +21,7 @@ const MultipleInput = ({
     values,
     maxInputItem,
     maxLengthInput = 60,
+    size,
 }: MultipleInputProps) => {
     const [arr, setArr] = useState<string[]>(
         values.split(seperator).filter((value) => value !== ''),
@@ -49,6 +52,7 @@ const MultipleInput = ({
                         setStore={setArr}
                         index={index}
                         placeholder={placeholders?.[index]}
+                        size={size}
                     />
                 ))}{' '}
                 {currentNum < maxInputItem && (

@@ -1,5 +1,6 @@
 import { ref, deleteObject } from 'firebase/storage';
-import { firebaseStorage } from '../config';
+import { firebaseStorage } from '../firebase/firebase';
+// import { firebaseStorage } from '../config';
 
 export const deleteFile = (
     filePath: string,

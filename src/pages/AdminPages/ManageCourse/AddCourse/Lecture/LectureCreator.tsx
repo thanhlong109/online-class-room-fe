@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Button, Input, message } from 'antd';
+import { Button, Input, Popconfirm, message } from 'antd';
 import { CircularProgress, IconButton } from '@mui/material';
 import DoneIcon from '@mui/icons-material/Done';
 import CreateIcon from '@mui/icons-material/Create';
@@ -18,7 +18,7 @@ import LectureQuizzContent from './LectureQuizzContent';
 import { Step } from '../../../../../types/Course.type';
 import { Button as MuiButton } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { RichTextEditor } from '../../../../../components';
+import { EditableItem, RenderRichText, RichTextEditor } from '../../../../../components';
 
 interface LectureProps {
     position: number;
@@ -37,6 +37,7 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
     const dispatch = useDispatch();
     const [isCreateFirst, setIsCreateFirst] = useState(isCreate);
     const [tempLable, setTempLable] = useState('');
+    const [tempDescription, setTempDescription] = useState(step ? step.stepDescription : '');
     const [addStepMutation, { isSuccess, isLoading, data }] = useAddStepMutation();
     const [
         updateStepMutation,
@@ -105,7 +106,7 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
     useEffect(() => {
         if (isSuccess && data) {
             dispatch(addCourseStep(data));
-            dispatch(setStep(data));
+            //dispatch(setStep(data));
             setIsCreateFirst(false);
             setIsEdit(false);
         }
@@ -123,12 +124,12 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
         setLectureState(LectureState.SELECTED_CONTENT);
     };
 
-    const handleOnSaveDescription = (value: string) => {
+    const handleOnSaveDescription = () => {
         updateStepMutation({
             duration: step!.duration,
             position: position,
             quizId: step!.quizId,
-            stepDescription: value,
+            stepDescription: tempDescription!,
             stepId: step!.stepId,
             title: step!.title,
             videoUrl: step!.videoUrl,
@@ -207,17 +208,29 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
                                     <IconButton
                                         disabled={!isHovered}
                                         onClick={() => setIsEdit(true)}
+                                        color="info"
                                         size="small"
                                     >
                                         <CreateIcon className="!text-xl" />
                                     </IconButton>
-                                    <IconButton
-                                        disabled={!isHovered}
-                                        onClick={handleOnRemoveClick}
-                                        size="small"
+                                    <Popconfirm
+                                        title="Xác nhận xóa"
+                                        description="Bạn có chắc là muốn xóa ? toàn bộ nội dung trong bài này sẽ bị mất!"
+                                        onConfirm={() => {}}
+                                        onCancel={() => {}}
+                                        okText="Yes"
+                                        cancelText="No"
+                                        okButtonProps={{ style: { background: '#d32f2f' } }}
                                     >
-                                        <DeleteIcon className="!text-xl" />
-                                    </IconButton>
+                                        <IconButton
+                                            disabled={!isHovered}
+                                            onClick={handleOnRemoveClick}
+                                            color="error"
+                                            size="small"
+                                        >
+                                            <DeleteIcon className="!text-xl" />
+                                        </IconButton>
+                                    </Popconfirm>
                                 </motion.div>
                             </div>
                         )}
@@ -291,7 +304,7 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
                                     )}
                                 {LectureState.SELECTED_CONTENT === lectureState &&
                                     lectureSelectedType === LectureType.QUIZZ && (
-                                        <LectureQuizzContent />
+                                        <LectureQuizzContent step={step!} />
                                     )}
                                 {!isAddDescription &&
                                     LectureState.SELECTED_CONTENT === lectureState && (
@@ -308,14 +321,36 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
                                     )}
                                 {isAddDescription && (
                                     <div className="mt-4">
-                                        <RichTextEditor
-                                            initialValue={
-                                                step?.stepDescription! === 'string'
-                                                    ? ''
-                                                    : step?.stepDescription!
+                                        <EditableItem
+                                            displayElement={
+                                                <div className="flex items-center gap-4">
+                                                    <p className="w-fit font-medium text-[#1976d2]">
+                                                        Miêu tả:
+                                                    </p>
+                                                    <RenderRichText
+                                                        jsonData={step ? step.stepDescription : ''}
+                                                    />
+                                                </div>
                                             }
-                                            onSave={handleOnSaveDescription}
-                                        />
+                                            editElement={
+                                                <div className="w-full">
+                                                    <RichTextEditor
+                                                        initialValue={
+                                                            step?.stepDescription! === 'string'
+                                                                ? ''
+                                                                : tempDescription!
+                                                        }
+                                                        onChange={(value) => {
+                                                            if (step) {
+                                                                setTempDescription(value);
+                                                            }
+                                                        }}
+                                                    />
+                                                </div>
+                                            }
+                                            onDoneClick={handleOnSaveDescription}
+                                            showEditFirst={step!.stepDescription.length < 10}
+                                        ></EditableItem>
                                     </div>
                                 )}
                             </div>
