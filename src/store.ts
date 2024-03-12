@@ -4,7 +4,16 @@ import { coursesApi } from './services/course.services';
 import { authApi } from './services/auth.services';
 import authSlice from './slices/authSlice';
 import userSlice from './slices/userSlice';
-import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
+import {
+    persistReducer,
+    FLUSH,
+    REHYDRATE,
+    PAUSE,
+    PERSIST,
+    PURGE,
+    REGISTER,
+    persistStore,
+} from 'redux-persist';
 import sessionStorage from 'redux-persist/es/storage/session';
 import { wishlistApi } from './services/wishlist.services';
 import courseSlice from './slices/courseSlice';
@@ -18,11 +27,13 @@ import { questionApi } from './services/question.services';
 import { accountApi } from './services/account.services';
 import { registrationCourseApi } from './services/registrationCourse.services';
 import registrationCourseSlice from './slices/registrationCourseSlice';
+import { orderApi } from './services/order.services';
+import orderSlice from './slices/orderSlice';
 
 export const persistConfig = {
     key: 'root',
     storage: sessionStorage,
-    whitelist: ['auth', 'user', 'course'],
+    whitelist: ['auth', 'user', 'course', 'quiz', 'order', 'accountAll', 'courseAll'],
 };
 
 const rootReducer = combineReducers({
@@ -30,6 +41,7 @@ const rootReducer = combineReducers({
     user: userSlice,
     course: courseSlice,
     quiz: quizSlice,
+    order: orderSlice,
     [coursesApi.reducerPath]: coursesApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [wishlistApi.reducerPath]: wishlistApi.reducer,
@@ -38,6 +50,7 @@ const rootReducer = combineReducers({
     [categoryApi.reducerPath]: categoryApi.reducer,
     [quizApi.reducerPath]: quizApi.reducer,
     [questionApi.reducerPath]: questionApi.reducer,
+    [orderApi.reducerPath]: orderApi.reducer,
     courseAll: getCourseAllSlice,
     [accountApi.reducerPath]: accountApi.reducer,
     accountAll: getAllAccountSlice,
@@ -64,7 +77,8 @@ export const store = configureStore({
             .concat(quizApi.middleware)
             .concat(questionApi.middleware)
             .concat(accountApi.middleware)
-            .concat(registrationCourseApi.middleware),
+            .concat(registrationCourseApi.middleware)
+            .concat(orderApi.middleware),
 });
 
 // get roostate and appdispatch from store handle for typescript
@@ -72,5 +86,6 @@ export type RootState = ReturnType<typeof store.getState>;
 
 export type AppDispatch = typeof store.dispatch;
 
+export const persistor = persistStore(store);
 //
 //setupListeners(store.dispatch);

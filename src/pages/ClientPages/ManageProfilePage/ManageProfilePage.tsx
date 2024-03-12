@@ -16,12 +16,9 @@ import { ManageProfileMenu } from './ManageProfile.enum';
 import { Profile, Security, Favorite as FavoriteComponent, UploadAvatar } from './Components';
 import { Divider } from 'antd';
 import { LogoutOutlined } from '@mui/icons-material';
-import { useAppDispatch } from '../../../hooks/appHook';
-import { logoutUser } from '../../../slices/authSlice';
-import { useNavigate } from 'react-router-dom';
 import { UserAvatar } from '../../../layouts/clientLayouts/Header/Components';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../store';
+import { RootState, persistor } from '../../../store';
 
 interface Menu {
     type: ManageProfileMenu;
@@ -31,8 +28,6 @@ interface Menu {
 }
 
 const ManageProfilePage = () => {
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
     const userFullName = useSelector((state: RootState) => {
         return `${state.user.firstName} ${state.user.lastName}`;
     });
@@ -121,8 +116,10 @@ const ManageProfilePage = () => {
                         <Divider />
                         <Button
                             onClick={() => {
-                                dispatch(logoutUser());
-                                navigate('/');
+                                localStorage.clear();
+                                persistor.purge().then(() => {
+                                    window.location.href = '/';
+                                });
                             }}
                             className="!w-full !border-[#2d2f31] !text-sm !font-bold !text-[#2d2f31] hover:!border-[#ef4444] hover:!bg-[#ff5d5d0a] hover:!text-red-500"
                             variant="outlined"

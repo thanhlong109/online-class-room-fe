@@ -48,14 +48,14 @@ function LoginPage() {
         }
     }, [isLoginError]);
     useEffect(() => {
-        if (isLoginSuccess) {
+        if (isLoginSuccess && loginData) {
             const userData: AuthToken = {
                 accessToken: loginData.jwtToken,
                 refreshToken: loginData.jwtRefreshToken,
                 email: formData.accountEmail,
                 isLogin: true,
             };
-            useDispach(setUser(userData));
+            useDispach(setUser({ ...userData }));
             navigate('/');
         }
     }, [isLoginSuccess]);

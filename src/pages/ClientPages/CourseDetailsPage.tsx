@@ -56,6 +56,7 @@ const CourseDetailsPage = () => {
                                         <div className="mt-3 grid grid-cols-2 gap-2">
                                             {course.knowdledgeDescription
                                                 .split('|')
+                                                .filter((value) => value.trim().length > 0)
                                                 .map((text, index) => (
                                                     <div
                                                         key={index}

@@ -11,6 +11,7 @@ import { CircularProgress, IconButton } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { addWishList, removeWishlist } from '../../slices/courseSlice';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
     courseId: number;
@@ -18,10 +19,12 @@ interface Props {
 
 const FavoriteButton = ({ courseId }: Props) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     //wishlist ui
     const [isFavorite, setFavorite] = useState(false);
     //load wishlist from sever and check
     const isWishlist = useCheckCourseIsInWishlist(courseId);
+    const isLogin = useSelector((state: RootState) => state.auth.isLogin);
 
     const wishList = useSelector((state: RootState) => state.course.wishList);
 
@@ -38,12 +41,14 @@ const FavoriteButton = ({ courseId }: Props) => {
     //for handle event
     const handleOnClickFavorite = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.stopPropagation();
-        if (accontId && courseId) {
+        if (isLogin && accontId && courseId) {
             if (isFavorite) {
                 await removeWishListMutate({ accountId: accontId, courseId: courseId });
             } else {
                 await addWishListMutate({ accountId: accontId, courseId: courseId });
             }
+        } else {
+            navigate('/login');
         }
     };
 

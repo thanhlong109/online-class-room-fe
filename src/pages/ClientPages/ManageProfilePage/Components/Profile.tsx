@@ -45,7 +45,6 @@ const Profile = () => {
             id: formData.id,
             profileImg: formData.profileImg,
         };
-        console.log(userData);
         updateUserMutate(userData);
     };
 

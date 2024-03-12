@@ -1,5 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { RegistrationCourse } from '../types/RegistrationCourse.type';
+
+import {
+    CheckRegistrationCourseRequest,
+    CheckRegistrationCourseRespone,
+    RegistrationCourse,
+} from '../types/RegistrationCourse.type';
 
 export const registrationCourseApi = createApi({
     reducerPath: 'registrationCourseApi',
@@ -25,7 +30,16 @@ export const registrationCourseApi = createApi({
                 return [...data];
             },
         }),
+        checkRegistrationCourse: build.query<
+            CheckRegistrationCourseRespone,
+            CheckRegistrationCourseRequest
+        >({
+            query: (para: CheckRegistrationCourseRequest) => ({
+                url: `api/RegistrationCourse/CheckRegistration?accountId=${para.accountId}&courseId=${para.courseId}`,
+                method: 'get',
+            }),
+        }),
     }),
 });
-
-export const { useGetRegisterCourseByAccountIdQuery } = registrationCourseApi;
+export const { useGetRegisterCourseByAccountIdQuery, useCheckRegistrationCourseQuery } =
+    registrationCourseApi;
