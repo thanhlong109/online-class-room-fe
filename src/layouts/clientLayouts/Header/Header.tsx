@@ -1,7 +1,7 @@
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Button, IconButton, styled } from '@mui/material';
 import { Badge, Divider, Drawer, Input, Popover, Tooltip, Typography } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FavoritePopover, MyLearningPopover, UserAvatar } from './Components';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useEffect, useState } from 'react';
@@ -14,7 +14,29 @@ import { setUserInfo } from '../../../slices/userSlice';
 import { loadUser } from '../../../slices/authSlice';
 import { LocalUserData } from '../../../types/Account.type';
 
-function Header() {
+const Header: React.FC = () => {
+    const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const handleSearch = () => {
+        // Kiểm tra nếu có dữ liệu tìm kiếm mới thực hiện chuyển hướng
+        if (searchQuery.trim() !== '') {
+            navigate(`/search/${encodeURIComponent(searchQuery)}`);
+            // Sau khi chuyển hướng, bạn có thể gọi API ở đây bằng cách sử dụng dữ liệu đã nhập
+        }
+    };
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(event.target.value);
+    };
+
+    const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        // Kiểm tra nếu người dùng ấn phím Enter
+        if (event.key === 'Enter') {
+            handleSearch();
+        }
+    };
+
     //load user data
     const dispatch = useDispatch();
     const [userLocalData, setUserLocalData] = useState<LocalUserData | null>(null);
@@ -114,9 +136,13 @@ function Header() {
                     </div>
                     <StyledSearch
                         allowClear
+                        autoFocus 
                         className="flex-1 md:max-w-[700px]"
                         placeholder="Tìm kiếm khóa học"
                         size="large"
+                        value={searchQuery}
+                        onChange={handleInputChange}
+                        onKeyPress={handleKeyPress}
                     />
                     <div className="hidden cursor-pointer text-[#2d2f31] hover:text-[#a435f0] md:block">
                         <Popover content={<MyLearningPopover />} trigger="hover">
