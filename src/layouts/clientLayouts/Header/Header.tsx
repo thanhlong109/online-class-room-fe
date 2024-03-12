@@ -21,7 +21,7 @@ const Header: React.FC = () => {
     const handleSearch = () => {
         // Kiểm tra nếu có dữ liệu tìm kiếm mới thực hiện chuyển hướng
         if (searchQuery.trim() !== '') {
-            navigate(`/courses/search/${encodeURIComponent(searchQuery)}`);
+            navigate(`/search/${encodeURIComponent(searchQuery)}`);
             // Sau khi chuyển hướng, bạn có thể gọi API ở đây bằng cách sử dụng dữ liệu đã nhập
         }
     };

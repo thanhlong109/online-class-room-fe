@@ -15,6 +15,7 @@ import PaymentPage from '../pages/ClientPages/CheckoutPage/PaymentPage';
 import GetAllCourse from '../pages/AdminPages/ManageCourse/GetAllCourse/GetAllCourse';
 import ViewCourseDetails from '../pages/AdminPages/ManageCourse/ViewCourseDetails/ViewCourseDetails';
 import GetAllAccount from '../pages/AdminPages/ManageUser/GetAllAccount/GetAllAccount';
+import { SearchPage } from '../pages/ClientPages/SearchPage';
 
 interface RouteProps {
     path: string;
@@ -28,6 +29,7 @@ const publicRoutes: RouteProps[] = [
     { path: '/login', component: LoginPage, layout: LoginLayout },
     { path: '/register', component: RegisterPage, layout: LoginLayout },
     { path: '/payment', component: PaymentPage, layout: DefaultLayout },
+    { path: '/search/:id', component: SearchPage, layout: DefaultLayout},
     { path: '*', component: NotFoundPage, layout: DefaultLayout },
 ];
 
