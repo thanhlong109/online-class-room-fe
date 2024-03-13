@@ -3,12 +3,13 @@ import CourseStep from './CourseStep';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { FormatType, secondsToTimeString } from '../../utils/TimeFormater';
 import { motion } from 'framer-motion';
-import { Section } from '../../types/Course.type';
+import { Section, Step } from '../../types/Course.type';
 
 interface SectionProps {
     section: Section;
     active: boolean | undefined;
     isWrap: boolean;
+    onSelectStep?: (step: Step) => void;
 }
 
 const CourseSectionItem = ({ section, active, isWrap }: SectionProps) => {

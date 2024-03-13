@@ -8,7 +8,7 @@ interface Props {
 
 const CourseStep = ({ step, active }: Props) => {
     const { position, duration } = step;
-    const formattedTime = secondsToTimeString(duration, FormatType.MM_SS);
+    const formattedTime = secondsToTimeString(duration, FormatType.MM_SS, [' m', ' s']);
     const handleOnClick = () => {
         if (active) {
             //dis[play video]
