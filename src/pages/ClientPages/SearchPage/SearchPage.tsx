@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetAllCoursesQuery } from '../../../services/course.services';
-import { Course, GetAllCourse } from '../../../types/Course.type';
+import { Course } from '../../../types/Course.type';
 import { useNavigate } from 'react-router-dom';
 
 const SearchPage = () => {
     const navigate = useNavigate();
-
     const { id: searchTerm } = useParams<{ id: string }>();
     const [currentPage, setCurrentPage] = useState<number>(1);
     const {
@@ -50,7 +49,9 @@ const SearchPage = () => {
                                 Tổng thời gian: {Math.round(course.totalDuration / 60000)} phút
                             </p>
                             <p className="text-sm">
-                                Cập nhật mới nhất: {new Date(course.updateAt).toLocaleDateString()}
+                                Cập nhật mới nhất: {
+                                new Date(course.updateAt).toLocaleDateString('en-GB')
+                                }
                             </p>
                         </div>
                     </div>

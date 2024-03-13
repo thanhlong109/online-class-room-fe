@@ -1,7 +1,7 @@
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Button, IconButton, styled } from '@mui/material';
 import { Badge, Divider, Drawer, Input, Popover, Tooltip, Typography } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FavoritePopover, MyLearningPopover, UserAvatar } from './Components';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useEffect, useState } from 'react';
@@ -37,6 +37,15 @@ const Header: React.FC = () => {
         }
     };
 
+    const location = useLocation();
+
+    useEffect(() => {
+      // Reset search input when not on the search page
+      if (!location.pathname.startsWith('/search')) {
+        setSearchQuery('');
+      }
+    }, [location]); // Re-run this effect when the location changes
+    
     //load user data
     const dispatch = useDispatch();
     const [userLocalData, setUserLocalData] = useState<LocalUserData | null>(null);
