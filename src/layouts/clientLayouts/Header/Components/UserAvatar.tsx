@@ -45,6 +45,7 @@ const UserAvatar = ({ className }: Props) => {
     useEffect(() => {
         setUserName(loadUsername);
     }, [loadUsername]);
+
     return (
         <>
             {userAvatar && <Avatar className={className} src={userAvatar} />}
