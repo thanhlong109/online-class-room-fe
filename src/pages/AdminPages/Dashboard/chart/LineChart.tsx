@@ -34,8 +34,8 @@ const LineChart = () => {
         },
     };
     return (
-        <Card title="Biểu đồ số lượng đăng kí khóa học" className="ml-6 ">
-            <Line data={userData} options={options} />
+        <Card title="Biểu đồ số lượng đăng kí khóa học" className="ml-6 max-w-[700px]">
+            <Line data={userData} options={options} width="100%" />
         </Card>
     );
 };
