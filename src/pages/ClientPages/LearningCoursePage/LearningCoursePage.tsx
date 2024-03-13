@@ -8,6 +8,7 @@ import { Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     LessionType,
+    gotToNextStep,
     setLearingCourse,
     setShowAnswer,
     tryAnswerAgain,
@@ -27,7 +28,7 @@ const LearningCoursePage = () => {
         data: quizData,
         isLoading: isQuizDataLoading,
         refetch,
-    } = useGetQuizDetailQuery(stepActive.quizId === 1 ? -1 : stepActive.quizId);
+    } = useGetQuizDetailQuery(stepActive?.quizId === 1 ? -1 : stepActive?.quizId);
     useEffect(() => {
         const getCourseId = location.pathname.split('/').pop();
         if (getCourseId) {
@@ -106,6 +107,7 @@ const LearningCoursePage = () => {
                                     )}
                                     {isShowAnswer && correctRate >= 0.8 && (
                                         <Button
+                                            onClick={() => dispatch(gotToNextStep())}
                                             className="self-end"
                                             variant="outlined"
                                             color="success"
@@ -124,7 +126,11 @@ const LearningCoursePage = () => {
                             />
                         </div>
                         {stepActiveType === LessionType.VIDEO && (
-                            <Button className="self-end" variant="outlined">
+                            <Button
+                                className="self-end"
+                                onClick={() => dispatch(gotToNextStep())}
+                                variant="outlined"
+                            >
                                 Tiếp tục
                             </Button>
                         )}

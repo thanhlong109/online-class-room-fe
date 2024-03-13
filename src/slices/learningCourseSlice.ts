@@ -1,11 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../store';
+import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 import { Course, Step } from '../types/Course.type';
-import { QuizRespone } from '../types/Quiz.type';
 
 export enum LessionType {
     QUIZ,
     VIDEO,
+    DONE,
 }
 
 export interface QuestionData {
@@ -24,6 +23,7 @@ export interface learningCourseSliceData {
         tempActiveStepIndex: number;
         tempActiveSectionIndex: number;
     };
+    isDone: boolean;
 }
 const initialStep: Step = {
     duration: 0,
@@ -71,6 +71,7 @@ const initialState: learningCourseSliceData = {
         tempActiveSectionIndex: 0,
         tempActiveStepIndex: 0,
     },
+    isDone: false,
 };
 
 export const learningCourseSlice = createSlice({
@@ -117,7 +118,32 @@ export const learningCourseSlice = createSlice({
             state.isShowAnswer = action.payload;
         },
         gotToNextStep: (state) => {
-            //state.stepActive =
+            const stepIndex = state.temp.tempActiveStepIndex;
+            const sectionIndex = state.temp.tempActiveSectionIndex;
+            let step;
+            if (stepIndex < state.learningCourse.sections[sectionIndex].steps.length - 1) {
+                step = state.learningCourse.sections[sectionIndex].steps[stepIndex + 1];
+                state.stepActive = step;
+                state.temp.tempActiveSectionIndex = sectionIndex;
+                state.temp.tempActiveStepIndex = stepIndex + 1;
+            } else {
+                if (sectionIndex + 1 < state.learningCourse.sections.length - 1) {
+                    step = state.learningCourse.sections[sectionIndex + 1].steps[0];
+                    state.stepActive = step;
+                    state.temp.tempActiveSectionIndex = sectionIndex + 1;
+                    state.temp.tempActiveStepIndex = 0;
+                } else {
+                    state.isDone = true;
+                }
+            }
+            state.stepActiveType =
+                step === undefined
+                    ? LessionType.DONE
+                    : step.quizId != 1
+                      ? LessionType.QUIZ
+                      : LessionType.VIDEO;
+            state.isShowAnswer = false;
+            state.quizAnswer = [];
         },
         tryAnswerAgain: (state) => {
             const step =
@@ -142,6 +168,7 @@ export const {
     setQuestionAnswer,
     setShowAnswer,
     tryAnswerAgain,
+    gotToNextStep,
 } = learningCourseSlice.actions;
 
 export default learningCourseSlice.reducer;

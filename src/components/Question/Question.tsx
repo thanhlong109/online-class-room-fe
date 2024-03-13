@@ -23,7 +23,6 @@ const QuestionUI = ({ question, seperator, position }: QuestionProps) => {
     const questionData = useSelector((state: RootState) =>
         state.learningCourse.quizAnswer.find((q) => q.questionId === question.questionId),
     );
-    console.log(questionData?.userSelectedAnswer, questionData?.correctAnswer);
     useEffect(() => {
         dispatch(
             setQuestionAnswer({
@@ -40,10 +39,6 @@ const QuestionUI = ({ question, seperator, position }: QuestionProps) => {
                 className="grid grid-cols-2 gap-8 px-4"
                 onChange={(e) => {
                     if (questionData) {
-                        console.log({
-                            ...questionData,
-                            userSelectedAnswer: e.target.value,
-                        });
                         dispatch(
                             setQuestionAnswer({
                                 ...questionData,
