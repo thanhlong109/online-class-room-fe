@@ -9,7 +9,6 @@ import {
     checkEmptyValidation,
     checkPasswordValidation,
 } from '../../../utils/Validation';
-import { checkEmailValidaion, checkPasswordValidation } from '../../../utils/Validation';
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
 import { app } from '../../../firebase/firebase';
 
@@ -42,12 +41,9 @@ function RegisterPage() {
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
     const [
-        registerUser, { 
-            isLoading: isRegisterLoading, 
-            isSuccess: isRegisterSuccess, 
-            isError: isRegisterError 
-        }] = useRegisterUserMutation();
-
+        registerUser,
+        { isLoading: isRegisterLoading, isSuccess: isRegisterSuccess, isError: isRegisterError },
+    ] = useRegisterUserMutation();
 
     useEffect(() => {
         if (isRegisterError) {
@@ -62,20 +58,21 @@ function RegisterPage() {
     }, [isRegisterSuccess]);
 
     const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();  
+        e.preventDefault();
         try {
-            // const result = await registerUser(formData).unwrap();  
-            await registerUser(formData).unwrap();  
+            // const result = await registerUser(formData).unwrap();
+            await registerUser(formData).unwrap();
             // Display success notification
             notification.success({
                 message: 'Đăng kí thành công!',
-                description: 'Bạn đã đăng kí thành công. Hãy kiểm tra email đăng kí của bạn để xác thực tài khoản!',
-                duration: 2.5, 
-            });    
+                description:
+                    'Bạn đã đăng kí thành công. Hãy kiểm tra email đăng kí của bạn để xác thực tài khoản!',
+                duration: 2.5,
+            });
             // Use setTimeout to delay navigation, allowing the user to read the notification
             // setTimeout(() => {
             //     navigate('/login');
-            // }, 2500);   
+            // }, 2500);
         } catch (error) {
             let message = 'Đăng kí thất bại! Hãy thử lại lần nữa.';
             if (error instanceof Error) {
@@ -91,16 +88,15 @@ function RegisterPage() {
 
     const handleOnFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { isError, message } = checkEmptyValidation(e.target.value);
-        setEmptyValidation({isError: isError, errorMessage: message});
-        setFormData({ ...formData, firstName: e.target.value});
+        setEmptyValidation({ isError: isError, errorMessage: message });
+        setFormData({ ...formData, firstName: e.target.value });
     };
 
     const handleOnLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { isError, message } = checkEmptyValidation(e.target.value);
-        setEmptyValidation({isError: isError, errorMessage: message});
-        setFormData({ ...formData, lastName: e.target.value});
+        setEmptyValidation({ isError: isError, errorMessage: message });
+        setFormData({ ...formData, lastName: e.target.value });
     };
-
 
     const handleOnEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { isError, message } = checkEmailValidaion(e.target.value);
@@ -148,7 +144,10 @@ function RegisterPage() {
     return (
         <div className="flex bg-greenHome">
             <div className="w-full bg-white sm:w-[30%] sm:rounded-br-xl sm:rounded-tr-xl md:h-screen">
-                <form onSubmit={handleOnSubmit} className="mt-8 flex flex-col items-center justify-center space-y-5">
+                <form
+                    onSubmit={handleOnSubmit}
+                    className="mt-8 flex flex-col items-center justify-center space-y-5"
+                >
                     <section className="w-[70%] space-y-5 ">
                         <div className="mb-12 ml-1 mt-[40%] ">
                             <h1 className="text-3xl">Đăng ký</h1>
