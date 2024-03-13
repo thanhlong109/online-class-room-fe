@@ -127,9 +127,11 @@ const ViewCourseDetails = () => {
                                 <Link to={'/admin/getAllCourse/'}>
                                     <Button danger>Quay lại</Button>
                                 </Link>
-                                <Button className="ml-3 bg-[#1677ff] text-white hover:bg-[#a4ccf4ee]">
-                                    Thay đổi thông tin khóa học
-                                </Button>
+                                <Link to={`/admin/updateCourse/${courseId}`}>
+                                    <Button className="ml-3 bg-[#1677ff] text-white hover:bg-[#a4ccf4ee]">
+                                        Thay đổi thông tin khóa học
+                                    </Button>
+                                </Link>
                             </div>
                         </div>
                     </div>
