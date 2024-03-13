@@ -136,7 +136,7 @@ const Header: React.FC = () => {
                     </div>
                     <StyledSearch
                         allowClear
-                        autoFocus 
+                        autoFocus
                         className="flex-1 md:max-w-[700px]"
                         placeholder="Tìm kiếm khóa học"
                         size="large"
@@ -204,10 +204,12 @@ const Header: React.FC = () => {
                             loginGoogle && (
                                 <div>
                                     <Tooltip title="Quản lí tài khoản">
-                                        <img
-                                            src={userAvatar}
-                                            className="h-[64px] w-[64px] cursor-pointer rounded-full md:h-[48px] md:w-[48px]"
-                                        />
+                                        <Link to={'/user/12'}>
+                                            <img
+                                                src={userAvatar}
+                                                className="h-[64px] w-[64px] cursor-pointer rounded-full md:h-[48px] md:w-[48px]"
+                                            />
+                                        </Link>
                                     </Tooltip>
                                 </div>
                             )
@@ -289,6 +291,6 @@ const Header: React.FC = () => {
             </div>
         </>
     );
-}
+};
 
 export default Header;
