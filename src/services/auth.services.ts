@@ -28,9 +28,9 @@ export interface RegisterUserRequest {
     accountPassword: string;
     confirmAccountPassword: string;
     birthDate: string;
-    lastName: string,
-    firstName:string,
-    accountPhone: string
+    lastName: string;
+    firstName: string;
+    accountPhone: string;
 }
 
 export const authApi = createApi({
@@ -56,15 +56,11 @@ export const authApi = createApi({
                 body,
             }),
         }),
-        getUserInfo: build.query<
-            UserInfoRequest,
-            { accessToken: string | null; email: string | null }
-        >({
-            query: (data: { accessToken: string | null; email: string | null }) => {
+        getUserInfo: build.query<UserInfoRequest, string>({
+            query: (email: string) => {
                 return {
-                    url: `api/account/${data.email}`,
+                    url: `api/account/${email}`,
                     method: 'get',
-                    headers: { Authorization: 'Bearer ' + data.accessToken },
                 };
             },
         }),

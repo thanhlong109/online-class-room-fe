@@ -1,11 +1,6 @@
 import { Skeleton, Typography } from 'antd';
 import CourseSection from '../../components/CourseSection/CourseSection';
-import {
-    AccordionSection,
-    CourseBanner,
-    CourseCardPreview,
-    RatingCourseItem,
-} from '../../components';
+import { CourseBanner, CourseCardPreview, RatingCourseItem } from '../../components';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import { FormatType, secondsToTimeString } from '../../utils/TimeFormater';
 import { useEffect, useState } from 'react';

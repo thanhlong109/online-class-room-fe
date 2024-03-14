@@ -49,7 +49,7 @@ function LoginPage() {
     }, [isLoginError]);
     useEffect(() => {
         if (isLoginSuccess && loginData) {
-            const userData: AuthToken = {
+            const userData = {
                 accessToken: loginData.jwtToken,
                 refreshToken: loginData.jwtRefreshToken,
                 email: formData.accountEmail,

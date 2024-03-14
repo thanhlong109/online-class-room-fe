@@ -18,11 +18,18 @@ import GetAllAccount from '../pages/AdminPages/ManageUser/GetAllAccount/GetAllAc
 import LearningLayout from '../layouts/clientLayouts/LearningLayout/LearningLayout';
 import { SearchPage } from '../pages/ClientPages/SearchPage';
 import CreateAccountAdmin from '../pages/AdminPages/ManageUser/CreateAccountForStaffAndAdmin/CreateAccountAdmin';
+import { RoleType } from '../slices/authSlice';
+
+interface LayoutProps {
+    childen: React.ReactNode;
+    requireRole?: RoleType;
+    whenRoleUnMatchNavTo?: string;
+}
 
 interface RouteProps {
     path: string;
     component: () => JSX.Element;
-    layout: ({ childen }: any) => JSX.Element;
+    layout: ({ childen, requireRole, whenRoleUnMatchNavTo }: LayoutProps) => JSX.Element;
 }
 
 const publicRoutes: RouteProps[] = [
@@ -31,13 +38,13 @@ const publicRoutes: RouteProps[] = [
     { path: '/login', component: LoginPage, layout: LoginLayout },
     { path: '/register', component: RegisterPage, layout: LoginLayout },
     { path: '/search/:id', component: SearchPage, layout: DefaultLayout },
-    { path: '/checkout', component: PaymentPage, layout: DefaultLayout },
     { path: '*', component: NotFoundPage, layout: DefaultLayout },
 ];
 
 const privateRoutes: RouteProps[] = [
     { path: '/learn/:id', component: LearningCoursePage, layout: LearningLayout },
     { path: '/user/:id', component: ManageProfilePage, layout: DefaultLayout },
+    { path: '/checkout', component: PaymentPage, layout: DefaultLayout },
 ];
 
 const adminRoutes: RouteProps[] = [

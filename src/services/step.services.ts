@@ -43,7 +43,13 @@ export const stepApi = createApi({
                 };
             },
         }),
+        deleteStep: build.mutation<void, number>({
+            query: (id: number) => ({
+                url: `api/Step/DeleteStep?stepId=${id}`,
+                method: 'delete',
+            }),
+        }),
     }),
 });
 
-export const { useAddStepMutation, useUpdateStepMutation } = stepApi;
+export const { useAddStepMutation, useUpdateStepMutation, useDeleteStepMutation } = stepApi;
