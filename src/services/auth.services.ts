@@ -28,9 +28,19 @@ export interface RegisterUserRequest {
     accountPassword: string;
     confirmAccountPassword: string;
     birthDate: string;
-    lastName: string,
-    firstName:string,
-    accountPhone: string
+    lastName: string;
+    firstName: string;
+    accountPhone: string;
+}
+
+export interface RegisterAdminRequest {
+    accountPhone: string;
+    firstName: string;
+    lastName: string;
+    accountEmail: string;
+    birthDate: string;
+    accountPassword: string;
+    confirmAccountPassword: string;
 }
 
 export const authApi = createApi({
@@ -109,6 +119,18 @@ export const authApi = createApi({
                 };
             },
         }),
+        registerAdmin: build.mutation<
+            RegisterAdminRequest,
+            { formData: RegisterAdminRequest; role: number }
+        >({
+            query: ({ formData, role }) => {
+                return {
+                    url: `api/Account/SignUpStaffAdmin?role=${role}`,
+                    method: 'post',
+                    body: formData,
+                };
+            },
+        }),
     }),
 });
 
@@ -118,5 +140,6 @@ export const {
     useUpdateUserInfoMutation,
     useUpdatePasswordMutation,
     useRegisterUserMutation,
+    useRegisterAdminMutation,
     endpoints,
 } = authApi;
