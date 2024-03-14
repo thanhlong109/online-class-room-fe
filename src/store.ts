@@ -25,9 +25,10 @@ import { quizApi } from './services/quiz.services';
 import quizSlice from './slices/quizSlice';
 import { questionApi } from './services/question.services';
 import { accountApi } from './services/account.services';
+import { registrationCourseApi } from './services/registrationCourse.services';
+import registrationCourseSlice from './slices/registrationCourseSlice';
 import { orderApi } from './services/order.services';
 import orderSlice from './slices/orderSlice';
-import { registrationCoursesApi } from './services/registrationCourse.services';
 import learningCourseSlice from './slices/learningCourseSlice';
 
 export const persistConfig = {
@@ -52,10 +53,11 @@ const rootReducer = combineReducers({
     [quizApi.reducerPath]: quizApi.reducer,
     [questionApi.reducerPath]: questionApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
-    [registrationCoursesApi.reducerPath]: registrationCoursesApi.reducer,
     courseAll: getCourseAllSlice,
     [accountApi.reducerPath]: accountApi.reducer,
     accountAll: getAllAccountSlice,
+    [registrationCourseApi.reducerPath]: registrationCourseApi.reducer,
+    registrationCourse: registrationCourseSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -77,8 +79,8 @@ export const store = configureStore({
             .concat(quizApi.middleware)
             .concat(questionApi.middleware)
             .concat(accountApi.middleware)
-            .concat(orderApi.middleware)
-            .concat(registrationCoursesApi.middleware),
+            .concat(registrationCourseApi.middleware)
+            .concat(orderApi.middleware),
 });
 
 // get roostate and appdispatch from store handle for typescript

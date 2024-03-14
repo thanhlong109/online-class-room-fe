@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Tag, Typography } from 'antd';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useGetCourseIDQuery } from '../../../../services';
 import { Course, Section } from '../../../../types/Course.type';
 import { FormatType, secondsToTimeString } from '../../../../utils/TimeFormater';
@@ -123,10 +123,15 @@ const ViewCourseDetails = () => {
                                     {course?.courseIsActive ? 'Hoạt động' : 'Không hoạt động'}
                                 </Tag>
                             </div>
-                            <div className="mt-6 flex justify-end">
-                                <Button className="bg-[#1677ff] text-white hover:bg-[#a4ccf4ee]">
-                                    Thay đổi thông tin khóa học
-                                </Button>
+                            <div className="mt-6 flex items-center justify-end">
+                                <Link to={'/admin/getAllCourse/'}>
+                                    <Button danger>Quay lại</Button>
+                                </Link>
+                                <Link to={`/admin/updateCourse/${courseId}`}>
+                                    <Button className="ml-3 bg-[#1677ff] text-white hover:bg-[#a4ccf4ee]">
+                                        Thay đổi thông tin khóa học
+                                    </Button>
+                                </Link>
                             </div>
                         </div>
                     </div>

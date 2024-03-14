@@ -11,7 +11,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ImageIcon from '@mui/icons-material/Image';
 import LockPersonIcon from '@mui/icons-material/LockPerson';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ManageProfileMenu } from './ManageProfile.enum';
 import { Profile, Security, Favorite as FavoriteComponent, UploadAvatar } from './Components';
 import { Divider } from 'antd';
@@ -84,6 +84,20 @@ const ManageProfilePage = () => {
         setMenuSeleted(menu);
     };
 
+    const [loginGoogle, setLoginGoogle] = useState(false);
+    const [userAvatar, setUserAvatar] = useState('');
+    const [userNameGoogle, setUserNameGoogle] = useState('');
+
+    useEffect(() => {
+        const userDataString = localStorage.getItem('userLogin');
+        if (userDataString) {
+            const userData = JSON.parse(userDataString);
+            setUserAvatar(userData.avatar);
+            setUserNameGoogle(userData.name);
+            setLoginGoogle(true);
+        }
+    }, []);
+
     return (
         <>
             <Paper
@@ -92,8 +106,25 @@ const ManageProfilePage = () => {
             >
                 <div className="py-4">
                     <div className="mb-4">
-                        <UserAvatar className="m-auto flex h-[120px] w-[120px]" />
-                        <h1 className="mt-2 text-center font-bold capitalize">{userFullName}</h1>
+                        {loginGoogle ? (
+                            <>
+                                <img
+                                    src={userAvatar}
+                                    alt=""
+                                    className="m-auto flex h-[120px] w-[120px] rounded-full"
+                                />
+                                <h1 className="mt-2 text-center font-bold capitalize">
+                                    {userNameGoogle}
+                                </h1>
+                            </>
+                        ) : (
+                            <>
+                                <UserAvatar className="m-auto flex h-[120px] w-[120px]" />
+                                <h1 className="mt-2 text-center font-bold capitalize">
+                                    {userFullName}
+                                </h1>
+                            </>
+                        )}
                     </div>
                     <MenuList>
                         {menuList.map(({ type, MenuIcon, menutext, component }, index) => {

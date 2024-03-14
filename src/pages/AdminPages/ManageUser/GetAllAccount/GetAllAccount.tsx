@@ -194,7 +194,7 @@ const GetAllAccount = () => {
                             Danh sách các tài khoản:
                         </h1>
                         <Button type="primary" className="bg-blue-500">
-                            <Link to={'/admin/addCourse/'}>Thêm tài khoản mới cho STAFF</Link>
+                            <Link to={'/admin/createAccount/'}>Thêm tài khoản mới cho STAFF</Link>
                         </Button>
                     </div>
                     <div>

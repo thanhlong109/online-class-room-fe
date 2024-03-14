@@ -1,5 +1,10 @@
 import { PieChartOutlined, MenuOutlined, DesktopOutlined } from '@ant-design/icons';
-import { FileOpenOutlined, Person2Outlined, Person3Outlined } from '@mui/icons-material';
+import { FileOpenOutlined } from '@mui/icons-material';
+import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+import StreetviewOutlinedIcon from '@mui/icons-material/StreetviewOutlined';
+import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
+import AnalyticsOutlinedIcon from '@mui/icons-material/AnalyticsOutlined';
+import AppsOutlinedIcon from '@mui/icons-material/AppsOutlined';
 import { Menu, MenuProps } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import React, { useEffect, useState } from 'react';
@@ -46,13 +51,14 @@ export default function MySider() {
 
     const getConditionalItems = (): MenuItem[] => {
         return [
-            getItem('Dashboard', '1', <PieChartOutlined />),
-            getItem('Quản lý khóa học', 'sub1', <Person2Outlined />, [
+            getItem('Dashboard', '1', <AnalyticsOutlinedIcon />),
+            getItem('Quản lý khóa học', 'sub1', <AppsOutlinedIcon />, [
                 getItem('Tất cả khóa học', '3', <PieChartOutlined />),
                 getItem('Thêm khóa học mới', '4', <DesktopOutlined />),
             ]),
-            getItem('Quản lý tài khoản', 'sub2', <Person3Outlined />, [
-                getItem('Xem tất cả tài khoản', 'accountAll', <Person3Outlined />),
+            getItem('Quản lý tài khoản', 'sub2', <ManageAccountsOutlinedIcon />, [
+                getItem('Xem tất cả tài khoản', 'accountAll', <StreetviewOutlinedIcon />),
+                getItem('Tạo tài khoản', 'createAccount', <PersonAddAlt1OutlinedIcon />),
             ]),
             getItem('Files', 'file', <FileOpenOutlined />),
         ];
@@ -62,7 +68,8 @@ export default function MySider() {
         .set('1', '/admin/')
         .set('3', '/admin/getAllCourse')
         .set('4', '/admin/addCourse/')
-        .set('accountAll', '/admin/getAllAccount');
+        .set('accountAll', '/admin/getAllAccount')
+        .set('createAccount', '/admin/createAccount');
 
     // useEffect(() => {
     //   const fetchData = async () => {

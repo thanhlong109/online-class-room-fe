@@ -47,7 +47,7 @@ const PieChart = () => {
     return (
         <Card
             title="Biểu đồ tỉ suất lượt đăng kí và tổng số khóa học của các thể loại khóa học"
-            className="ml-6 max-w-[450px]"
+            className="max-w-[450px]"
         >
             <Pie data={userData} options={options} />
         </Card>
