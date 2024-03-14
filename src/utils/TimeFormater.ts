@@ -24,7 +24,7 @@ export function secondsToTimeString(
             break;
         }
         case FormatType.MM_SS: {
-            result = `${minutes.toString().padStart(2, '0') + `${`${seperator[0]} ` || seperator}`}${secondsLeft.toString().padStart(2, '0')}${seperator[2] || ''}`;
+            result = `${minutes > 0 ? minutes.toString().padStart(2, '0') + `${`${seperator[0]} ` || seperator}` : ''} ${secondsLeft.toString().padStart(2, '0')}${seperator[1] || ''}`;
             break;
         }
     }

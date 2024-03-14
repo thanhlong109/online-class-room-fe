@@ -19,3 +19,5 @@ export { default as MultipleQuestionInput } from './MultipleQuestionInput/Multip
 export { default as MultipleQuestionInputItem } from './MultipleQuestionInput/MultipleQuestionInputItem';
 export { default as EditableItem } from './EditableItem/EditableItem';
 export { default as VideoPlayer } from './VideoPlayer/VideoPlayer';
+export { default as AccordionSection } from './Accordion/AccordionSection';
+export { default as QuestionUI } from './Question/Question';

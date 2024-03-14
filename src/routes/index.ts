@@ -1,5 +1,5 @@
 import DefaultLayoutAdmin from '../layouts/adminLayouts/DefaultLayoutAdmin';
-import { DefaultLayout, LayoutWithRightSideBar } from '../layouts/clientLayouts';
+import { DefaultLayout } from '../layouts/clientLayouts';
 import LoginLayout from '../layouts/clientLayouts/LoginLayout';
 import { AddCoursePage, DashboardPage, UpdateCoursePage } from '../pages/AdminPages';
 import {
@@ -15,6 +15,7 @@ import PaymentPage from '../pages/ClientPages/CheckoutPage/PaymentPage';
 import GetAllCourse from '../pages/AdminPages/ManageCourse/GetAllCourse/GetAllCourse';
 import ViewCourseDetails from '../pages/AdminPages/ManageCourse/ViewCourseDetails/ViewCourseDetails';
 import GetAllAccount from '../pages/AdminPages/ManageUser/GetAllAccount/GetAllAccount';
+import LearningLayout from '../layouts/clientLayouts/LearningLayout/LearningLayout';
 import { SearchPage } from '../pages/ClientPages/SearchPage';
 import CreateAccountAdmin from '../pages/AdminPages/ManageUser/CreateAccountForStaffAndAdmin/CreateAccountAdmin';
 
@@ -35,7 +36,7 @@ const publicRoutes: RouteProps[] = [
 ];
 
 const privateRoutes: RouteProps[] = [
-    { path: '/learn/:id', component: LearningCoursePage, layout: LayoutWithRightSideBar },
+    { path: '/learn/:id', component: LearningCoursePage, layout: LearningLayout },
     { path: '/user/:id', component: ManageProfilePage, layout: DefaultLayout },
 ];
 

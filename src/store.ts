@@ -29,6 +29,7 @@ import { registrationCourseApi } from './services/registrationCourse.services';
 import registrationCourseSlice from './slices/registrationCourseSlice';
 import { orderApi } from './services/order.services';
 import orderSlice from './slices/orderSlice';
+import learningCourseSlice from './slices/learningCourseSlice';
 
 export const persistConfig = {
     key: 'root',
@@ -42,6 +43,7 @@ const rootReducer = combineReducers({
     course: courseSlice,
     quiz: quizSlice,
     order: orderSlice,
+    learningCourse: learningCourseSlice,
     [coursesApi.reducerPath]: coursesApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [wishlistApi.reducerPath]: wishlistApi.reducer,
