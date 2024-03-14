@@ -10,7 +10,7 @@ import {
     setCourseCreatedData,
     setCourseMode,
 } from '../../../../slices/courseSlice';
-import { MultipleInput } from '../../../../components';
+import { MultipleInput, RichTextEditor } from '../../../../components';
 import CourseContent from './CourseContent';
 import { useAddNewCourseMutation } from '../../../../services/course.services';
 import { useAddSectionMutation } from '../../../../services/section.services';
@@ -134,25 +134,19 @@ const AddCoursePage = () => {
                                 <p className="mt-3 text-base">
                                     Một phần mô tả ngắn gọn về nội dung chính của khóa học
                                 </p>
-                                <Input.TextArea
-                                    onChange={(e) =>
+                                <RichTextEditor
+                                    initialValue={addCourseData.description}
+                                    onChange={(value) =>
                                         dispatch(
                                             setAddCourse({
                                                 currentStep: currentStep,
                                                 data: {
                                                     ...addCourseData,
-                                                    description: e.target.value,
+                                                    description: value,
                                                 },
                                             }),
                                         )
                                     }
-                                    value={addCourseData.description}
-                                    maxLength={500}
-                                    showCount
-                                    size="large"
-                                    className="mt-10 !max-w-[700px]"
-                                    autoSize={{ minRows: 6 }}
-                                    placeholder="vd: Khóa học Lập trình Căn bản cho Người Mới Bắt Đầu là một khóa học giới thiệu về lập trình dành cho những người không có kinh nghiệm trước đây. Khóa học này tập trung vào việc cung cấp những kiến thức và kỹ năng cần thiết để bắt đầu học lập trình từ đầu. Học viên sẽ được hướng dẫn từ các khái niệm cơ bản như biến, điều kiện và vòng lặp đến việc xây dựng các chương trình đơn giản."
                                 />
                             </>
                         )}
@@ -235,7 +229,7 @@ const AddCoursePage = () => {
                             <Button
                                 disabled={
                                     (currentStep === 0 && addCourseData.title === '') ||
-                                    (currentStep === 1 && addCourseData.description === '') ||
+                                    (currentStep === 1 && addCourseData.description.length < 150) ||
                                     (currentStep === 2 && selectedTags.length === 0)
                                 }
                                 className="!normal-case"

@@ -35,7 +35,16 @@ import learningCourseSlice from './slices/learningCourseSlice';
 export const persistConfig = {
     key: 'root',
     storage: sessionStorage,
-    whitelist: ['auth', 'user', 'course', 'quiz', 'order', 'accountAll', 'courseAll'],
+    whitelist: [
+        'auth',
+        'user',
+        'course',
+        'quiz',
+        'order',
+        'accountAll',
+        'courseAll',
+        'learningCourse',
+    ],
 };
 
 const rootReducer = combineReducers({

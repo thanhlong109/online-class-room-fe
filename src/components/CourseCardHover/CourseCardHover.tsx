@@ -89,7 +89,7 @@ const CourseCardHover = ({ course }: Props) => {
                             ))}
                 </div>
                 <div className="mt-4 flex gap-2">
-                    {!isCheckRegistrationLoading && !checkRegistrationData?.isRegistered && (
+                    {!isCheckRegistrationLoading && !checkRegistrationData?.registrationId && (
                         <LoadingButton
                             onClick={handleBuyClick}
                             loading={addOrderLoading}
@@ -99,7 +99,7 @@ const CourseCardHover = ({ course }: Props) => {
                             Mua khóa học
                         </LoadingButton>
                     )}
-                    {!isCheckRegistrationLoading && checkRegistrationData?.isRegistered && (
+                    {!isCheckRegistrationLoading && checkRegistrationData?.registrationId && (
                         <LoadingButton
                             onClick={handleLearnClick}
                             variant="contained"

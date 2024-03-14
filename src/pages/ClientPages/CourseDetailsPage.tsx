@@ -1,6 +1,11 @@
-import { Skeleton, Typography } from 'antd';
+import { Skeleton } from 'antd';
 import CourseSection from '../../components/CourseSection/CourseSection';
-import { CourseBanner, CourseCardPreview, RatingCourseItem } from '../../components';
+import {
+    CourseBanner,
+    CourseCardPreview,
+    RatingCourseItem,
+    RenderRichText,
+} from '../../components';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import { FormatType, secondsToTimeString } from '../../utils/TimeFormater';
 import { useEffect, useState } from 'react';
@@ -102,10 +107,7 @@ const CourseDetailsPage = () => {
                                         <h1 className="mb-4 text-2xl font-bold text-[#2d2f31]">
                                             Chi tiết khóa học:
                                         </h1>
-                                        <Typography.Text italic>
-                                            {' '}
-                                            {course?.description}
-                                        </Typography.Text>
+                                        <RenderRichText jsonData={course?.description} />
                                     </div>
                                     <div>
                                         <h1 className="mb-4 text-2xl font-bold text-[#2d2f31]">

@@ -72,7 +72,7 @@ function App() {
     return (
         <>
             <Routes>
-                {(role === RoleType.GUESS || role === RoleType.STUDENT) &&
+                {(role === RoleType.GUESS || role === RoleType.STUDENT || role == RoleType.ADMIN) &&
                     publicRoutes.map(({ layout, component, path }, index) => {
                         const Layout = layout;
                         const Component = component;

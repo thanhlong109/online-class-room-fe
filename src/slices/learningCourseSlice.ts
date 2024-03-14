@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Course, Step } from '../types/Course.type';
+import { CheckRegistrationCourseRespone } from '../types/RegistrationCourse.type';
+import { store } from '../store';
 
 export enum LessionType {
     QUIZ,
@@ -24,6 +26,9 @@ export interface learningCourseSliceData {
         tempActiveSectionIndex: number;
     };
     isDone: boolean;
+    registrationData: CheckRegistrationCourseRespone | null;
+    lastStepCompeleted: number | null;
+    lastPostionCompleted: number;
 }
 const initialStep: Step = {
     duration: 0,
@@ -72,6 +77,9 @@ const initialState: learningCourseSliceData = {
         tempActiveStepIndex: 0,
     },
     isDone: false,
+    registrationData: null,
+    lastPostionCompleted: 1,
+    lastStepCompeleted: null,
 };
 
 export const learningCourseSlice = createSlice({
@@ -80,6 +88,7 @@ export const learningCourseSlice = createSlice({
     reducers: {
         setLearingCourse: (state, action: PayloadAction<Course>) => {
             state.learningCourse = action.payload;
+            state.stepActive = action.payload.sections[0].steps[0];
         },
         setStepActive: (
             state,
@@ -158,6 +167,18 @@ export const learningCourseSlice = createSlice({
                 userSelectedAnswer: -1,
             }));
         },
+        setRegistrationData: (state, action: PayloadAction<CheckRegistrationCourseRespone>) => {
+            state.registrationData = action.payload;
+        },
+        setLastStepCompleted: (state, action: PayloadAction<number>) => {
+            state.learningCourse.sections.forEach((section) => {
+                const index = section.steps.findIndex((step) => step.stepId === action.payload);
+                if (index >= 0) {
+                    state.lastStepCompeleted = action.payload;
+                    state.lastPostionCompleted = section.steps[index].position;
+                }
+            });
+        },
     },
 });
 
@@ -169,6 +190,8 @@ export const {
     setShowAnswer,
     tryAnswerAgain,
     gotToNextStep,
+    setRegistrationData,
+    setLastStepCompleted,
 } = learningCourseSlice.actions;
 
 export default learningCourseSlice.reducer;
