@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import { AddCourseRequest, Course, CourseCategory, Section, Step } from '../types/Course.type';
 import { StepProps } from 'antd';
+import { GetRegistrationCoursesRespone } from '../types/RegistrationCourse.type';
 
 export enum CouseMode {
     CREATE,
@@ -21,6 +22,7 @@ interface courseState {
         tempCourse: Course;
         tempNavStatus: StepProps[];
     };
+    registrationCourses: GetRegistrationCoursesRespone[];
 }
 
 const initialCourse: Course = {
@@ -86,6 +88,7 @@ const initialState: courseState = {
         tempCourse: initialCourse,
         tempNavStatus: [],
     },
+    registrationCourses: [],
 };
 
 export const courseSlice = createSlice({
@@ -268,6 +271,9 @@ export const courseSlice = createSlice({
         setCoursePublish: (state, action: PayloadAction<boolean>) => {
             state.addCourse.courseCreatedData.isPublic = action.payload;
         },
+        setRegistrationCourses: (state, action: PayloadAction<GetRegistrationCoursesRespone[]>) => {
+            state.registrationCourses = action.payload;
+        },
     },
 });
 
@@ -300,6 +306,7 @@ export const {
     setCoursePrice,
     setSalesCampaign,
     setCoursePublish,
+    setRegistrationCourses,
 } = courseSlice.actions;
 
 export default courseSlice.reducer;

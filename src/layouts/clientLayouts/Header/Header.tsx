@@ -1,7 +1,7 @@
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Button, IconButton, styled } from '@mui/material';
 import { Badge, Divider, Drawer, Input, Popover, Tooltip, Typography } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FavoritePopover, MyLearningPopover, UserAvatar } from './Components';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useEffect, useState } from 'react';
@@ -12,18 +12,58 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store';
 import { setUserInfo } from '../../../slices/userSlice';
 import { loadUser } from '../../../slices/authSlice';
-import { useGetAccessTokenLocal } from '../../../hooks/appHook';
+import { LocalUserData } from '../../../types/Account.type';
 
-function Header() {
+const Header: React.FC = () => {
+    const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const handleSearch = () => {
+        // Kiểm tra nếu có dữ liệu tìm kiếm mới thực hiện chuyển hướng
+        if (searchQuery.trim() !== '') {
+            navigate(`/search/${encodeURIComponent(searchQuery)}`);
+            // Sau khi chuyển hướng, bạn có thể gọi API ở đây bằng cách sử dụng dữ liệu đã nhập
+        }
+    };
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(event.target.value);
+    };
+
+    const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        // Kiểm tra nếu người dùng ấn phím Enter
+        if (event.key === 'Enter') {
+            handleSearch();
+        }
+    };
+
+    const location = useLocation();
+
+    useEffect(() => {
+      // Reset search input when not on the search page
+      if (!location.pathname.startsWith('/search')) {
+        setSearchQuery('');
+      }
+    }, [location]); // Re-run this effect when the location changes
+    
     //load user data
     const dispatch = useDispatch();
-    const userLocalData = useGetAccessTokenLocal();
+    const [userLocalData, setUserLocalData] = useState<LocalUserData | null>(null);
+    const isLogin = useSelector((state: RootState) => state.auth.isLogin);
+    const wishlistState = useSelector((state: RootState) => state.course.wishList);
+    useEffect(() => {
+        const user = localStorage.getItem('user');
+        if (user) {
+            setUserLocalData(JSON.parse(user));
+        }
+    }, []);
+
     const { data, isSuccess, refetch } = useGetUserInfoQuery(
         userLocalData
             ? { email: userLocalData.email, accessToken: userLocalData.accessToken }
             : { email: null, accessToken: null },
     );
-    const isLogin = useSelector((state: RootState) => state.auth.isLogin);
+
     useEffect(() => {
         if (isSuccess && data) {
             dispatch(loadUser());
@@ -84,13 +124,6 @@ function Header() {
                     </div>
                     <h1>
                         <Link to={'/'}>
-                            {/* <Typography.Title
-                                className="!text-xl md:!text-2xl"
-                                style={{ fontWeight: 'bold', margin: '0' }}
-                                level={2}
-                            >
-                                EStudyHub
-                            </Typography.Title> */}
                             <div className="hidden  items-center justify-center md:flex">
                                 <img
                                     className="h-[40px]"
@@ -112,9 +145,13 @@ function Header() {
                     </div>
                     <StyledSearch
                         allowClear
+                        autoFocus
                         className="flex-1 md:max-w-[700px]"
                         placeholder="Tìm kiếm khóa học"
                         size="large"
+                        value={searchQuery}
+                        onChange={handleInputChange}
+                        onKeyPress={handleKeyPress}
                     />
                     <div className="hidden cursor-pointer text-[#2d2f31] hover:text-[#a435f0] md:block">
                         <Popover content={<MyLearningPopover />} trigger="hover">
@@ -127,7 +164,10 @@ function Header() {
                         <div className="cursor-pointer ">
                             <Popover content={<FavoritePopover />} trigger="hover">
                                 <IconButton>
-                                    <Badge count="14" color="#a435f0">
+                                    <Badge
+                                        count={wishlistState.length > 0 ? wishlistState.length : ''}
+                                        color="#a435f0"
+                                    >
                                         <FavoriteBorderIcon />
                                     </Badge>
                                 </IconButton>
@@ -173,10 +213,12 @@ function Header() {
                             loginGoogle && (
                                 <div>
                                     <Tooltip title="Quản lí tài khoản">
-                                        <img
-                                            src={userAvatar}
-                                            className="h-[64px] w-[64px] cursor-pointer md:h-[48px] md:w-[48px]"
-                                        />
+                                        <Link to={'/user/12'}>
+                                            <img
+                                                src={userAvatar}
+                                                className="h-[64px] w-[64px] cursor-pointer rounded-full md:h-[48px] md:w-[48px]"
+                                            />
+                                        </Link>
                                     </Tooltip>
                                 </div>
                             )
@@ -258,6 +300,6 @@ function Header() {
             </div>
         </>
     );
-}
+};
 
 export default Header;

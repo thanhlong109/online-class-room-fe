@@ -11,17 +11,14 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ImageIcon from '@mui/icons-material/Image';
 import LockPersonIcon from '@mui/icons-material/LockPerson';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ManageProfileMenu } from './ManageProfile.enum';
 import { Profile, Security, Favorite as FavoriteComponent, UploadAvatar } from './Components';
 import { Divider } from 'antd';
 import { LogoutOutlined } from '@mui/icons-material';
-import { useAppDispatch } from '../../../hooks/appHook';
-import { logoutUser } from '../../../slices/authSlice';
-import { useNavigate } from 'react-router-dom';
 import { UserAvatar } from '../../../layouts/clientLayouts/Header/Components';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../store';
+import { RootState, persistor } from '../../../store';
 
 interface Menu {
     type: ManageProfileMenu;
@@ -31,8 +28,6 @@ interface Menu {
 }
 
 const ManageProfilePage = () => {
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
     const userFullName = useSelector((state: RootState) => {
         return `${state.user.firstName} ${state.user.lastName}`;
     });
@@ -89,6 +84,20 @@ const ManageProfilePage = () => {
         setMenuSeleted(menu);
     };
 
+    const [loginGoogle, setLoginGoogle] = useState(false);
+    const [userAvatar, setUserAvatar] = useState('');
+    const [userNameGoogle, setUserNameGoogle] = useState('');
+
+    useEffect(() => {
+        const userDataString = localStorage.getItem('userLogin');
+        if (userDataString) {
+            const userData = JSON.parse(userDataString);
+            setUserAvatar(userData.avatar);
+            setUserNameGoogle(userData.name);
+            setLoginGoogle(true);
+        }
+    }, []);
+
     return (
         <>
             <Paper
@@ -97,8 +106,25 @@ const ManageProfilePage = () => {
             >
                 <div className="py-4">
                     <div className="mb-4">
-                        <UserAvatar className="m-auto flex h-[120px] w-[120px]" />
-                        <h1 className="mt-2 text-center font-bold capitalize">{userFullName}</h1>
+                        {loginGoogle ? (
+                            <>
+                                <img
+                                    src={userAvatar}
+                                    alt=""
+                                    className="m-auto flex h-[120px] w-[120px] rounded-full"
+                                />
+                                <h1 className="mt-2 text-center font-bold capitalize">
+                                    {userNameGoogle}
+                                </h1>
+                            </>
+                        ) : (
+                            <>
+                                <UserAvatar className="m-auto flex h-[120px] w-[120px]" />
+                                <h1 className="mt-2 text-center font-bold capitalize">
+                                    {userFullName}
+                                </h1>
+                            </>
+                        )}
                     </div>
                     <MenuList>
                         {menuList.map(({ type, MenuIcon, menutext, component }, index) => {
@@ -121,8 +147,10 @@ const ManageProfilePage = () => {
                         <Divider />
                         <Button
                             onClick={() => {
-                                dispatch(logoutUser());
-                                navigate('/');
+                                localStorage.clear();
+                                persistor.purge().then(() => {
+                                    window.location.href = '/';
+                                });
                             }}
                             className="!w-full !border-[#2d2f31] !text-sm !font-bold !text-[#2d2f31] hover:!border-[#ef4444] hover:!bg-[#ff5d5d0a] hover:!text-red-500"
                             variant="outlined"

@@ -52,6 +52,17 @@ export const wishlistApi = createApi({
                 };
             },
         }),
+        countWishListByAccountID: build.query<number, string>({
+            query: (id: string) => {
+                return {
+                    url: `api/WishList/CountTotalWishListByAccountId?accountId=${id}`,
+                    method: 'get',
+                };
+            },
+            transformResponse: (response) => {
+                return (response as any).dataObject;
+            },
+        }),
     }),
 });
 
@@ -59,4 +70,5 @@ export const {
     useAddWishlistByAccountIDMutation,
     useGetWishlistByAccountIDQuery,
     useRemoveWishlistByAccountIDMutation,
+    useCountWishListByAccountIDQuery,
 } = wishlistApi;

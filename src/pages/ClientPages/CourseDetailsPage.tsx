@@ -1,6 +1,11 @@
 import { Skeleton, Typography } from 'antd';
 import CourseSection from '../../components/CourseSection/CourseSection';
-import { CourseBanner, CourseCardPreview, RatingCourseItem } from '../../components';
+import {
+    AccordionSection,
+    CourseBanner,
+    CourseCardPreview,
+    RatingCourseItem,
+} from '../../components';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import { FormatType, secondsToTimeString } from '../../utils/TimeFormater';
 import { useEffect, useState } from 'react';
@@ -56,6 +61,7 @@ const CourseDetailsPage = () => {
                                         <div className="mt-3 grid grid-cols-2 gap-2">
                                             {course.knowdledgeDescription
                                                 .split('|')
+                                                .filter((value) => value.trim().length > 0)
                                                 .map((text, index) => (
                                                     <div
                                                         key={index}

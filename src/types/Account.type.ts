@@ -19,3 +19,9 @@ export interface GetAllAccount {
     totalAccounts: number;
     totalPages: number;
 }
+
+export interface LocalUserData {
+    accessToken: string;
+    email: string;
+    refreshToken: string;
+}

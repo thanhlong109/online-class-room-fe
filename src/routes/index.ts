@@ -1,5 +1,5 @@
 import DefaultLayoutAdmin from '../layouts/adminLayouts/DefaultLayoutAdmin';
-import { DefaultLayout, LayoutWithRightSideBar } from '../layouts/clientLayouts';
+import { DefaultLayout } from '../layouts/clientLayouts';
 import LoginLayout from '../layouts/clientLayouts/LoginLayout';
 import { AddCoursePage, DashboardPage, UpdateCoursePage } from '../pages/AdminPages';
 import {
@@ -15,6 +15,9 @@ import PaymentPage from '../pages/ClientPages/CheckoutPage/PaymentPage';
 import GetAllCourse from '../pages/AdminPages/ManageCourse/GetAllCourse/GetAllCourse';
 import ViewCourseDetails from '../pages/AdminPages/ManageCourse/ViewCourseDetails/ViewCourseDetails';
 import GetAllAccount from '../pages/AdminPages/ManageUser/GetAllAccount/GetAllAccount';
+import LearningLayout from '../layouts/clientLayouts/LearningLayout/LearningLayout';
+import { SearchPage } from '../pages/ClientPages/SearchPage';
+import CreateAccountAdmin from '../pages/AdminPages/ManageUser/CreateAccountForStaffAndAdmin/CreateAccountAdmin';
 
 interface RouteProps {
     path: string;
@@ -27,12 +30,13 @@ const publicRoutes: RouteProps[] = [
     { path: '/courses/:id', component: CourseDetailsPage, layout: DefaultLayout },
     { path: '/login', component: LoginPage, layout: LoginLayout },
     { path: '/register', component: RegisterPage, layout: LoginLayout },
-    { path: '/payment', component: PaymentPage, layout: DefaultLayout },
+    { path: '/search/:id', component: SearchPage, layout: DefaultLayout },
+    { path: '/checkout', component: PaymentPage, layout: DefaultLayout },
     { path: '*', component: NotFoundPage, layout: DefaultLayout },
 ];
 
 const privateRoutes: RouteProps[] = [
-    { path: '/learn/:id', component: LearningCoursePage, layout: LayoutWithRightSideBar },
+    { path: '/learn/:id', component: LearningCoursePage, layout: LearningLayout },
     { path: '/user/:id', component: ManageProfilePage, layout: DefaultLayout },
 ];
 
@@ -47,6 +51,7 @@ const adminRoutes: RouteProps[] = [
         layout: DefaultLayoutAdmin,
     },
     { path: '/admin/getAllAccount', component: GetAllAccount, layout: DefaultLayoutAdmin },
+    { path: '/admin/createAccount', component: CreateAccountAdmin, layout: DefaultLayoutAdmin },
 ];
 
 const staffRoutes: RouteProps[] = [];
