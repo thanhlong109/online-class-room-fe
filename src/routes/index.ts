@@ -21,6 +21,7 @@ import CreateAccountAdmin from '../pages/AdminPages/ManageUser/CreateAccountForS
 import { RoleType } from '../slices/authSlice';
 import ParentMainPage from '../pages/ParentPages/ParentMainPage/ParentMainPage';
 import DefaultParentLayout from '../layouts/parentLayouts/DefaultParentLayout';
+import PaymentResult from '../pages/ClientPages/PaymentResult/PaymentResult';
 
 interface LayoutProps {
     childen: React.ReactNode;
@@ -48,6 +49,7 @@ const privateRoutes: RouteProps[] = [
     { path: '/learn/:id', component: LearningCoursePage, layout: LearningLayout },
     { path: '/user/:id', component: ManageProfilePage, layout: DefaultLayout },
     { path: '/checkout', component: PaymentPage, layout: DefaultLayout },
+    { path: '/payment/:id', component: PaymentResult, layout: DefaultLayout },
 ];
 
 const adminRoutes: RouteProps[] = [
