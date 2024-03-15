@@ -11,6 +11,7 @@ import {
     gotToNextStep,
     setLastStepCompleted,
     setLearingCourse,
+    setNextStepCompletedPos,
     setRegistrationData,
     setShowAnswer,
     setStepActiveByStepId,
@@ -20,6 +21,7 @@ import { RootState } from '../../../store';
 import {
     useCheckRegistrationCourseQuery,
     useGetLastStepCompletedQuery,
+    useUpdateLastStepCompletedMutation,
 } from '../../../services/registrationCourse.services';
 
 const LearningCoursePage = () => {
@@ -30,6 +32,7 @@ const LearningCoursePage = () => {
     //
     const courseId = location.pathname.split('/').pop();
     const accountId = useSelector((state: RootState) => state.user.id);
+
     const registrationId = useSelector((state: RootState) =>
         state.learningCourse.registrationData
             ? state.learningCourse.registrationData.registrationId
@@ -38,28 +41,29 @@ const LearningCoursePage = () => {
     const lastPosCompleted = useSelector(
         (state: RootState) => state.learningCourse.lastPostionCompleted,
     );
-    //
-
-    const { data, isLoading, isSuccess } = useGetCourseIDQuery(courseId ? courseId : '');
     const { isShowAnswer, stepActive, quizAnswer, stepActiveType } = useSelector(
         (state: RootState) => state.learningCourse,
     );
+    //
+    const {
+        data,
+        isLoading,
+        isSuccess: isGetCourseSuccess,
+    } = useGetCourseIDQuery(courseId ? courseId : '');
     const { isSuccess: isGetCheckSuccess, data: checkData } = useCheckRegistrationCourseQuery({
         accountId: accountId ? accountId : '',
         courseId: courseId ? parseInt(courseId) : -1,
     });
+    const { isSuccess: isGetLastStepCompletedSuccess, data: lastStepCompletedData } =
+        useGetLastStepCompletedQuery(registrationId);
     const {
         data: quizData,
         isLoading: isQuizDataLoading,
-        isSuccess: isQuizDataSuccess,
         refetch,
     } = useGetQuizDetailQuery(stepActive?.quizId === 1 ? -1 : stepActive?.quizId);
 
-    const {
-        isSuccess: isGetLastStepCompletedSuccess,
-        data: lastStepCompletedData,
-        refetch: refetchGetLastStepCompleted,
-    } = useGetLastStepCompletedQuery(registrationId);
+    const [updateLastStepCompleted, { isSuccess: isUpdateLastStepSuccess }] =
+        useUpdateLastStepCompletedMutation();
 
     useEffect(() => {
         if (isGetCheckSuccess) {
@@ -72,10 +76,20 @@ const LearningCoursePage = () => {
     }, [isGetCheckSuccess]);
 
     useEffect(() => {
-        if (isSuccess && data) {
+        if (isGetCourseSuccess && data) {
             dispatch(setLearingCourse(data));
         }
-    }, [isSuccess]);
+    }, [isGetCourseSuccess]);
+
+    useEffect(() => {
+        if (isGetLastStepCompletedSuccess && isGetCourseSuccess) {
+            if (lastStepCompletedData.stepId) {
+                dispatch(setLastStepCompleted(lastStepCompletedData.stepId));
+                dispatch(setStepActiveByStepId(lastStepCompletedData.stepId));
+                dispatch(gotToNextStep());
+            }
+        }
+    }, [isGetLastStepCompletedSuccess, isGetCourseSuccess, lastStepCompletedData]);
 
     useEffect(() => {
         if (stepActive?.quizId != 1) {
@@ -84,18 +98,16 @@ const LearningCoursePage = () => {
     }, [stepActive]);
 
     useEffect(() => {
-        refetchGetLastStepCompleted();
-    }, [registrationId]);
-
-    useEffect(() => {
-        if (isGetLastStepCompletedSuccess) {
-            if (lastStepCompletedData.stepId) {
-                dispatch(setLastStepCompleted(lastStepCompletedData.stepId));
-                dispatch(setStepActiveByStepId(lastStepCompletedData.stepId));
-                dispatch(gotToNextStep());
-            }
+        if (isUpdateLastStepSuccess) {
+            dispatch(setNextStepCompletedPos());
+            dispatch(gotToNextStep());
         }
-    }, [isGetLastStepCompletedSuccess]);
+    }, [isUpdateLastStepSuccess]);
+
+    const handleGoToNext = () => {
+        updateLastStepCompleted({ registrationId: registrationId, stepId: stepActive.stepId });
+    };
+
     const correctRate =
         quizAnswer.filter((q) => q.correctAnswer === q.userSelectedAnswer).length /
         quizAnswer.length;
@@ -156,7 +168,7 @@ const LearningCoursePage = () => {
                                     )}
                                     {isShowAnswer && correctRate >= 0.8 && (
                                         <Button
-                                            onClick={() => dispatch(gotToNextStep())}
+                                            onClick={handleGoToNext}
                                             className="self-end"
                                             variant="outlined"
                                             color="success"
@@ -177,7 +189,7 @@ const LearningCoursePage = () => {
                         {stepActiveType === LessionType.VIDEO && (
                             <Button
                                 className="self-end"
-                                onClick={() => dispatch(gotToNextStep())}
+                                onClick={handleGoToNext}
                                 variant="outlined"
                             >
                                 Tiếp tục
@@ -188,7 +200,7 @@ const LearningCoursePage = () => {
                 {data && (
                     <div className="py-2">
                         <AccordionSection
-                            lastPosition={lastPosCompleted + 2}
+                            lastPosition={lastPosCompleted + 1}
                             sections={data.sections}
                         />
                     </div>

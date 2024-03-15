@@ -1,5 +1,5 @@
 import './App.css';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { adminRoutes, publicRoutes, privateRoutes } from './routes';
 import { jwtDecode } from 'jwt-decode';
 import { LocalUserData } from './types/Account.type';
@@ -19,6 +19,7 @@ function App() {
     const userEmailState = useSelector((state: RootState) => state.auth.email);
     const userEmailLocal = userLocalData ? userLocalData.email : '';
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         if (user) {
@@ -30,7 +31,10 @@ function App() {
                 switch (roleLoaded) {
                     case RoleType.ADMIN: {
                         dispatch(setLoginRole(RoleType.ADMIN));
-                        navigate('/admin/');
+                        if (!location.pathname.includes('admin/')) {
+                            navigate('/admin/');
+                        }
+
                         break;
                     }
                     case RoleType.PARENT: {
@@ -108,6 +112,7 @@ function App() {
                     adminRoutes.map(({ layout, component, path }, index) => {
                         const Layout = layout;
                         const Component = component;
+
                         return (
                             <Route
                                 key={index}

@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Course, Step } from '../types/Course.type';
 import { CheckRegistrationCourseRespone } from '../types/RegistrationCourse.type';
-import { store } from '../store';
 
 export enum LessionType {
     QUIZ,
@@ -106,10 +105,16 @@ export const learningCourseSlice = createSlice({
             state.quizAnswer = [];
         },
         setStepActiveByStepId: (state, action: PayloadAction<number>) => {
-            state.learningCourse.sections.forEach((section) => {
+            state.learningCourse.sections.forEach((section, sectionIndex) => {
                 const index = section.steps.findIndex((step) => step.stepId === action.payload);
                 if (index >= 0) {
-                    state.stepActive = section.steps[index];
+                    const step = section.steps[index];
+                    state.stepActive = step;
+                    state.temp.tempActiveSectionIndex = sectionIndex;
+                    state.temp.tempActiveStepIndex = index;
+                    state.stepActiveType = step.quizId != 1 ? LessionType.QUIZ : LessionType.VIDEO;
+                    state.isShowAnswer = false;
+                    state.quizAnswer = [];
                 }
             });
         },
@@ -136,7 +141,7 @@ export const learningCourseSlice = createSlice({
                 state.temp.tempActiveSectionIndex = sectionIndex;
                 state.temp.tempActiveStepIndex = stepIndex + 1;
             } else {
-                if (sectionIndex + 1 < state.learningCourse.sections.length - 1) {
+                if (sectionIndex + 1 < state.learningCourse.sections.length) {
                     step = state.learningCourse.sections[sectionIndex + 1].steps[0];
                     state.stepActive = step;
                     state.temp.tempActiveSectionIndex = sectionIndex + 1;
@@ -179,6 +184,9 @@ export const learningCourseSlice = createSlice({
                 }
             });
         },
+        setNextStepCompletedPos: (state) => {
+            state.lastPostionCompleted = state.lastPostionCompleted + 1;
+        },
     },
 });
 
@@ -192,6 +200,7 @@ export const {
     gotToNextStep,
     setRegistrationData,
     setLastStepCompleted,
+    setNextStepCompletedPos,
 } = learningCourseSlice.actions;
 
 export default learningCourseSlice.reducer;
