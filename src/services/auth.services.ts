@@ -100,8 +100,8 @@ export const authApi = createApi({
         updatePassword: build.mutation<ChangePasswordRequest, ChangePasswordRequest>({
             query: (body: ChangePasswordRequest) => {
                 return {
-                    url: 'api/account/changePassword',
-                    method: 'put',
+                    url: 'api/Account/ChangePassword',
+                    method: 'post',
                     body,
                 };
             },
