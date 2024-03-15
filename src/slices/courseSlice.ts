@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import { AddCourseRequest, Course, CourseCategory, Section, Step } from '../types/Course.type';
 import { StepProps } from 'antd';
-import { GetRegistrationCoursesRespone } from '../types/RegistrationCourse.type';
 
 export enum CouseMode {
     CREATE,
@@ -22,8 +21,22 @@ interface courseState {
         tempCourse: Course;
         tempNavStatus: StepProps[];
     };
-    registrationCourses: GetRegistrationCoursesRespone[];
 }
+
+const intitalAddCourseRequest: AddCourseRequest = {
+    categoryList: [],
+    courseIsActive: false,
+    description: '',
+    imageUrl: 'string',
+    isPublic: false,
+    knowdledgeDescription: '',
+    linkCertificated: 'string',
+    price: 0,
+    salesCampaign: 0,
+    title: '',
+    totalDuration: 0,
+    videoPreviewUrl: 'string',
+};
 
 const initialCourse: Course = {
     courseIsActive: false,
@@ -65,20 +78,7 @@ const initialUpdateNavStatus: StepProps[] = [
 const initialState: courseState = {
     wishList: [],
     addCourse: {
-        data: {
-            categoryList: [],
-            courseIsActive: false,
-            description: '',
-            imageUrl: 'string',
-            isPublic: false,
-            knowdledgeDescription: '',
-            linkCertificated: 'string',
-            price: 0,
-            salesCampaign: 0,
-            title: '',
-            totalDuration: 0,
-            videoPreviewUrl: 'string',
-        },
+        data: intitalAddCourseRequest,
         currentStep: 0,
         navStatus: initialCreateNavStatus,
         courseCreatedData: initialCourse,
@@ -88,7 +88,6 @@ const initialState: courseState = {
         tempCourse: initialCourse,
         tempNavStatus: [],
     },
-    registrationCourses: [],
 };
 
 export const courseSlice = createSlice({
@@ -144,6 +143,14 @@ export const courseSlice = createSlice({
                     ...state.addCourse.courseCreatedData.sections[index],
                     title: action.payload.title,
                 };
+            }
+        },
+        deleteSectionId: (state, action: PayloadAction<number>) => {
+            const index = state.addCourse.courseCreatedData.sections.findIndex(
+                (value) => value.sectionId === action.payload,
+            );
+            if (index >= 0) {
+                state.addCourse.courseCreatedData.sections.splice(index, 1);
             }
         },
         addCourseStep: (state, action: PayloadAction<Step>) => {
@@ -217,6 +224,19 @@ export const courseSlice = createSlice({
                 state.addCourse.courseCreatedData.sections[index].steps = action.payload.steps;
             }
         },
+        deleteStepId: (state, action: PayloadAction<{ sectionId: number; stepId: number }>) => {
+            const index = state.addCourse.courseCreatedData.sections.findIndex(
+                (value) => value.sectionId === action.payload.sectionId,
+            );
+            if (index >= 0) {
+                const stepIndex = state.addCourse.courseCreatedData.sections[index].steps.findIndex(
+                    (value) => value.stepId === action.payload.stepId,
+                );
+                if (stepIndex >= 0) {
+                    state.addCourse.courseCreatedData.sections[index].steps.splice(stepIndex, 1);
+                }
+            }
+        },
         setSection: (state, action: PayloadAction<Section>) => {
             const index = state.addCourse.courseCreatedData.sections.findIndex(
                 (value) => value.sectionId === action.payload.sectionId,
@@ -271,8 +291,12 @@ export const courseSlice = createSlice({
         setCoursePublish: (state, action: PayloadAction<boolean>) => {
             state.addCourse.courseCreatedData.isPublic = action.payload;
         },
-        setRegistrationCourses: (state, action: PayloadAction<GetRegistrationCoursesRespone[]>) => {
-            state.registrationCourses = action.payload;
+        setSaveAndQuit: (state) => {
+            state.addCourse.courseCreatedData = initialCourse;
+            state.addCourse.currentStep = 0;
+            state.addCourse.navStatus = initialCreateNavStatus;
+            state.addCourse.courseCreatedData = initialCourse;
+            state.addCourse.data = intitalAddCourseRequest;
         },
     },
 });
@@ -306,7 +330,9 @@ export const {
     setCoursePrice,
     setSalesCampaign,
     setCoursePublish,
-    setRegistrationCourses,
+    deleteSectionId,
+    deleteStepId,
+    setSaveAndQuit,
 } = courseSlice.actions;
 
 export default courseSlice.reducer;

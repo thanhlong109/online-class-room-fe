@@ -4,10 +4,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DoneIcon from '@mui/icons-material/Done';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Button, Input, Popconfirm } from 'antd';
+import { Button, Input, Popconfirm, message } from 'antd';
 import { useDispatch } from 'react-redux';
 import {
     addCourseSection,
+    deleteSectionId,
     setSection,
     setStepList,
     updateSectionId,
@@ -18,6 +19,7 @@ import { Section, Step } from '../../../../../types/Course.type';
 import { Reorder } from 'framer-motion';
 import {
     useAddSectionMutation,
+    useDeleteSectionMutation,
     useUpdateSectionMutation,
 } from '../../../../../services/section.services';
 
@@ -40,11 +42,14 @@ const SectionCreator = ({
         useAddSectionMutation();
     const [updateSection, { isSuccess: isUpdateSectionSuccess, data: updateSectionRespone }] =
         useUpdateSectionMutation();
+    const [deleteSectionMutation, { isSuccess: deleteSuccess }] = useDeleteSectionMutation();
     const [isCreateFirst, setIsCreateFirst] = useState(isCreate);
     const [isHovered, setIsHovered] = useState(false);
     const [isEdit, setIsEdit] = useState(isCreate);
-    const handleOnRemoveClick = () => {};
-    const [isProgressAdd, setIsProgressAdd] = useState(false);
+    const handleOnRemoveClick = () => {
+        deleteSectionMutation(section.sectionId);
+        message.success('Xóa thành công!');
+    };
     const handleOnTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (isCreateFirst) {
             setTempLable(e.target.value);
@@ -99,6 +104,12 @@ const SectionCreator = ({
         }
     }, [isUpdateSectionSuccess]);
 
+    useEffect(() => {
+        if (deleteSuccess) {
+            dispatch(deleteSectionId(section.sectionId));
+        }
+    }, [deleteSuccess]);
+
     return (
         <div className="bg-[#f7f9fa] p-4">
             <div
@@ -147,18 +158,15 @@ const SectionCreator = ({
                             <Popconfirm
                                 title="Xác nhận xóa"
                                 description="Bạn có chắc là muốn xóa ? toàn bộ nội dung trong chương này sẽ bị mất!"
-                                onConfirm={() => {}}
+                                onConfirm={() => {
+                                    handleOnRemoveClick();
+                                }}
                                 onCancel={() => {}}
                                 okText="Yes"
                                 cancelText="No"
                                 okButtonProps={{ style: { background: '#d32f2f' } }}
                             >
-                                <IconButton
-                                    disabled={!isHovered}
-                                    onClick={handleOnRemoveClick}
-                                    color="error"
-                                    size="small"
-                                >
+                                <IconButton disabled={!isHovered} color="error" size="small">
                                     <DeleteIcon />
                                 </IconButton>
                             </Popconfirm>
@@ -198,18 +206,16 @@ const SectionCreator = ({
                         ))}
                     </Reorder.Group>
                 </div>
-                {!isProgressAdd && (
-                    <Button
-                        className="mt-3 bg-white"
-                        icon={<AddIcon />}
-                        onClick={() => {
-                            setSteps([...steps, initialStepValue]);
-                            setIsProgressAdd(true);
-                        }}
-                    >
-                        Thêm bài học
-                    </Button>
-                )}
+
+                <Button
+                    className="mt-3 bg-white"
+                    icon={<AddIcon />}
+                    onClick={() => {
+                        setSteps([...steps, initialStepValue]);
+                    }}
+                >
+                    Thêm bài học
+                </Button>
             </div>
         </div>
     );

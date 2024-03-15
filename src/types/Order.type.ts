@@ -12,3 +12,18 @@ export interface AddOrderToDBReSpone {
     accountName: string;
     status: string;
 }
+
+export interface GetOrderByTransactionIdRespone {
+    orderId: number;
+    accountId: string;
+    courseId: number;
+    totalPrice: number;
+    paymentMethod: string;
+    transactionNo: string;
+    paymentDate: string;
+    currencyCode: string;
+    accountName: string;
+    status: string;
+    account: any;
+    course: any;
+}

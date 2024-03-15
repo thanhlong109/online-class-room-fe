@@ -3,7 +3,12 @@ export interface CheckRegistrationCourseRequest {
     courseId: number;
 }
 export interface CheckRegistrationCourseRespone {
-    isRegistered: boolean;
+    registrationId: number;
+    courseId: number;
+    accountId: string;
+    enrollmentDate: string;
+    isCompleted: boolean;
+    learningProgress: number;
 }
 
 export interface RegistrationCourse {

@@ -43,7 +43,14 @@ export const sectionApi = createApi({
                 };
             },
         }),
+        deleteSection: build.mutation<void, number>({
+            query: (id: number) => ({
+                url: `api/Section/DeleteSection?sectionId=${id}`,
+                method: 'delete',
+            }),
+        }),
     }),
 });
 
-export const { useAddSectionMutation, useUpdateSectionMutation } = sectionApi;
+export const { useAddSectionMutation, useUpdateSectionMutation, useDeleteSectionMutation } =
+    sectionApi;

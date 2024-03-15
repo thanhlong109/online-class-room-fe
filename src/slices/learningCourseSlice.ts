@@ -1,5 +1,6 @@
-import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Course, Step } from '../types/Course.type';
+import { CheckRegistrationCourseRespone } from '../types/RegistrationCourse.type';
 
 export enum LessionType {
     QUIZ,
@@ -24,6 +25,9 @@ export interface learningCourseSliceData {
         tempActiveSectionIndex: number;
     };
     isDone: boolean;
+    registrationData: CheckRegistrationCourseRespone | null;
+    lastStepCompeleted: number | null;
+    lastPostionCompleted: number;
 }
 const initialStep: Step = {
     duration: 0,
@@ -72,6 +76,9 @@ const initialState: learningCourseSliceData = {
         tempActiveStepIndex: 0,
     },
     isDone: false,
+    registrationData: null,
+    lastPostionCompleted: 1,
+    lastStepCompeleted: null,
 };
 
 export const learningCourseSlice = createSlice({
@@ -80,6 +87,7 @@ export const learningCourseSlice = createSlice({
     reducers: {
         setLearingCourse: (state, action: PayloadAction<Course>) => {
             state.learningCourse = action.payload;
+            state.stepActive = action.payload.sections[0].steps[0];
         },
         setStepActive: (
             state,
@@ -97,10 +105,16 @@ export const learningCourseSlice = createSlice({
             state.quizAnswer = [];
         },
         setStepActiveByStepId: (state, action: PayloadAction<number>) => {
-            state.learningCourse.sections.forEach((section) => {
+            state.learningCourse.sections.forEach((section, sectionIndex) => {
                 const index = section.steps.findIndex((step) => step.stepId === action.payload);
                 if (index >= 0) {
-                    state.stepActive = section.steps[index];
+                    const step = section.steps[index];
+                    state.stepActive = step;
+                    state.temp.tempActiveSectionIndex = sectionIndex;
+                    state.temp.tempActiveStepIndex = index;
+                    state.stepActiveType = step.quizId != 1 ? LessionType.QUIZ : LessionType.VIDEO;
+                    state.isShowAnswer = false;
+                    state.quizAnswer = [];
                 }
             });
         },
@@ -127,7 +141,7 @@ export const learningCourseSlice = createSlice({
                 state.temp.tempActiveSectionIndex = sectionIndex;
                 state.temp.tempActiveStepIndex = stepIndex + 1;
             } else {
-                if (sectionIndex + 1 < state.learningCourse.sections.length - 1) {
+                if (sectionIndex + 1 < state.learningCourse.sections.length) {
                     step = state.learningCourse.sections[sectionIndex + 1].steps[0];
                     state.stepActive = step;
                     state.temp.tempActiveSectionIndex = sectionIndex + 1;
@@ -158,6 +172,21 @@ export const learningCourseSlice = createSlice({
                 userSelectedAnswer: -1,
             }));
         },
+        setRegistrationData: (state, action: PayloadAction<CheckRegistrationCourseRespone>) => {
+            state.registrationData = action.payload;
+        },
+        setLastStepCompleted: (state, action: PayloadAction<number>) => {
+            state.learningCourse.sections.forEach((section) => {
+                const index = section.steps.findIndex((step) => step.stepId === action.payload);
+                if (index >= 0) {
+                    state.lastStepCompeleted = action.payload;
+                    state.lastPostionCompleted = section.steps[index].position;
+                }
+            });
+        },
+        setNextStepCompletedPos: (state) => {
+            state.lastPostionCompleted = state.lastPostionCompleted + 1;
+        },
     },
 });
 
@@ -169,6 +198,9 @@ export const {
     setShowAnswer,
     tryAnswerAgain,
     gotToNextStep,
+    setRegistrationData,
+    setLastStepCompleted,
+    setNextStepCompletedPos,
 } = learningCourseSlice.actions;
 
 export default learningCourseSlice.reducer;

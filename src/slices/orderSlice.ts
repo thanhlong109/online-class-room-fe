@@ -7,6 +7,7 @@ export interface OrderState {
         addOrderRespone: AddOrderToDBReSpone;
         CourseData: Course;
     };
+    createOrderId: string;
     OrderDone: {
         orderId: string;
     };
@@ -50,6 +51,7 @@ const initialState: OrderState = {
     OrderDone: {
         orderId: '',
     },
+    createOrderId: '',
 };
 
 export const orderSlice = createSlice({
@@ -65,9 +67,12 @@ export const orderSlice = createSlice({
         setOrderId: (state, action: PayloadAction<string>) => {
             state.OrderDone.orderId = action.payload;
         },
+        setCreateOrderId: (state, action: PayloadAction<string>) => {
+            state.createOrderId = action.payload;
+        },
     },
 });
 
-export const { setPreOrderData, setOrderId } = orderSlice.actions;
+export const { setPreOrderData, setOrderId, setCreateOrderId } = orderSlice.actions;
 
 export default orderSlice.reducer;

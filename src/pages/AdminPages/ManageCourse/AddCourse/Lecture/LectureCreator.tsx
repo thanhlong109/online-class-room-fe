@@ -10,9 +10,18 @@ import LectureContentType, { LectureType } from './LectureContentType';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import ArticleIcon from '@mui/icons-material/Article';
 import CloseIcon from '@mui/icons-material/Close';
-import { useAddStepMutation, useUpdateStepMutation } from '../../../../../services/step.services';
+import {
+    useAddStepMutation,
+    useDeleteStepMutation,
+    useUpdateStepMutation,
+} from '../../../../../services/step.services';
 import { useDispatch } from 'react-redux';
-import { addCourseStep, setStep, updateStepTitle } from '../../../../../slices/courseSlice';
+import {
+    addCourseStep,
+    deleteStepId,
+    setStep,
+    updateStepTitle,
+} from '../../../../../slices/courseSlice';
 import LectureVideoContent from './LectureVideoContent';
 import LectureQuizzContent from './LectureQuizzContent';
 import { Step } from '../../../../../types/Course.type';
@@ -39,6 +48,7 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
     const [tempLable, setTempLable] = useState('');
     const [tempDescription, setTempDescription] = useState(step ? step.stepDescription : '');
     const [addStepMutation, { isSuccess, isLoading, data }] = useAddStepMutation();
+    const [deleteStep, { isSuccess: isDeleteSuccess }] = useDeleteStepMutation();
     const [
         updateStepMutation,
         { isSuccess: isUpdateSucess, isLoading: isUpdateLoading, data: updateData },
@@ -48,7 +58,9 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
     const [lectureState, setLectureState] = useState(LectureState.DEFAULT);
     const [lectureSelectedType, setLectureSelectedType] = useState(LectureType.VIDEO);
     const [isAddDescription, setIsAddDescription] = useState(false);
-    const handleOnRemoveClick = () => {};
+    const handleOnRemoveClick = () => {
+        deleteStep(step ? step.stepId : -1);
+    };
     const handleOnClickDone = () => {
         if (isCreateFirst) {
             addStepMutation({
@@ -86,6 +98,15 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
             }
         }
     }, [step]);
+
+    useEffect(() => {
+        if (isDeleteSuccess) {
+            if (step) {
+                dispatch(deleteStepId({ sectionId: step.sectionId, stepId: step.stepId }));
+                message.success('Xóa thành công!');
+            }
+        }
+    }, [isDeleteSuccess]);
 
     const handleOnTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (isCreateFirst) {
@@ -216,7 +237,9 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
                                     <Popconfirm
                                         title="Xác nhận xóa"
                                         description="Bạn có chắc là muốn xóa ? toàn bộ nội dung trong bài này sẽ bị mất!"
-                                        onConfirm={() => {}}
+                                        onConfirm={() => {
+                                            handleOnRemoveClick();
+                                        }}
                                         onCancel={() => {}}
                                         okText="Yes"
                                         cancelText="No"
@@ -224,7 +247,6 @@ const LectureCreator = ({ position, isCreate, step = null }: LectureProps) => {
                                     >
                                         <IconButton
                                             disabled={!isHovered}
-                                            onClick={handleOnRemoveClick}
                                             color="error"
                                             size="small"
                                         >

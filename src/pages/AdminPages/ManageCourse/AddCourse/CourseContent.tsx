@@ -20,6 +20,7 @@ import {
     setCourseCreatedData,
     setCourseDescription,
     setCourseKnowledge,
+    setSaveAndQuit,
     updateCourseCategory,
     updateCourseImageUrl,
     updateCoursePreviewUrl,
@@ -35,6 +36,7 @@ import { useGetCategoryQuery } from '../../../../services/categoryService';
 import { LoadingButton } from '@mui/lab';
 import Publication from './Publication';
 import { useUpdateStepMutation } from '../../../../services/step.services';
+import { useNavigate } from 'react-router-dom';
 
 const { CheckableTag } = Tag;
 
@@ -42,6 +44,8 @@ const CourseContent = () => {
     const dispatch = useDispatch();
     const addCourseState = useSelector((state: RootState) => state.course.addCourse);
     const [updateStepMutation, { isLoading: isUpdateStepLoading }] = useUpdateStepMutation();
+    const [isSaveAndQuit, setIsSaveAndQuit] = useState(false);
+    const navigate = useNavigate();
     ///////////// update course basic infor ///////////////
     const {
         isLoading: isGetCategoryLoading,
@@ -126,6 +130,7 @@ const CourseContent = () => {
         });
         const data = getUpdateCourseRequest();
         updatecourse(data);
+        setIsSaveAndQuit(true);
     };
 
     useEffect(() => {
@@ -133,6 +138,11 @@ const CourseContent = () => {
             dispatch(updateCourseImageUrl(data.imageUrl));
             dispatch(updateCoursePreviewUrl(data.videoPreviewUrl));
             message.success('Lưu thành công!');
+            if (isSaveAndQuit) {
+                dispatch(setSaveAndQuit());
+                setIsSaveAndQuit(false);
+                navigate('/admin/getAllCourse/');
+            }
         }
     }, [isUpdateSuccess]);
 
@@ -164,7 +174,7 @@ const CourseContent = () => {
                     size="large"
                     variant="contained"
                 >
-                    Lưu thay đổi
+                    Lưu & Quay Lại
                 </LoadingButton>
             </div>
             <div className="p-x-4 p-y-2 ml-4 flex-1">
