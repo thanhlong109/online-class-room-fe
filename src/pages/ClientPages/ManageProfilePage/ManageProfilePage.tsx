@@ -13,7 +13,7 @@ import LockPersonIcon from '@mui/icons-material/LockPerson';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useEffect, useState } from 'react';
 import { ManageProfileMenu } from './ManageProfile.enum';
-import { Profile, Security, Favorite as FavoriteComponent, UploadAvatar } from './Components';
+import { Profile, Security, MyLearningCourse, UploadAvatar } from './Components';
 import { Divider } from 'antd';
 import { LogoutOutlined } from '@mui/icons-material';
 import { UserAvatar } from '../../../layouts/clientLayouts/Header/Components';
@@ -51,10 +51,10 @@ const ManageProfilePage = () => {
             component: <Security />,
         },
         {
-            type: ManageProfileMenu.FAVORITE,
+            type: ManageProfileMenu.LEARNING_COURSES,
             MenuIcon: FavoriteIcon,
-            menutext: 'Khóa học yêu thích',
-            component: <FavoriteComponent />,
+            menutext: 'Khóa học của tôi',
+            component: <MyLearningCourse />,
         },
     ];
 

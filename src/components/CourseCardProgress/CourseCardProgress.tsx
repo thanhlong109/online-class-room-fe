@@ -1,63 +1,58 @@
-import { Rating, styled } from '@mui/material';
-import StarIcon from '@mui/icons-material/Star';
-import { formatNumberWithCommas } from '../../utils/NumberFormater';
-import { Popover } from 'antd';
-import { CourseCardHover } from '..';
-import { Course } from '../../types/Course.type';
 import { useNavigate } from 'react-router-dom';
-
-const StyledRating = styled(Rating)({
-    '& .MuiRating-icon': {
-        color: '#cccccc',
-    },
-    '& .MuiRating-iconFilled': {
-        color: '#f69c08',
-    },
-    '& .MuiRating-iconHover': {
-        color: '#ff3d47',
-    },
-});
+import { RegistrationCourse } from '../../types/RegistrationCourse.type';
+import { Progress } from 'antd';
+import { Paper } from '@mui/material';
+import moment from 'moment/min/moment-with-locales';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 interface Props {
-    course: Course | undefined;
+    registrationCourse: RegistrationCourse;
 }
 
-const CourseCardProgress = ({ course }: Props) => {
-    const starRating = 4.5;
-    const tototalRating = formatNumberWithCommas(4852);
+const CourseCardProgress = ({ registrationCourse }: Props) => {
     const navigate = useNavigate();
     const handleOnCourseClick = () => {
-        if (course) {
-            navigate(`/courses/${course?.courseId}`);
+        if (registrationCourse) {
+            navigate(`/courses/${registrationCourse.courseId}`);
         }
     };
+    const parsedDate = moment(registrationCourse.enrollmentDate);
+    const [isHover, setIsHover] = useState(false);
     return (
         <>
-            {course && (
-                <Popover content={<CourseCardHover course={course} />} trigger="hover">
-                    <div className="flex flex-col gap-2" onClick={handleOnCourseClick}>
-                        <div className="flex max-h-[180px] items-center justify-center overflow-hidden">
-                            <img className="w-max" src={course?.imageUrl} />
-                        </div>
-                        <h2 className="font-bold normal-case">{course?.title}</h2>
-                        <div className="flex items-center gap-1 text-sm">
-                            <span className=" font-mediuminde">{starRating}</span>
-                            <StyledRating
-                                name="half-rating-read"
-                                defaultValue={starRating}
-                                precision={0.1}
-                                emptyIcon={<StarIcon fontSize="inherit" />}
-                                size="small"
-                                readOnly
+            <motion.div animate={{ scale: isHover ? 1.05 : 1 }} transition={{ duration: 0.3 }}>
+                <div onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)}>
+                    <Paper
+                        elevation={2}
+                        className="flex cursor-pointer flex-col gap-2 !rounded-[8px]"
+                        onClick={handleOnCourseClick}
+                    >
+                        <div className="flex max-h-[120px] items-center justify-center overflow-hidden overflow-y-hidden rounded-t-[8px]">
+                            <img
+                                className="h-[120px] min-h-[120px] w-full"
+                                src={registrationCourse.courseImg}
                             />
-                            <span>({tototalRating})</span>
                         </div>
-                        <div className="text-[15px] font-bold">
-                            {formatNumberWithCommas(course?.price)}₫
+                        <div className="flex flex-col gap-1 px-2 py-1">
+                            <p className="line-clamp-2 text-sm font-bold normal-case">
+                                {registrationCourse.courseTitle}
+                            </p>
+                            <div className="flex items-center gap-1 text-sm">
+                                <p className="flex-1 text-sm">Đã tham gia: </p>
+                                <p className="text-sm">
+                                    {parsedDate.locale('vi').startOf('hour').fromNow()}
+                                </p>
+                            </div>
+                            <div className="text-[15px] font-bold">
+                                <Progress
+                                    percent={Math.round(registrationCourse.learningProgress * 100)}
+                                />{' '}
+                            </div>
                         </div>
-                    </div>
-                </Popover>
-            )}
+                    </Paper>
+                </div>
+            </motion.div>
         </>
     );
 };
