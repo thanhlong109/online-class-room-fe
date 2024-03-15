@@ -19,6 +19,8 @@ import LearningLayout from '../layouts/clientLayouts/LearningLayout/LearningLayo
 import { SearchPage } from '../pages/ClientPages/SearchPage';
 import CreateAccountAdmin from '../pages/AdminPages/ManageUser/CreateAccountForStaffAndAdmin/CreateAccountAdmin';
 import { RoleType } from '../slices/authSlice';
+import ParentMainPage from '../pages/ParentPages/ParentMainPage/ParentMainPage';
+import DefaultParentLayout from '../layouts/parentLayouts/DefaultParentLayout';
 
 interface LayoutProps {
     childen: React.ReactNode;
@@ -39,6 +41,7 @@ const publicRoutes: RouteProps[] = [
     { path: '/register', component: RegisterPage, layout: LoginLayout },
     { path: '/search/:id', component: SearchPage, layout: DefaultLayout },
     { path: '*', component: NotFoundPage, layout: DefaultLayout },
+    { path: '/parent/', component: ParentMainPage, layout: DefaultParentLayout },
 ];
 
 const privateRoutes: RouteProps[] = [
@@ -59,6 +62,10 @@ const adminRoutes: RouteProps[] = [
     },
     { path: '/admin/getAllAccount', component: GetAllAccount, layout: DefaultLayoutAdmin },
     { path: '/admin/createAccount', component: CreateAccountAdmin, layout: DefaultLayoutAdmin },
+];
+
+const parentRoutes: RouteProps[] = [
+    { path: '/parent/', component: ParentMainPage, layout: DefaultParentLayout },
 ];
 
 const staffRoutes: RouteProps[] = [];
