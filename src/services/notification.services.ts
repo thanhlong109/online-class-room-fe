@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Notification } from '../types/Notification.type';
 import { PagingParam } from '../types/TableParam';
+import { Account, UpdateDeviceToken } from '../types/Account.type';
 
 type NotificationQueryParams = PagingParam & { accountId: string };
 
@@ -36,6 +37,13 @@ export const notificationApi = createApi({
                 method: 'GET',
             }),
         }),
+        updateDeviceToken: build.mutation<void, UpdateDeviceToken>({
+            query: (body: UpdateDeviceToken) => ({
+                url: 'api/Account/Update-device-token',
+                body,
+                method: 'put',
+            }),
+        }),
     }),
 });
 
@@ -44,4 +52,5 @@ export const {
     useGetAllNotificationsQuery,
     useGetNumberOfUnreadNotificationsQuery,
     useMakeNotificationIsReadMutation,
+    useUpdateDeviceTokenMutation,
 } = notificationApi;

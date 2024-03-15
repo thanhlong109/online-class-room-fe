@@ -6,8 +6,7 @@ import {
     useMakeNotificationIsReadMutation,
 } from '../../services/notification.services';
 import { RootState } from '../../store';
-import { Link } from 'react-router-dom';
-import moment from 'moment';
+import moment from 'moment/min/moment-with-locales';
 import { useEffect } from 'react';
 
 export interface NotificationPopoverProps {
@@ -17,7 +16,7 @@ export interface NotificationPopoverProps {
 const NotificationPopover = ({ onMakeIsReadNoti }: NotificationPopoverProps) => {
     //  const [notiList, setNotiList] = useState<number[]>([]);
     const accountId = useSelector((state: RootState) => state.user.id);
-    const { data, isLoading } = useGetAllNotificationsQuery({
+    const { data, isLoading, refetch } = useGetAllNotificationsQuery({
         accountId: accountId ? accountId : '',
         pageNumber: 1,
         pageSize: 30,
@@ -29,6 +28,7 @@ const NotificationPopover = ({ onMakeIsReadNoti }: NotificationPopoverProps) => 
     useEffect(() => {
         if (isSuccess) {
             onMakeIsReadNoti();
+            refetch();
         }
     }, [isSuccess]);
 
@@ -81,12 +81,13 @@ const NotificationPopover = ({ onMakeIsReadNoti }: NotificationPopoverProps) => 
                                         fontSize: '13px',
                                     }}
                                 >
-                                    <span>{moment(item.sendDate).endOf('day').fromNow()}</span>
                                     <span>
-                                        <Typography.Text>
-                                            {moment(item.sendDate).format('LT')}
+                                        {moment(item.sendDate).startOf('minutes').fromNow()}
+                                    </span>
+                                    <span>
+                                        <Typography.Text style={{ paddingRight: '8px' }}>
                                             <span> </span>
-                                            {moment(item.sendDate).format('l')}
+                                            {moment(item.sendDate).locale('vi').format('LLL')}
                                         </Typography.Text>
                                     </span>
                                 </div>

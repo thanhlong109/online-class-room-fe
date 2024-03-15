@@ -33,6 +33,7 @@ const publicRoutes: RouteProps[] = [
     { path: '/search/:id', component: SearchPage, layout: DefaultLayout },
     { path: '/checkout', component: PaymentPage, layout: DefaultLayout },
     { path: '*', component: NotFoundPage, layout: DefaultLayout },
+    { path: '/forgotpassword', component: NotFoundPage, layout: DefaultLayout },
 ];
 
 const privateRoutes: RouteProps[] = [
