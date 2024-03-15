@@ -23,6 +23,21 @@ interface courseState {
     };
 }
 
+const intitalAddCourseRequest: AddCourseRequest = {
+    categoryList: [],
+    courseIsActive: false,
+    description: '',
+    imageUrl: 'string',
+    isPublic: false,
+    knowdledgeDescription: '',
+    linkCertificated: 'string',
+    price: 0,
+    salesCampaign: 0,
+    title: '',
+    totalDuration: 0,
+    videoPreviewUrl: 'string',
+};
+
 const initialCourse: Course = {
     courseIsActive: false,
     description: '',
@@ -63,20 +78,7 @@ const initialUpdateNavStatus: StepProps[] = [
 const initialState: courseState = {
     wishList: [],
     addCourse: {
-        data: {
-            categoryList: [],
-            courseIsActive: false,
-            description: '',
-            imageUrl: 'string',
-            isPublic: false,
-            knowdledgeDescription: '',
-            linkCertificated: 'string',
-            price: 0,
-            salesCampaign: 0,
-            title: '',
-            totalDuration: 0,
-            videoPreviewUrl: 'string',
-        },
+        data: intitalAddCourseRequest,
         currentStep: 0,
         navStatus: initialCreateNavStatus,
         courseCreatedData: initialCourse,
@@ -289,6 +291,13 @@ export const courseSlice = createSlice({
         setCoursePublish: (state, action: PayloadAction<boolean>) => {
             state.addCourse.courseCreatedData.isPublic = action.payload;
         },
+        setSaveAndQuit: (state) => {
+            state.addCourse.courseCreatedData = initialCourse;
+            state.addCourse.currentStep = 0;
+            state.addCourse.navStatus = initialCreateNavStatus;
+            state.addCourse.courseCreatedData = initialCourse;
+            state.addCourse.data = intitalAddCourseRequest;
+        },
     },
 });
 
@@ -323,6 +332,7 @@ export const {
     setCoursePublish,
     deleteSectionId,
     deleteStepId,
+    setSaveAndQuit,
 } = courseSlice.actions;
 
 export default courseSlice.reducer;
