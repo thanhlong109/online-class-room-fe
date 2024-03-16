@@ -1,6 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { PagingParam } from '../types/TableParam';
-import { AddCourseRequest, Course, UpdateCourseRequest, GetAllCourse } from '../types/Course.type';
+import {
+    AddCourseRequest,
+    Course,
+    UpdateCourseRequest,
+    GetAllCourse,
+    CountStudentPerCourse,
+} from '../types/Course.type';
 
 export const coursesApi = createApi({
     reducerPath: 'coursesApi',
@@ -78,6 +84,13 @@ export const coursesApi = createApi({
                 return data;
             },
         }),
+        countStudentPerCourse: build.query<CountStudentPerCourse[], void>({
+            query: () => 'api/Course/CountStudentPerCourse',
+            transformResponse: (response) => {
+                const data = (response as any).dataObject;
+                return [...data];
+            },
+        }),
     }),
 });
 
@@ -91,4 +104,5 @@ export const {
     useGetAllCoursesQuery,
     useDeleteCourseMutation,
     useCountTotalCoursesQuery,
+    useCountStudentPerCourseQuery,
 } = coursesApi;

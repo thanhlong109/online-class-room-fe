@@ -51,10 +51,13 @@ const Card: React.FC<CardProps> = ({ item }) => {
         coursesError,
     ]);
 
+    // Quy đổi tiền đô la sang tiền việt nam
+    const exchangeRateUSDToVND = 23000;
+
     let number: number;
 
     if (item.title === 'Revenue') {
-        number = incomeData || 0;
+        number = (incomeData || 0) * exchangeRateUSDToVND;
     } else if (item.title === 'Orders') {
         number = orderData || 0;
     } else if (item.title === 'Total Users') {
@@ -72,7 +75,9 @@ const Card: React.FC<CardProps> = ({ item }) => {
         <div className="flex w-[100%] cursor-pointer flex-row gap-2 rounded-lg bg-[#f2f2f2] hover:bg-orange-300">
             <div className="flex flex-col gap-4 p-2 ">
                 <span className="ml-4 font-bold">{item.title}</span>
-                <span className="ml-4 text-3xl ">{number}</span>
+                <span className="ml-4 text-3xl ">
+                    {item.title === 'Revenue' ? `${number.toLocaleString()} VND` : number}
+                </span>
                 <span className="">
                     <span className={item.change < 0 ? 'text-red-500' : 'text-green-500'}>
                         {item.change > 0 ? '+' : ''}
