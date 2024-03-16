@@ -24,13 +24,14 @@ export interface ChangePasswordRequest {
 }
 
 export interface RegisterUserRequest {
+    accountPhone: string;
+    firstName: string;
+    lastName: string;
     accountEmail: string;
+    birthDate: string;
     accountPassword: string;
     confirmAccountPassword: string;
-    birthDate: string;
-    lastName: string;
-    firstName: string;
-    accountPhone: string;
+    parentEmail: string;
 }
 
 export interface RegisterAdminRequest {

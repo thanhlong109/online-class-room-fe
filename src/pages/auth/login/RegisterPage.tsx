@@ -20,6 +20,7 @@ const initFromData: RegisterUserRequest = {
     lastName: '',
     firstName: '',
     accountPhone: 'null',
+    parentEmail: '',
 };
 
 interface validationProps {
@@ -36,6 +37,7 @@ function RegisterPage() {
     const [formData, setFormData] = useState(initFromData);
     const [emptyValidation, setEmptyValidation] = useState(initialValidation);
     const [emailValidation, setEmailValidation] = useState(initialValidation);
+    const [emailParentValidation, setEmailParentValidation] = useState(initialValidation);
     const [passwordValidation, setPasswordValidation] = useState(initialValidation);
     const [confirmPasswordValidation, setConfirmPasswordValidation] = useState(initialValidation);
     const [errorMessage, setErrorMessage] = useState('');
@@ -67,7 +69,7 @@ function RegisterPage() {
                 message: 'Đăng kí thành công!',
                 description:
                     'Bạn đã đăng kí thành công. Hãy kiểm tra email đăng kí của bạn để xác thực tài khoản!',
-                duration: 2.5,
+                duration: 5,
             });
             // Use setTimeout to delay navigation, allowing the user to read the notification
             // setTimeout(() => {
@@ -102,6 +104,12 @@ function RegisterPage() {
         const { isError, message } = checkEmailValidaion(e.target.value);
         setEmailValidation({ isError: isError, errorMessage: message });
         setFormData({ ...formData, accountEmail: e.target.value });
+    };
+
+    const handleOnParentEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { isError, message } = checkEmailValidaion(e.target.value);
+        setEmailParentValidation({ isError: isError, errorMessage: message });
+        setFormData({ ...formData, parentEmail: e.target.value });
     };
 
     const handleOnPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -231,6 +239,20 @@ function RegisterPage() {
                                 {confirmPasswordValidation.errorMessage}
                             </p>
                         </div>
+                        <div>
+                            <Input
+                                onChange={handleOnParentEmailChange}
+                                allowClear
+                                size="large"
+                                className="px-5 py-3"
+                                value={formData.parentEmail}
+                                placeholder="Nhập địa chỉ Email phụ huynh"
+                                status={emailParentValidation.isError ? 'error' : undefined}
+                            />
+                            <p className="ml-2 mt-1 text-sm text-red-500">
+                                {emailParentValidation.errorMessage}
+                            </p>
+                        </div>
                     </section>
                     <p className="ml-2 text-sm text-red-500">{errorMessage}</p>
                     <Button
@@ -238,9 +260,11 @@ function RegisterPage() {
                             emailValidation.isError ||
                             passwordValidation.isError ||
                             confirmPasswordValidation.isError ||
+                            emailParentValidation.isError ||
                             formData.accountEmail.length === 0 ||
                             formData.accountPassword.length === 0 ||
-                            formData.confirmAccountPassword.length === 0
+                            formData.confirmAccountPassword.length === 0 ||
+                            formData.parentEmail.length === 0
                         }
                         htmlType="submit"
                         loading={isRegisterLoading}

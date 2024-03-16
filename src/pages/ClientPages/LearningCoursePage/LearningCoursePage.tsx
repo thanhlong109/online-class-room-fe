@@ -44,6 +44,8 @@ const LearningCoursePage = () => {
     const { isShowAnswer, stepActive, quizAnswer, stepActiveType } = useSelector(
         (state: RootState) => state.learningCourse,
     );
+
+    console.log(stepActive);
     //
     const {
         data,
@@ -197,7 +199,7 @@ const LearningCoursePage = () => {
                         )}
                     </div>
                 </div>
-                {data && (
+                {data && stepActive && (
                     <div className="py-2">
                         <AccordionSection
                             lastPosition={lastPosCompleted + 1}

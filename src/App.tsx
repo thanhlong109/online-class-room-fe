@@ -1,6 +1,6 @@
 import './App.css';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { adminRoutes, privateRoutes, publicRoutes } from './routes';
+import { adminRoutes, privateRoutes, publicRoutes, parentRoutes } from './routes';
 import { getMessagingToken, onMessageListener } from './firebase/firebase';
 import { useState, useEffect } from 'react';
 import { message } from 'antd';
@@ -79,6 +79,9 @@ function App() {
                     }
                     case RoleType.PARENT: {
                         dispatch(setLoginRole(RoleType.PARENT));
+                        if (!location.pathname.includes('parent/')) {
+                            navigate('/parent/');
+                        }
                         break;
                     }
                     case RoleType.STAFF: {
@@ -120,6 +123,19 @@ function App() {
             <Routes>
                 {(role === RoleType.GUESS || role === RoleType.STUDENT || role == RoleType.ADMIN) &&
                     publicRoutes.map(({ layout, component, path }, index) => {
+                        const Layout = layout;
+                        const Component = component;
+                        return (
+                            <Route
+                                key={index}
+                                path={path}
+                                element={<Layout childen={<Component />} />}
+                            />
+                        );
+                    })}
+
+                {role === RoleType.PARENT &&
+                    parentRoutes.map(({ layout, component, path }, index) => {
                         const Layout = layout;
                         const Component = component;
                         return (

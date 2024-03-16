@@ -44,3 +44,12 @@ export interface ForgetPassword {
     profileImg: string;
     sex: string;
 }
+
+export interface ChildAccountRespone {
+    id: string;
+    firstName: string;
+    lastName: string;
+    sex: any;
+    profileImg: any;
+    email: string;
+}

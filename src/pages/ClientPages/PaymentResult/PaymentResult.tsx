@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Paper } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store';
+import { formatNumberWithCommas } from '../../../utils/NumberFormater';
 
 export enum PaymentResultType {
     SUCCESS = 'success',
@@ -64,7 +65,10 @@ const PaymentResult = () => {
                             <div className="flex items-center justify-between">
                                 <p className="text-base font-medium text-[#034892]">Tiền gốc:</p>
                                 <p className="text-sm font-medium italic text-[#373737] ">
-                                    {orderData.preOrderData.CourseData.price} VND
+                                    {formatNumberWithCommas(
+                                        orderData.preOrderData.CourseData.price,
+                                    )}{' '}
+                                    VND
                                 </p>
                             </div>
                             <div className="flex items-center justify-between">
@@ -81,9 +85,11 @@ const PaymentResult = () => {
                                     Tổng số tiền thanh toán:
                                 </p>
                                 <p className="text-sm font-medium italic text-[#373737]">
-                                    {orderData.preOrderData.CourseData.price -
-                                        orderData.preOrderData.CourseData.price *
-                                            orderData.preOrderData.CourseData.salesCampaign}{' '}
+                                    {formatNumberWithCommas(
+                                        orderData.preOrderData.CourseData.price -
+                                            orderData.preOrderData.CourseData.price *
+                                                orderData.preOrderData.CourseData.salesCampaign,
+                                    )}{' '}
                                     VND
                                 </p>
                             </div>

@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { GetAllAccount } from '../types/Account.type';
+import { ChildAccountRespone, GetAllAccount } from '../types/Account.type';
 import { PagingParam } from '../types/TableParam';
 
 export const accountApi = createApi({
@@ -24,7 +24,15 @@ export const accountApi = createApi({
             query: (input: PagingParam) =>
                 `api/Account/ViewAccountList?pageNumber=${input.pageNumber}&pageSize=${input.pageSize}&search=${input.search}`,
         }),
+        getAccountByParentAccountId: build.query<ChildAccountRespone[], string>({
+            query: (accountId: string) =>
+                `api/Account/GetAccountByParentAccountId?accountId=${accountId}`,
+            transformResponse: (response) => {
+                const data = (response as any).dataObject;
+                return data;
+            },
+        }),
     }),
 });
 
-export const { useGetAllAccountsQuery } = accountApi;
+export const { useGetAllAccountsQuery, useGetAccountByParentAccountIdQuery } = accountApi;

@@ -17,7 +17,6 @@ const CourseDetailsPage = () => {
     const location = useLocation();
     const [course, setCourse] = useState<Course>();
     const courseId = location.pathname.split('/').pop();
-    console.log(courseId);
     const { data, isLoading } = useGetCourseIDQuery(courseId ? courseId : '');
     useEffect(() => {
         if (data) setCourse(data);
