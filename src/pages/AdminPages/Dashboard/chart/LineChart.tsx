@@ -7,7 +7,7 @@ import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
 const LineChart = () => {
-    const [userData, setUserData] = useState({
+    const [userData] = useState({
         labels: LineChartData.map((data) => data.month),
         datasets: [
             {
@@ -34,7 +34,7 @@ const LineChart = () => {
         },
     };
     return (
-        <Card title="Biểu đồ số lượng đăng kí khóa học" className="ml-6 max-w-[700px]">
+        <Card title="Biểu đồ số lượng đăng kí khóa học" className="ml-6 w-full">
             <Line data={userData} options={options} width="100%" />
         </Card>
     );

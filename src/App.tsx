@@ -15,8 +15,8 @@ import { useGetUserInfoQuery } from './services/auth.services';
 import { setUserInfo } from './slices/userSlice';
 
 function App() {
-    const [show] = useState(false);
-    const [notification] = useState({ title: '', body: '' });
+    //const [show] = useState(false);
+    //const [notification] = useState({ title: '', body: '' });
     const [isDeviceTokenFound, setDeviceTokenFound] = useState(false);
 
     useEffect(() => {
@@ -50,6 +50,9 @@ function App() {
             updateDeviceToken({ accountId: accountId, deviceToken });
         }
         getMessagingToken(setDeviceTokenFound);
+        if (isDeviceTokenFound) {
+            console.log('found device token');
+        }
     }, [accountId]);
 
     const user = localStorage.getItem('user');

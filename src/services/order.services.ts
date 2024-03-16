@@ -9,7 +9,7 @@ export const orderApi = createApi({
     reducerPath: 'orderApi',
     baseQuery: fetchBaseQuery({
         baseUrl: 'https://estudyhub.azurewebsites.net/',
-        prepareHeaders: (headers, _) => {
+        prepareHeaders: (headers) => {
             // Thêm logic để lấy accessToken từ localStorage và đặt vào header Authorization
             const user = localStorage.getItem('user');
             if (user) {
@@ -55,7 +55,32 @@ export const orderApi = createApi({
                 };
             },
         }),
+        totalIncome: build.query<number, void>({
+            query: () => ({
+                url: 'api/Order/TotalIncome',
+                method: 'get',
+            }),
+            transformResponse: (response) => {
+                const data = (response as any).dataObject;
+                return data;
+            },
+        }),
+        totalOrder: build.query<number, void>({
+            query: () => ({
+                url: 'api/Order/TotalOrders',
+                method: 'get',
+            }),
+            transformResponse: (response) => {
+                const data = (response as any).dataObject;
+                return data;
+            },
+        }),
     }),
 });
 
-export const { useAddOrderToDBMutation, useGetClientIdQuery } = orderApi;
+export const {
+    useAddOrderToDBMutation,
+    useGetClientIdQuery,
+    useTotalIncomeQuery,
+    useTotalOrderQuery,
+} = orderApi;

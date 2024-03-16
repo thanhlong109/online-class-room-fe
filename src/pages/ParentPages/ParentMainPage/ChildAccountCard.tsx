@@ -26,6 +26,16 @@ const ChildAccountCard = ({ childAccount }: ChildAccountCardProps) => {
         }
     }, [isSuccess, data]);
 
+    let shortName = '';
+    if (
+        childAccount?.firstName &&
+        childAccount?.lastName &&
+        childAccount.lastName.length > 0 &&
+        childAccount.firstName.length > 0
+    ) {
+        shortName =
+            childAccount.firstName[0].toUpperCase() + childAccount.lastName[0].toUpperCase();
+    }
     return (
         <div>
             <Card
@@ -47,10 +57,7 @@ const ChildAccountCard = ({ childAccount }: ChildAccountCardProps) => {
                                     color: '#fff',
                                 }}
                             >
-                                <>
-                                    {childAccount.firstName[0].toUpperCase() +
-                                        childAccount.lastName[0].toUpperCase()}
-                                </>
+                                <>{shortName}</>
                             </Avatar>
                         )
                     }

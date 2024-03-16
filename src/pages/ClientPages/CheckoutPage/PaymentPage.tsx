@@ -87,7 +87,7 @@ const PaymentPage = () => {
                         )
                             .then((respone) => {
                                 if (!respone.ok) {
-                                    return respone.json().then((err) => {
+                                    return respone.json().then(() => {
                                         navigate('/payment/failed');
                                     });
                                 }
@@ -97,7 +97,7 @@ const PaymentPage = () => {
                                 dispatch(setOrderId(data.orderID));
                                 navigate('/payment/success');
                             })
-                            .catch((err) => {
+                            .catch(() => {
                                 navigate('/payment/failed');
                             });
                     }}

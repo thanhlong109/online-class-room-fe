@@ -22,7 +22,7 @@ export const options = {
 };
 
 const BarChart = () => {
-    const [userData, setUserData] = useState({
+    const [userData] = useState({
         labels: BarChartData.map((data) => data.month),
         datasets: [
             {

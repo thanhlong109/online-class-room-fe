@@ -1,7 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
-import firebase from 'firebase/compat/app';
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_API_KEY,

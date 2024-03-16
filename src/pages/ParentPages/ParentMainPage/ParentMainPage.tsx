@@ -26,7 +26,7 @@ const ParentMainPage = () => {
             <div>
                 <h2 className="text-xl font-bold text-blue-500">Chọn tài khoản muốn xem</h2>
                 <div className="mt-6">
-                    <div className="flex gap-4">
+                    <div className="flex flex-wrap gap-4">
                         {!isLoading &&
                             childs &&
                             childs.map((acc, index) => (

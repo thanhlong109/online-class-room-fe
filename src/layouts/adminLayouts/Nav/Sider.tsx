@@ -1,5 +1,4 @@
 import { PieChartOutlined, MenuOutlined, DesktopOutlined } from '@ant-design/icons';
-import { FileOpenOutlined } from '@mui/icons-material';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import StreetviewOutlinedIcon from '@mui/icons-material/StreetviewOutlined';
 import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
@@ -60,7 +59,6 @@ export default function MySider() {
                 getItem('Xem tất cả tài khoản', 'accountAll', <StreetviewOutlinedIcon />),
                 getItem('Tạo tài khoản', 'createAccount', <PersonAddAlt1OutlinedIcon />),
             ]),
-            getItem('Files', 'file', <FileOpenOutlined />),
         ];
     };
     const navUrl = new Map<string, string>();

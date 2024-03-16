@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ChildAccountRespone, GetAllAccount } from '../types/Account.type';
+import { ChildAccountRespone, GetAllAccount, Account } from '../types/Account.type';
 import { PagingParam } from '../types/TableParam';
 
 export const accountApi = createApi({
@@ -32,7 +32,26 @@ export const accountApi = createApi({
                 return data;
             },
         }),
+        deleteAccount: build.mutation<Account, string>({
+            query: (accountId: string) => ({
+                url: `api/Account/${accountId}`,
+                method: 'delete',
+            }),
+        }),
+        countTotalAccounts: build.query<number, void>({
+            query: () => 'api/Account/CountTotalAccount',
+
+            transformResponse: (response) => {
+                const data = (response as any).dataObject;
+                return data;
+            },
+        }),
     }),
 });
 
-export const { useGetAllAccountsQuery, useGetAccountByParentAccountIdQuery } = accountApi;
+export const {
+    useGetAllAccountsQuery,
+    useGetAccountByParentAccountIdQuery,
+    useDeleteAccountMutation,
+    useCountTotalAccountsQuery,
+} = accountApi;

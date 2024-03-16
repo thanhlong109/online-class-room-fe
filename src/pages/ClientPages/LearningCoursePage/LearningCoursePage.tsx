@@ -45,7 +45,6 @@ const LearningCoursePage = () => {
         (state: RootState) => state.learningCourse,
     );
 
-    console.log(stepActive);
     //
     const {
         data,

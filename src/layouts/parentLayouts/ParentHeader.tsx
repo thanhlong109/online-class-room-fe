@@ -1,5 +1,5 @@
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Divider, Dropdown, MenuProps, Modal, Spin } from 'antd';
+import { Avatar, Dropdown, MenuProps, Modal, Spin } from 'antd';
 import { Header } from 'antd/es/layout/layout';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';

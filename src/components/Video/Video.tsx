@@ -11,7 +11,6 @@ const Video = ({ src }: Props, ref: any) => {
     if (ref === null) {
         ref = useRef();
     }
-    const [duration, setDuration] = useState(0);
     const [isPlay, setPlay] = useState(true);
     const handleOnClick = () => {
         if (isPlay) {
@@ -25,12 +24,6 @@ const Video = ({ src }: Props, ref: any) => {
         setPlay(play);
     };
 
-    const onVideoLoaded = () => {
-        if (ref.current) {
-            setDuration(ref.current.duration);
-            console.log(ref.current.duration);
-        }
-    };
     return (
         <>
             <div className="relative cursor-pointer text-[50px] md:text-[80px]">
@@ -40,7 +33,6 @@ const Video = ({ src }: Props, ref: any) => {
                     ref={ref}
                     controls
                     width="100%"
-                    onLoadedMetadata={onVideoLoaded}
                 >
                     <source src={src} type="video/mp4" />
                     Sorry, your browser doesn't support embedded videos.

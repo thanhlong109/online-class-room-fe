@@ -14,7 +14,7 @@ const options: DefaultOptionType[] = [
 ];
 
 const ViewCourseListPage = () => {
-    const [pagingParam, setPagingParam] = useState<PagingParam>({
+    const [pagingParam] = useState<PagingParam>({
         pageNumber: 1,
         pageSize: 15,
         search: '',

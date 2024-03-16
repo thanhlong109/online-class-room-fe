@@ -14,8 +14,6 @@ const RegistrationCourseItem = ({ courseId }: Props) => {
 
     console.log(courseId);
     useEffect(() => {
-        console.log('Data:', data);
-        console.log('Is Success:', isSuccess);
         if (isSuccess) {
             setCourse(data);
         }

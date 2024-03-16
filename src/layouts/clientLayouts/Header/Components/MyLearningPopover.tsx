@@ -15,7 +15,6 @@ const MyLearningPopover = () => {
     useEffect(() => {
         if (isSuccess && data) {
             setRegistrationCourses(data);
-            console.log(data);
         }
     }, [isSuccess, data]);
 
