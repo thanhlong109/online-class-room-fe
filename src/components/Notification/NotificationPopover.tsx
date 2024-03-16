@@ -32,7 +32,7 @@ const NotificationPopover = ({ onMakeIsReadNoti }: NotificationPopoverProps) => 
         }
     }, [isSuccess]);
 
-    const handleOnClickFavorite = async (id: number, modelId: string, type: string) => {
+    const handleOnClickFavorite = async (id: number, modelId: number, type: string) => {
         if (type.includes('Course')) {
             navigate(`/courses/${modelId}`);
             // } else if (type.includes('Service')) {
@@ -60,6 +60,7 @@ const NotificationPopover = ({ onMakeIsReadNoti }: NotificationPopoverProps) => 
                             key={item.notificationId}
                             onClick={() => {
                                 if (!item.isRead) makeIsReadNoti(item.notificationId);
+                                handleOnClickFavorite(item.notificationId, item.modelId, item.type);
                             }}
                         >
                             <div style={{ flex: '1' }}>
