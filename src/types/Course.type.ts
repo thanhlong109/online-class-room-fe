@@ -61,6 +61,12 @@ export interface GetAllCourse {
     totalCourses: number;
     totalPages: number;
 }
+
+export interface CountStudentPerCourse {
+    courseId: number;
+    courseTitle: string;
+    totalStudents: number;
+}
 /////////////////////// Section ////////////////////////
 export interface Section {
     sectionId: number;
