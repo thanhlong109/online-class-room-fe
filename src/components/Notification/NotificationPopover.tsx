@@ -35,6 +35,7 @@ const NotificationPopover = ({ onMakeIsReadNoti }: NotificationPopoverProps) => 
     const handleOnClickFavorite = async (id: number, modelId: number, type: string) => {
         if (type.includes('Course')) {
             navigate(`/courses/${modelId}`);
+            console.log(id);
             // } else if (type.includes('Service')) {
             //     navigate(`/courses/${modelId}`);
             // }else if (type.includes('Order')) {
