@@ -10,6 +10,7 @@ export interface Account {
     biography: string;
     profileImg: string;
     sex: string;
+    status: string;
 }
 
 export interface GetAllAccount {

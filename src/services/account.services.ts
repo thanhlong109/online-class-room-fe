@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { GetAllAccount } from '../types/Account.type';
+import { Account, GetAllAccount } from '../types/Account.type';
 import { PagingParam } from '../types/TableParam';
 
 export const accountApi = createApi({
@@ -23,7 +23,13 @@ export const accountApi = createApi({
             query: (input: PagingParam) =>
                 `api/Account/ViewAccountList?pageNumber=${input.pageNumber}&pageSize=${input.pageSize}&search=${input.search}`,
         }),
+        deleteAccount: build.mutation<Account, string>({
+            query: (accountId: string) => ({
+                url: `api/Account/${accountId}`,
+                method: 'delete',
+            }),
+        }),
     }),
 });
 
-export const { useGetAllAccountsQuery } = accountApi;
+export const { useGetAllAccountsQuery, useDeleteAccountMutation } = accountApi;
