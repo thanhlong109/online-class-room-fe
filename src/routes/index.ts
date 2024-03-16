@@ -22,6 +22,7 @@ import { RoleType } from '../slices/authSlice';
 import ParentMainPage from '../pages/ParentPages/ParentMainPage/ParentMainPage';
 import DefaultParentLayout from '../layouts/parentLayouts/DefaultParentLayout';
 import PaymentResult from '../pages/ClientPages/PaymentResult/PaymentResult';
+import ViewCourseListPage from '../pages/ClientPages/ViewCourseListPage';
 
 interface LayoutProps {
     childen: React.ReactNode;
@@ -43,6 +44,7 @@ const publicRoutes: RouteProps[] = [
     { path: '/search/:id', component: SearchPage, layout: DefaultLayout },
     { path: '*', component: NotFoundPage, layout: DefaultLayout },
     { path: '/parent/', component: ParentMainPage, layout: DefaultParentLayout },
+    { path: '/courses/', component: ViewCourseListPage, layout: DefaultLayout },
 ];
 
 const privateRoutes: RouteProps[] = [
