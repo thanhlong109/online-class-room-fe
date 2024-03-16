@@ -30,7 +30,15 @@ export const accountApi = createApi({
                 method: 'delete',
             }),
         }),
+        countTotalAccounts: build.query<number, void>({
+            query: () => 'api/Account/CountTotalAccount',
+            transformResponse: (response) => {
+                const data = (response as any).dataObject;
+                return data;
+            },
+        }),
     }),
 });
 
-export const { useGetAllAccountsQuery, useDeleteAccountMutation } = accountApi;
+export const { useGetAllAccountsQuery, useDeleteAccountMutation, useCountTotalAccountsQuery } =
+    accountApi;
