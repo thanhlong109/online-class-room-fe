@@ -20,6 +20,7 @@ export const orderApi = createApi({
             return headers;
         },
     }),
+    refetchOnMountOrArgChange: true,
     endpoints: (build) => ({
         addOrderToDB: build.mutation<AddOrderToDBReSpone, OrderRequest>({
             query: (body: OrderRequest) => ({

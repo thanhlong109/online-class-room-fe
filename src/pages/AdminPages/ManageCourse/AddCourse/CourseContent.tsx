@@ -20,6 +20,7 @@ import {
     setCourseCreatedData,
     setCourseDescription,
     setCourseKnowledge,
+    setCourseMode,
     setSaveAndQuit,
     updateCourseCategory,
     updateCourseImageUrl,
@@ -46,6 +47,7 @@ const CourseContent = () => {
     const [updateStepMutation, { isLoading: isUpdateStepLoading }] = useUpdateStepMutation();
     const [isSaveAndQuit, setIsSaveAndQuit] = useState(false);
     const navigate = useNavigate();
+    const quizzList = useSelector((state: RootState) => state.quiz.quizList);
     ///////////// update course basic infor ///////////////
     const {
         isLoading: isGetCategoryLoading,
@@ -116,8 +118,15 @@ const CourseContent = () => {
         courseCreatedData.sections.forEach((section) => {
             section.steps.forEach(
                 ({ duration, position, quizId, videoUrl, stepDescription, stepId, title }) => {
+                    let durationTemp = duration;
+                    if (quizId != -1) {
+                        const index = quizzList.findIndex((quiz) => quiz.quizId === quizId);
+                        if (index >= 0) {
+                            durationTemp = quizzList[index].questions.length * 1000;
+                        }
+                    }
                     updateStepMutation({
-                        duration,
+                        duration: durationTemp,
                         position,
                         quizId,
                         videoUrl,
@@ -141,6 +150,11 @@ const CourseContent = () => {
             if (isSaveAndQuit) {
                 dispatch(setSaveAndQuit());
                 setIsSaveAndQuit(false);
+                dispatch(
+                    setCourseMode(
+                        currentMode === CouseMode.CREATE ? CouseMode.UPDATE : CouseMode.CREATE,
+                    ),
+                );
                 navigate('/admin/getAllCourse/');
             }
         }

@@ -58,6 +58,7 @@ export const authApi = createApi({
             return headers;
         },
     }),
+    refetchOnMountOrArgChange: true,
     endpoints: (build) => ({
         loginUser: build.mutation({
             query: (body: LoginRequest) => ({

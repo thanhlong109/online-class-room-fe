@@ -15,6 +15,7 @@ export const questionApi = createApi({
             return headers;
         },
     }),
+    refetchOnMountOrArgChange: true,
     endpoints: (build) => ({
         deleteQuestion: build.mutation<void, number>({
             query: (para: number) => ({

@@ -14,20 +14,14 @@ import { useGetCourseIDQuery } from '../../services';
 import { Course, Section } from '../../types/Course.type';
 
 const CourseDetailsPage = () => {
-    const [courseId, setCourseId] = useState('');
     const location = useLocation();
-    const [course, setCourse] = useState<Course | null>(null);
-    useEffect(() => {
-        const getCourseId = location.pathname.split('/').pop();
-        if (getCourseId) {
-            setCourseId(getCourseId);
-        }
-    }, []);
-    const { data, isSuccess, isLoading } = useGetCourseIDQuery(courseId);
+    const [course, setCourse] = useState<Course>();
+    const courseId = location.pathname.split('/').pop();
+    console.log(courseId);
+    const { data, isLoading } = useGetCourseIDQuery(courseId ? courseId : '');
     useEffect(() => {
         if (data) setCourse(data);
-        console.log(data);
-    }, [isSuccess]);
+    }, [data]);
     const handleCalTotalTime = (sections: Section[]) => {
         let totalTimeLession = 0;
         sections.forEach((section) => {

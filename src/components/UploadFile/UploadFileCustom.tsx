@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // import { firebaseStorage } from '../../config';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { FirebaseError } from 'firebase/app';
@@ -26,7 +26,7 @@ export enum UploadStyle {
 interface UploadFileProps {
     storePath: string;
     fileName: string;
-    onUploadFileSuccess: (downloadURL: string, fileSize: number) => void;
+    onUploadFileSuccess: (downloadURL: string, fileDuration?: number) => void;
     onUploadFileError: (error: FirebaseError) => void;
     fileType: UploadFileType;
     showPreview: boolean;
@@ -64,6 +64,7 @@ const UploadFileCustom = ({
     const [showImage, setShowImage] = useState(imgLink && imgLink?.length > 10);
     const [uploadLoading, setUploadLoading] = useState(false);
     const [tempSelectedFile, setTempSelectedFile] = useState<any>(null);
+    const [duration, setDuration] = useState(0);
     const uploadFile = () => {
         if (selectedFile) {
             setUploadLoading(true);
@@ -85,8 +86,8 @@ const UploadFileCustom = ({
                     () => {
                         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                             //
-                            console.log(selectedFile);
-                            onUploadFileSuccess(downloadURL, 10);
+
+                            onUploadFileSuccess(downloadURL, duration);
                             setPreview(undefined);
                             console.log(`link ${downloadURL}`);
                             message.success('Upload file thành công!');
@@ -135,6 +136,25 @@ const UploadFileCustom = ({
             message.error(errorMessageTypeFit);
         }
     };
+
+    useEffect(() => {
+        if (selectedFile) {
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                const video = document.createElement('video');
+
+                if (reader.result) {
+                    video.src = reader.result as string;
+                    video.onloadedmetadata = () => {
+                        setDuration(video.duration);
+                    };
+                }
+            };
+
+            reader.readAsDataURL(selectedFile);
+        }
+    }, [selectedFile]);
 
     return (
         <div>

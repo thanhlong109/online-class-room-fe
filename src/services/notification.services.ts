@@ -18,6 +18,7 @@ export const notificationApi = createApi({
             return headers;
         },
     }),
+    refetchOnMountOrArgChange: true,
     endpoints: (build) => ({
         getAllNotifications: build.query<Notification[], NotificationQueryParams>({
             query: ({ pageNumber, pageSize, accountId }) =>

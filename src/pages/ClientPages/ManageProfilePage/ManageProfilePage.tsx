@@ -19,6 +19,8 @@ import { LogoutOutlined } from '@mui/icons-material';
 import { UserAvatar } from '../../../layouts/clientLayouts/Header/Components';
 import { useSelector } from 'react-redux';
 import { RootState, persistor } from '../../../store';
+import PaymentHistory from './Components/PaymentHistory';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 interface Menu {
     type: ManageProfileMenu;
@@ -55,6 +57,12 @@ const ManageProfilePage = () => {
             MenuIcon: FavoriteIcon,
             menutext: 'Khóa học của tôi',
             component: <MyLearningCourse />,
+        },
+        {
+            type: ManageProfileMenu.PAYMENT_HISTORY,
+            MenuIcon: AccountBalanceWalletIcon,
+            menutext: 'Lịch sử thanh toán',
+            component: <PaymentHistory />,
         },
     ];
 

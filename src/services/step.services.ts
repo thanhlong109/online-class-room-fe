@@ -16,6 +16,7 @@ export const stepApi = createApi({
             return headers;
         },
     }),
+    refetchOnMountOrArgChange: true,
     endpoints: (build) => ({
         addStep: build.mutation<Step, AddStepRequest>({
             query: (body: AddStepRequest) => ({

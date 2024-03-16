@@ -1,4 +1,4 @@
-import { Divider, Typography } from 'antd';
+import { Divider, Skeleton, Typography } from 'antd';
 import CourseCardProgress from '../../../../components/CourseCardProgress/CourseCardProgress';
 import { useGetRegisterCourseByAccountIdQuery } from '../../../../services/registrationCourse.services';
 import { useSelector } from 'react-redux';
@@ -6,7 +6,7 @@ import { RootState } from '../../../../store';
 
 const MyLearningCourses = () => {
     const accountId = useSelector((state: RootState) => state.user.id);
-    const { data, isLoading, isSuccess } = useGetRegisterCourseByAccountIdQuery(accountId);
+    const { data, isLoading } = useGetRegisterCourseByAccountIdQuery(accountId);
 
     return (
         <>
@@ -21,6 +21,7 @@ const MyLearningCourses = () => {
                         data.map((regisCourse) => (
                             <CourseCardProgress registrationCourse={regisCourse} />
                         ))}
+                    {isLoading && <Skeleton active />}
                 </div>
             </div>
         </>

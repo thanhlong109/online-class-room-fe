@@ -18,6 +18,7 @@ export const accountApi = createApi({
             return headers;
         },
     }),
+    refetchOnMountOrArgChange: true,
     endpoints: (build) => ({
         getAllAccounts: build.query<GetAllAccount, PagingParam>({
             query: (input: PagingParam) =>

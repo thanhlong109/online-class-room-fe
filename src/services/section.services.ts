@@ -16,6 +16,7 @@ export const sectionApi = createApi({
             return headers;
         },
     }),
+    refetchOnMountOrArgChange: true,
     endpoints: (build) => ({
         addSection: build.mutation<Section, AddSectionReqest>({
             query: (body: AddSectionReqest) => ({

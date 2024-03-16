@@ -24,9 +24,9 @@ const LectureVideoContent = ({ step }: LectureVideoContentProps) => {
     );
     const [isLoadingDelete, setIsLoadingDelete] = useState(false);
     const [updateStepMutation, { isSuccess, data }] = useUpdateStepMutation();
-    const onUploadFileSuccess = (url: string) => {
+    const onUploadFileSuccess = (url: string, duration?: number) => {
         updateStepMutation({
-            duration,
+            duration: duration ? Math.ceil(duration) * 1000 : 0,
             position,
             quizId,
             stepDescription,

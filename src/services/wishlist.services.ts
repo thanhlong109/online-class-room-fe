@@ -26,7 +26,7 @@ export const wishlistApi = createApi({
             return headers;
         },
     }),
-
+    refetchOnMountOrArgChange: true,
     endpoints: (build) => ({
         addWishlistByAccountID: build.mutation<void, WishListMutation>({
             query: (body: WishListMutation) => {

@@ -25,6 +25,7 @@ export const registrationCourseApi = createApi({
             return headers;
         },
     }),
+    refetchOnMountOrArgChange: true,
     endpoints: (build) => ({
         getRegisterCourseByAccountId: build.query<RegistrationCourse[], string | null>({
             query: (accountId: string | null) =>

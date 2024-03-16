@@ -3,4 +3,5 @@ export enum ManageProfileMenu {
     AVATAR,
     SECURITY,
     LEARNING_COURSES,
+    PAYMENT_HISTORY,
 }

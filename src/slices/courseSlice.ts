@@ -292,11 +292,58 @@ export const courseSlice = createSlice({
             state.addCourse.courseCreatedData.isPublic = action.payload;
         },
         setSaveAndQuit: (state) => {
-            state.addCourse.courseCreatedData = initialCourse;
-            state.addCourse.currentStep = 0;
-            state.addCourse.navStatus = initialCreateNavStatus;
+            const currentMode = state.currentMode;
+            state.addCourse.navStatus =
+                currentMode === CouseMode.UPDATE ? initialUpdateNavStatus : initialCreateNavStatus;
             state.addCourse.courseCreatedData = initialCourse;
             state.addCourse.data = intitalAddCourseRequest;
+            if (currentMode === CouseMode.CREATE) {
+                state.addCourse.data = intitalAddCourseRequest;
+                state.addCourse.currentStep = 0;
+            }
+        },
+        addStepDuration: (
+            state,
+            action: PayloadAction<{ stepId: number; sectionId: number; duration: number }>,
+        ) => {
+            const index = state.addCourse.courseCreatedData.sections.findIndex(
+                (value) => value.sectionId === action.payload.sectionId,
+            );
+            if (index >= 0) {
+                const stepIndex = state.addCourse.courseCreatedData.sections[index].steps.findIndex(
+                    (value) => value.stepId === action.payload.stepId,
+                );
+                if (stepIndex >= 0) {
+                    state.addCourse.courseCreatedData.sections[index].steps[stepIndex].duration +=
+                        action.payload.duration;
+                }
+            }
+        },
+        subtractStepDuration: (
+            state,
+            action: PayloadAction<{ stepId: number; sectionId: number; duration: number }>,
+        ) => {
+            const index = state.addCourse.courseCreatedData.sections.findIndex(
+                (value) => value.sectionId === action.payload.sectionId,
+            );
+            if (index >= 0) {
+                const stepIndex = state.addCourse.courseCreatedData.sections[index].steps.findIndex(
+                    (value) => value.stepId === action.payload.stepId,
+                );
+                if (stepIndex >= 0) {
+                    const currentDuration =
+                        state.addCourse.courseCreatedData.sections[index].steps[stepIndex].duration;
+                    if (currentDuration - action.payload.duration >= 0) {
+                        state.addCourse.courseCreatedData.sections[index].steps[
+                            stepIndex
+                        ].duration -= action.payload.duration;
+                    } else {
+                        state.addCourse.courseCreatedData.sections[index].steps[
+                            stepIndex
+                        ].duration = 0;
+                    }
+                }
+            }
         },
     },
 });
@@ -333,6 +380,8 @@ export const {
     deleteSectionId,
     deleteStepId,
     setSaveAndQuit,
+    addStepDuration,
+    subtractStepDuration,
 } = courseSlice.actions;
 
 export default courseSlice.reducer;

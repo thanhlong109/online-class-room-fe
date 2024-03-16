@@ -16,7 +16,7 @@ export const categoryApi = createApi({
             return headers;
         },
     }),
-
+    refetchOnMountOrArgChange: true,
     endpoints: (build) => ({
         addCategory: build.mutation<CategoryRespone, AddCategoryRequest>({
             query: (body: AddCategoryRequest) => ({
