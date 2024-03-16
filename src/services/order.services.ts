@@ -1,5 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { AddOrderToDBReSpone, OrderRequest } from '../types/Order.type';
+import {
+    AddOrderToDBReSpone,
+    GetOrderByTransactionIdRespone,
+    OrderRequest,
+} from '../types/Order.type';
 
 export const orderApi = createApi({
     reducerPath: 'orderApi',
@@ -16,6 +20,7 @@ export const orderApi = createApi({
             return headers;
         },
     }),
+    refetchOnMountOrArgChange: true,
     endpoints: (build) => ({
         addOrderToDB: build.mutation<AddOrderToDBReSpone, OrderRequest>({
             query: (body: OrderRequest) => ({
@@ -36,6 +41,19 @@ export const orderApi = createApi({
                 url: 'api/Order/GetClientId',
                 method: 'get',
             }),
+        }),
+
+        GetOrderByTransactionId: build.query<GetOrderByTransactionIdRespone, string>({
+            query: (para: string) => ({
+                url: 'api/Order/GetOrderByTransactionId?transactionId=' + para,
+                method: 'get',
+            }),
+            transformResponse: (response) => {
+                const data = (response as any).dataObject;
+                return {
+                    ...data,
+                };
+            },
         }),
     }),
 });

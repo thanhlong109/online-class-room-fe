@@ -1,7 +1,9 @@
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Dropdown, MenuProps, Modal, Spin } from 'antd';
 import { Header } from 'antd/es/layout/layout';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { RootState, persistor } from '../../../store';
 
 export default function MyHeader() {
     // const select = useLocation();
@@ -40,6 +42,8 @@ export default function MyHeader() {
     //   }
     //   return item;
     // });
+    const accLoggedData = useSelector((state: RootState) => state.user);
+
     const items: MenuProps['items'] = [
         {
             key: '1',
@@ -49,7 +53,18 @@ export default function MyHeader() {
         {
             key: '2',
             icon: <LogoutOutlined></LogoutOutlined>,
-            label: <div>Đăng xuất</div>,
+            label: (
+                <div
+                    onClick={() => {
+                        localStorage.clear();
+                        persistor.purge().then(() => {
+                            window.location.href = '/login';
+                        });
+                    }}
+                >
+                    Đăng xuất
+                </div>
+            ),
         },
     ];
 
@@ -66,10 +81,7 @@ export default function MyHeader() {
                     className="fixed right-4 top-3 cursor-pointer"
                     size={'large'}
                     icon={<UserOutlined />}
-                    src={
-                        // state.currentUser.avatar ||
-                        'https://i.pinimg.com/736x/32/6f/7c/326f7cd6429cf76c88bd4d61c20ac716.jpg'
-                    }
+                    src={accLoggedData.profileImg}
                 />
             </Dropdown>
             <Modal footer={null} closable={false}>

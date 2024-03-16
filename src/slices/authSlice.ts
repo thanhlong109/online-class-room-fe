@@ -1,11 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 
+export enum RoleType {
+    STUDENT = 'Student',
+    ADMIN = 'Admin',
+    STAFF = 'Staff',
+    PARENT = 'Parent',
+    GUESS = 'Guess',
+}
+
 export interface AuthToken {
     accessToken: string | null;
     refreshToken: string | null;
     email: string | null;
     isLogin: boolean;
+    currentRole: RoleType;
 }
 
 const initialState: AuthToken = {
@@ -13,13 +22,22 @@ const initialState: AuthToken = {
     refreshToken: null,
     email: null,
     isLogin: false,
+    currentRole: RoleType.GUESS,
 };
 
 export const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setUser: (state, action: PayloadAction<AuthToken>) => {
+        setUser: (
+            state,
+            action: PayloadAction<{
+                accessToken: string | null;
+                refreshToken: string | null;
+                email: string | null;
+                isLogin: boolean;
+            }>,
+        ) => {
             state.accessToken = action.payload.accessToken;
             state.refreshToken = action.payload.refreshToken;
             state.email = action.payload.email;
@@ -50,11 +68,14 @@ export const authSlice = createSlice({
                 state.refreshToken = userData ? userData.refreshToken : null;
             }
         },
+        setLoginRole: (state, action: PayloadAction<RoleType>) => {
+            state.currentRole = action.payload;
+        },
     },
 });
 
 export const selectAuth = (state: RootState) => state.auth;
 
-export const { setUser, logoutUser, loadUser } = authSlice.actions;
+export const { setUser, logoutUser, loadUser, setLoginRole } = authSlice.actions;
 
 export default authSlice.reducer;

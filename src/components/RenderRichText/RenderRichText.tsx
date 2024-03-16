@@ -7,7 +7,7 @@ const RenderRichText = ({ jsonData }: { jsonData: string }) => {
         const parsedData = JSON.parse(jsonData);
         renderedContent = draftToHtml(parsedData);
     } catch (error) {
-        console.error('Error parsing JSON:', error);
+        //console.error('Error parsing JSON:', error);
     }
 
     return <div dangerouslySetInnerHTML={{ __html: renderedContent }} />;

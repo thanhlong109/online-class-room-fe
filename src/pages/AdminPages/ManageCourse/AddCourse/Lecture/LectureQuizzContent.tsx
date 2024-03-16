@@ -110,7 +110,6 @@ const LectureQuizzContent = ({ step }: LectureQuizzContentProps) => {
 
     useEffect(() => {
         if (isAddQuizzSuccess && addQuizzData) {
-            console.log(addQuizzData);
             setIsCreateNew(false);
             dispatch(upsertQuiz(addQuizzData));
             updateStepMutation({

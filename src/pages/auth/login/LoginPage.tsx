@@ -4,7 +4,7 @@ import { EyeInvisibleOutlined, EyeTwoTone, GoogleOutlined } from '@ant-design/ic
 import { useAppDispatch } from '../../../hooks/appHook';
 import { LoginRequest, useLoginUserMutation } from '../../../services/auth.services';
 import { useEffect, useState } from 'react';
-import { AuthToken, setUser } from '../../../slices/authSlice';
+import { setUser } from '../../../slices/authSlice';
 import { checkEmailValidaion, checkEmptyValidation } from '../../../utils/Validation';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
@@ -49,7 +49,7 @@ function LoginPage() {
     }, [isLoginError]);
     useEffect(() => {
         if (isLoginSuccess && loginData) {
-            const userData: AuthToken = {
+            const userData = {
                 accessToken: loginData.jwtToken,
                 refreshToken: loginData.jwtRefreshToken,
                 email: formData.accountEmail,

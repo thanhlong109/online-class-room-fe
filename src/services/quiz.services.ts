@@ -16,6 +16,7 @@ export const quizApi = createApi({
             return headers;
         },
     }),
+    refetchOnMountOrArgChange: true,
     endpoints: (build) => ({
         addQuiz: build.mutation<QuizRespone, AddQuizRequest>({
             query: (para: AddQuizRequest) => ({

@@ -13,12 +13,14 @@ import LockPersonIcon from '@mui/icons-material/LockPerson';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useEffect, useState } from 'react';
 import { ManageProfileMenu } from './ManageProfile.enum';
-import { Profile, Security, Favorite as FavoriteComponent, UploadAvatar } from './Components';
+import { Profile, Security, MyLearningCourse, UploadAvatar } from './Components';
 import { Divider } from 'antd';
 import { LogoutOutlined } from '@mui/icons-material';
 import { UserAvatar } from '../../../layouts/clientLayouts/Header/Components';
 import { useSelector } from 'react-redux';
 import { RootState, persistor } from '../../../store';
+import PaymentHistory from './Components/PaymentHistory';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 interface Menu {
     type: ManageProfileMenu;
@@ -51,10 +53,16 @@ const ManageProfilePage = () => {
             component: <Security />,
         },
         {
-            type: ManageProfileMenu.FAVORITE,
+            type: ManageProfileMenu.LEARNING_COURSES,
             MenuIcon: FavoriteIcon,
-            menutext: 'Khóa học yêu thích',
-            component: <FavoriteComponent />,
+            menutext: 'Khóa học của tôi',
+            component: <MyLearningCourse />,
+        },
+        {
+            type: ManageProfileMenu.PAYMENT_HISTORY,
+            MenuIcon: AccountBalanceWalletIcon,
+            menutext: 'Lịch sử thanh toán',
+            component: <PaymentHistory />,
         },
     ];
 

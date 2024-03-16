@@ -16,7 +16,7 @@ import { RootState } from '../../../store';
 import { useGetClientIdQuery } from '../../../services/order.services';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { setOrderId } from '../../../slices/orderSlice';
+import { setCreateOrderId, setOrderId } from '../../../slices/orderSlice';
 import { Divider, Typography } from 'antd';
 import { FormatType, secondsToTimeString } from '../../../utils/TimeFormater';
 import { Button } from '@mui/material';
@@ -67,7 +67,7 @@ const PaymentPage = () => {
                                 return respone.json();
                             })
                             .then((order) => {
-                                console.log(order);
+                                dispatch(setCreateOrderId(order.dataObject.id));
                                 return order.dataObject.id;
                             })
                             .catch((err) => {
@@ -88,17 +88,17 @@ const PaymentPage = () => {
                             .then((respone) => {
                                 if (!respone.ok) {
                                     return respone.json().then((err) => {
-                                        throw err;
+                                        navigate('/payment/failed');
                                     });
                                 }
                                 respone.json();
                             })
                             .then(() => {
                                 dispatch(setOrderId(data.orderID));
-                                navigate('/');
+                                navigate('/payment/success');
                             })
                             .catch((err) => {
-                                alert(err.message);
+                                navigate('/payment/failed');
                             });
                     }}
                 />

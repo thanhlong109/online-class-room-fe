@@ -25,6 +25,7 @@ import { quizApi } from './services/quiz.services';
 import quizSlice from './slices/quizSlice';
 import { questionApi } from './services/question.services';
 import { accountApi } from './services/account.services';
+import { notificationApi } from './services/notification.services';
 import { registrationCourseApi } from './services/registrationCourse.services';
 import registrationCourseSlice from './slices/registrationCourseSlice';
 import { orderApi } from './services/order.services';
@@ -34,7 +35,16 @@ import learningCourseSlice from './slices/learningCourseSlice';
 export const persistConfig = {
     key: 'root',
     storage: sessionStorage,
-    whitelist: ['auth', 'user', 'course', 'quiz', 'order', 'accountAll', 'courseAll'],
+    whitelist: [
+        'auth',
+        'user',
+        'course',
+        'quiz',
+        'order',
+        'accountAll',
+        'courseAll',
+        'learningCourse',
+    ],
 };
 
 const rootReducer = combineReducers({
@@ -56,6 +66,7 @@ const rootReducer = combineReducers({
     courseAll: getCourseAllSlice,
     [accountApi.reducerPath]: accountApi.reducer,
     accountAll: getAllAccountSlice,
+    [notificationApi.reducerPath]: notificationApi.reducer,
     [registrationCourseApi.reducerPath]: registrationCourseApi.reducer,
     registrationCourse: registrationCourseSlice,
 });
@@ -79,6 +90,7 @@ export const store = configureStore({
             .concat(quizApi.middleware)
             .concat(questionApi.middleware)
             .concat(accountApi.middleware)
+            .concat(notificationApi.middleware)
             .concat(registrationCourseApi.middleware)
             .concat(orderApi.middleware),
 });

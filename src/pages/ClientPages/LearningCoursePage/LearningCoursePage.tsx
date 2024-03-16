@@ -1,6 +1,6 @@
 import { AccordionSection, QuestionUI, RenderRichText, Video } from '../../../components';
-import { useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useGetCourseIDQuery } from '../../../services';
 import { useGetQuizDetailQuery } from '../../../services/quiz.services';
 import { Skeleton } from 'antd';
@@ -9,43 +9,104 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     LessionType,
     gotToNextStep,
+    setLastStepCompleted,
     setLearingCourse,
+    setNextStepCompletedPos,
+    setRegistrationData,
     setShowAnswer,
+    setStepActiveByStepId,
     tryAnswerAgain,
 } from '../../../slices/learningCourseSlice';
 import { RootState } from '../../../store';
+import {
+    useCheckRegistrationCourseQuery,
+    useGetLastStepCompletedQuery,
+    useUpdateLastStepCompletedMutation,
+} from '../../../services/registrationCourse.services';
 
 const LearningCoursePage = () => {
+    //
+    const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [courseId, setCourseId] = useState('');
     const location = useLocation();
-    const { data, isLoading, isSuccess } = useGetCourseIDQuery(courseId);
+    //
+    const courseId = location.pathname.split('/').pop();
+    const accountId = useSelector((state: RootState) => state.user.id);
+
+    const registrationId = useSelector((state: RootState) =>
+        state.learningCourse.registrationData
+            ? state.learningCourse.registrationData.registrationId
+            : -1,
+    );
+    const lastPosCompleted = useSelector(
+        (state: RootState) => state.learningCourse.lastPostionCompleted,
+    );
     const { isShowAnswer, stepActive, quizAnswer, stepActiveType } = useSelector(
         (state: RootState) => state.learningCourse,
     );
-
+    //
+    const {
+        data,
+        isLoading,
+        isSuccess: isGetCourseSuccess,
+    } = useGetCourseIDQuery(courseId ? courseId : '');
+    const { isSuccess: isGetCheckSuccess, data: checkData } = useCheckRegistrationCourseQuery({
+        accountId: accountId ? accountId : '',
+        courseId: courseId ? parseInt(courseId) : -1,
+    });
+    const { isSuccess: isGetLastStepCompletedSuccess, data: lastStepCompletedData } =
+        useGetLastStepCompletedQuery(registrationId);
     const {
         data: quizData,
         isLoading: isQuizDataLoading,
         refetch,
     } = useGetQuizDetailQuery(stepActive?.quizId === 1 ? -1 : stepActive?.quizId);
+
+    const [updateLastStepCompleted, { isSuccess: isUpdateLastStepSuccess }] =
+        useUpdateLastStepCompletedMutation();
+
     useEffect(() => {
-        const getCourseId = location.pathname.split('/').pop();
-        if (getCourseId) {
-            setCourseId(getCourseId);
+        if (isGetCheckSuccess) {
+            if (checkData?.registrationId) {
+                dispatch(setRegistrationData(checkData));
+            } else {
+                navigate('/*');
+            }
         }
-    }, []);
+    }, [isGetCheckSuccess]);
+
     useEffect(() => {
-        if (isSuccess && data) {
+        if (isGetCourseSuccess && data) {
             dispatch(setLearingCourse(data));
         }
-    }, [isSuccess]);
+    }, [isGetCourseSuccess]);
+
+    useEffect(() => {
+        if (isGetLastStepCompletedSuccess && isGetCourseSuccess) {
+            if (lastStepCompletedData.stepId) {
+                dispatch(setLastStepCompleted(lastStepCompletedData.stepId));
+                dispatch(setStepActiveByStepId(lastStepCompletedData.stepId));
+                dispatch(gotToNextStep());
+            }
+        }
+    }, [isGetLastStepCompletedSuccess, isGetCourseSuccess, lastStepCompletedData]);
 
     useEffect(() => {
         if (stepActive?.quizId != 1) {
             refetch();
         }
     }, [stepActive]);
+
+    useEffect(() => {
+        if (isUpdateLastStepSuccess) {
+            dispatch(setNextStepCompletedPos());
+            dispatch(gotToNextStep());
+        }
+    }, [isUpdateLastStepSuccess]);
+
+    const handleGoToNext = () => {
+        updateLastStepCompleted({ registrationId: registrationId, stepId: stepActive.stepId });
+    };
 
     const correctRate =
         quizAnswer.filter((q) => q.correctAnswer === q.userSelectedAnswer).length /
@@ -107,7 +168,7 @@ const LearningCoursePage = () => {
                                     )}
                                     {isShowAnswer && correctRate >= 0.8 && (
                                         <Button
-                                            onClick={() => dispatch(gotToNextStep())}
+                                            onClick={handleGoToNext}
                                             className="self-end"
                                             variant="outlined"
                                             color="success"
@@ -128,7 +189,7 @@ const LearningCoursePage = () => {
                         {stepActiveType === LessionType.VIDEO && (
                             <Button
                                 className="self-end"
-                                onClick={() => dispatch(gotToNextStep())}
+                                onClick={handleGoToNext}
                                 variant="outlined"
                             >
                                 Tiếp tục
@@ -138,7 +199,10 @@ const LearningCoursePage = () => {
                 </div>
                 {data && (
                     <div className="py-2">
-                        <AccordionSection lastPosition={10} sections={data.sections} />
+                        <AccordionSection
+                            lastPosition={lastPosCompleted + 1}
+                            sections={data.sections}
+                        />
                     </div>
                 )}
             </div>

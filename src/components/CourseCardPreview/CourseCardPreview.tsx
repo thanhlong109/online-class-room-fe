@@ -95,7 +95,7 @@ const CourseCardPreview = ({ course }: Props) => {
                             </h2>{' '}
                             <FavoriteButton courseId={course.courseId} />
                         </div>
-                        {!isCheckRegistrationLoading && !checkRegistrationData?.isRegistered && (
+                        {!isCheckRegistrationLoading && !checkRegistrationData?.registrationId && (
                             <LoadingButton
                                 onClick={handleBuyClick}
                                 loading={isAddOrderLoading}
@@ -105,7 +105,7 @@ const CourseCardPreview = ({ course }: Props) => {
                                 Mua khóa học
                             </LoadingButton>
                         )}
-                        {!isCheckRegistrationLoading && checkRegistrationData?.isRegistered && (
+                        {!isCheckRegistrationLoading && checkRegistrationData?.registrationId && (
                             <LoadingButton
                                 onClick={handleLearnClick}
                                 variant="contained"

@@ -7,12 +7,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useEffect, useState } from 'react';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import { Notification } from '../../../components';
-import { useGetUserInfoQuery } from '../../../services/auth.services';
-import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store';
-import { setUserInfo } from '../../../slices/userSlice';
-import { loadUser } from '../../../slices/authSlice';
-import { LocalUserData } from '../../../types/Account.type';
+import { useSelector } from 'react-redux';
 
 const Header: React.FC = () => {
     const navigate = useNavigate();
@@ -40,25 +36,18 @@ const Header: React.FC = () => {
     const location = useLocation();
 
     useEffect(() => {
-      // Reset search input when not on the search page
-      if (!location.pathname.startsWith('/search')) {
-        setSearchQuery('');
-      }
-    }, [location]); // Re-run this effect when the location changes
-    
-    //load user data
-    const dispatch = useDispatch();
-    const [userLocalData, setUserLocalData] = useState<LocalUserData | null>(null);
-    const isLogin = useSelector((state: RootState) => state.auth.isLogin);
-    const wishlistState = useSelector((state: RootState) => state.course.wishList);
-    useEffect(() => {
-        const user = localStorage.getItem('user');
-        if (user) {
-            setUserLocalData(JSON.parse(user));
+        // Reset search input when not on the search page
+        if (!location.pathname.startsWith('/search')) {
+            setSearchQuery('');
         }
-    }, []);
+    }, [location]); // Re-run this effect when the location changes
 
-    const { data, isSuccess, refetch } = useGetUserInfoQuery(
+    const isLogin = useSelector((state: RootState) => state.auth.isLogin);
+
+    const wishlistState = useSelector((state: RootState) => state.course.wishList);
+    //load user data
+
+    /*const { data, isSuccess, refetch } = useGetUserInfoQuery(
         userLocalData
             ? { email: userLocalData.email, accessToken: userLocalData.accessToken }
             : { email: null, accessToken: null },
@@ -74,7 +63,7 @@ const Header: React.FC = () => {
     useEffect(() => {
         refetch();
     }, [userLocalData]);
-
+*/
     //
     const StyledSearch = styled(Input.Search)({
         '.ant-input-wrapper': {

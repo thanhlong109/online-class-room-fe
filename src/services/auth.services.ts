@@ -58,6 +58,7 @@ export const authApi = createApi({
             return headers;
         },
     }),
+    refetchOnMountOrArgChange: true,
     endpoints: (build) => ({
         loginUser: build.mutation({
             query: (body: LoginRequest) => ({
@@ -66,15 +67,11 @@ export const authApi = createApi({
                 body,
             }),
         }),
-        getUserInfo: build.query<
-            UserInfoRequest,
-            { accessToken: string | null; email: string | null }
-        >({
-            query: (data: { accessToken: string | null; email: string | null }) => {
+        getUserInfo: build.query<UserInfoRequest, string>({
+            query: (email: string) => {
                 return {
-                    url: `api/account/${data.email}`,
+                    url: `api/account/${email}`,
                     method: 'get',
-                    headers: { Authorization: 'Bearer ' + data.accessToken },
                 };
             },
         }),
@@ -104,8 +101,8 @@ export const authApi = createApi({
         updatePassword: build.mutation<ChangePasswordRequest, ChangePasswordRequest>({
             query: (body: ChangePasswordRequest) => {
                 return {
-                    url: 'api/account/changePassword',
-                    method: 'put',
+                    url: 'api/Account/ChangePassword',
+                    method: 'post',
                     body,
                 };
             },

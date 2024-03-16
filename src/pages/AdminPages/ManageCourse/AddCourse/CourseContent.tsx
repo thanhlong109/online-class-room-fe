@@ -20,6 +20,8 @@ import {
     setCourseCreatedData,
     setCourseDescription,
     setCourseKnowledge,
+    setCourseMode,
+    setSaveAndQuit,
     updateCourseCategory,
     updateCourseImageUrl,
     updateCoursePreviewUrl,
@@ -35,6 +37,7 @@ import { useGetCategoryQuery } from '../../../../services/categoryService';
 import { LoadingButton } from '@mui/lab';
 import Publication from './Publication';
 import { useUpdateStepMutation } from '../../../../services/step.services';
+import { useNavigate } from 'react-router-dom';
 
 const { CheckableTag } = Tag;
 
@@ -42,6 +45,9 @@ const CourseContent = () => {
     const dispatch = useDispatch();
     const addCourseState = useSelector((state: RootState) => state.course.addCourse);
     const [updateStepMutation, { isLoading: isUpdateStepLoading }] = useUpdateStepMutation();
+    const [isSaveAndQuit, setIsSaveAndQuit] = useState(false);
+    const navigate = useNavigate();
+    const quizzList = useSelector((state: RootState) => state.quiz.quizList);
     ///////////// update course basic infor ///////////////
     const {
         isLoading: isGetCategoryLoading,
@@ -112,8 +118,15 @@ const CourseContent = () => {
         courseCreatedData.sections.forEach((section) => {
             section.steps.forEach(
                 ({ duration, position, quizId, videoUrl, stepDescription, stepId, title }) => {
+                    let durationTemp = duration;
+                    if (quizId != -1) {
+                        const index = quizzList.findIndex((quiz) => quiz.quizId === quizId);
+                        if (index >= 0) {
+                            durationTemp = quizzList[index].questions.length * 1000;
+                        }
+                    }
                     updateStepMutation({
-                        duration,
+                        duration: durationTemp,
                         position,
                         quizId,
                         videoUrl,
@@ -126,6 +139,7 @@ const CourseContent = () => {
         });
         const data = getUpdateCourseRequest();
         updatecourse(data);
+        setIsSaveAndQuit(true);
     };
 
     useEffect(() => {
@@ -133,6 +147,16 @@ const CourseContent = () => {
             dispatch(updateCourseImageUrl(data.imageUrl));
             dispatch(updateCoursePreviewUrl(data.videoPreviewUrl));
             message.success('Lưu thành công!');
+            if (isSaveAndQuit) {
+                dispatch(setSaveAndQuit());
+                setIsSaveAndQuit(false);
+                dispatch(
+                    setCourseMode(
+                        currentMode === CouseMode.CREATE ? CouseMode.UPDATE : CouseMode.CREATE,
+                    ),
+                );
+                navigate('/admin/getAllCourse/');
+            }
         }
     }, [isUpdateSuccess]);
 
@@ -164,7 +188,7 @@ const CourseContent = () => {
                     size="large"
                     variant="contained"
                 >
-                    Lưu thay đổi
+                    Lưu & Quay Lại
                 </LoadingButton>
             </div>
             <div className="p-x-4 p-y-2 ml-4 flex-1">

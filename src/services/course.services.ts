@@ -17,7 +17,7 @@ export const coursesApi = createApi({
             return headers;
         },
     }),
-
+    refetchOnMountOrArgChange: true,
     endpoints: (build) => ({
         getCoursesBaseStudentJoined: build.query<Course[], number>({
             query: (number: number) =>

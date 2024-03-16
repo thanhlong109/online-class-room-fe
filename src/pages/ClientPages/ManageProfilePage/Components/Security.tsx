@@ -1,7 +1,10 @@
-import { Divider, Input, Typography } from 'antd';
-import React, { useState } from 'react';
+import { Divider, Input, Typography, message } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { checkEmptyValidation, checkPasswordValidation } from '../../../../utils/Validation';
 import { LoadingButton } from '@mui/lab';
+import { useUpdatePasswordMutation } from '../../../../services/auth.services';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../store';
 
 interface PasswordProps {
     value: string;
@@ -21,6 +24,23 @@ const Security = () => {
     const [newPassword, setNewPassword] = useState(initialPasswordProps);
     const [newPasswordRetype, setNewPasswordRetype] = useState(initialPasswordProps);
     const [currentPassword, setCurrentPassword] = useState(initialPasswordProps);
+    const email = useSelector((state: RootState) => state.auth.email);
+    const [updatePasswordMutation, { isSuccess, isLoading, isError }] = useUpdatePasswordMutation();
+
+    useEffect(() => {
+        if (isSuccess) {
+            message.success('Thay đổi mật khẩu thành công!');
+            setNewPassword(initialPasswordProps);
+            setNewPasswordRetype(initialPasswordProps);
+            setCurrentPassword(initialPasswordProps);
+        }
+    }, [isSuccess]);
+
+    useEffect(() => {
+        if (isError) {
+            message.error('Mật khẩu không đúng!');
+        }
+    }, [isError]);
 
     const handleOnNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { isError, message } = checkPasswordValidation(e.target.value);
@@ -63,7 +83,14 @@ const Security = () => {
         });
     };
 
-    const handleOnClickSave = () => {};
+    const handleOnClickSave = () => {
+        updatePasswordMutation({
+            confirmNewPassword: newPasswordRetype.value,
+            currentPassword: currentPassword.value,
+            newPassword: newPassword.value,
+            email: email ? email : '',
+        });
+    };
     return (
         <>
             <div>
@@ -81,6 +108,7 @@ const Security = () => {
                                 visible: currentPassword.isVisible,
                                 onVisibleChange: () => handleOnPasswordToggle(setCurrentPassword),
                             }}
+                            value={currentPassword.value}
                         />
                         <p className="mt-1 text-xs font-medium text-red-500">
                             {currentPassword.errorMessage}
@@ -139,6 +167,7 @@ const Security = () => {
                         }
                         variant="contained"
                         onClick={handleOnClickSave}
+                        loading={isLoading}
                     >
                         Lưu
                     </LoadingButton>

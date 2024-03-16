@@ -1,10 +1,10 @@
-import { Skeleton, Typography } from 'antd';
+import { Skeleton } from 'antd';
 import CourseSection from '../../components/CourseSection/CourseSection';
 import {
-    AccordionSection,
     CourseBanner,
     CourseCardPreview,
     RatingCourseItem,
+    RenderRichText,
 } from '../../components';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import { FormatType, secondsToTimeString } from '../../utils/TimeFormater';
@@ -14,20 +14,14 @@ import { useGetCourseIDQuery } from '../../services';
 import { Course, Section } from '../../types/Course.type';
 
 const CourseDetailsPage = () => {
-    const [courseId, setCourseId] = useState('');
     const location = useLocation();
-    const [course, setCourse] = useState<Course | null>(null);
-    useEffect(() => {
-        const getCourseId = location.pathname.split('/').pop();
-        if (getCourseId) {
-            setCourseId(getCourseId);
-        }
-    }, []);
-    const { data, isSuccess, isLoading } = useGetCourseIDQuery(courseId);
+    const [course, setCourse] = useState<Course>();
+    const courseId = location.pathname.split('/').pop();
+    console.log(courseId);
+    const { data, isLoading } = useGetCourseIDQuery(courseId ? courseId : '');
     useEffect(() => {
         if (data) setCourse(data);
-        console.log(data);
-    }, [isSuccess]);
+    }, [data]);
     const handleCalTotalTime = (sections: Section[]) => {
         let totalTimeLession = 0;
         sections.forEach((section) => {
@@ -107,10 +101,7 @@ const CourseDetailsPage = () => {
                                         <h1 className="mb-4 text-2xl font-bold text-[#2d2f31]">
                                             Chi tiết khóa học:
                                         </h1>
-                                        <Typography.Text italic>
-                                            {' '}
-                                            {course?.description}
-                                        </Typography.Text>
+                                        <RenderRichText jsonData={course?.description} />
                                     </div>
                                     <div>
                                         <h1 className="mb-4 text-2xl font-bold text-[#2d2f31]">

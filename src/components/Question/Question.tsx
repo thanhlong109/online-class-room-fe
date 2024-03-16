@@ -1,6 +1,6 @@
-import { Radio, Result, Typography } from 'antd';
+import { Radio, Typography } from 'antd';
 import { Question } from '../../types/Question.type';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,7 +18,7 @@ export interface QuestionProps {
 const QuestionUI = ({ question, seperator, position }: QuestionProps) => {
     const { anwser, correctAnwser, questionTitle, questionId } = question;
     const isShowAnswer = useSelector((state: RootState) => state.learningCourse.isShowAnswer);
-    const stepActive = useSelector((state: RootState) => state.learningCourse.stepActive);
+    //const stepActive = useSelector((state: RootState) => state.learningCourse.stepActive);
     const dispatch = useDispatch();
     const questionData = useSelector((state: RootState) =>
         state.learningCourse.quizAnswer.find((q) => q.questionId === question.questionId),
