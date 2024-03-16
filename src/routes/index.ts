@@ -24,6 +24,7 @@ import DefaultParentLayout from '../layouts/parentLayouts/DefaultParentLayout';
 import PaymentResult from '../pages/ClientPages/PaymentResult/PaymentResult';
 import ViewCourseListPage from '../pages/ClientPages/ViewCourseListPage';
 import CheckLearningProgress from '../pages/ParentPages/CheckLearningProgess/CheckLearningProgress';
+import ParentManageProfilePage from '../pages/ParentPages/ParentManageProfilePage';
 
 interface LayoutProps {
     childen: React.ReactNode;
@@ -73,6 +74,11 @@ const parentRoutes: RouteProps[] = [
     {
         path: '/parent/checkLearningProgress',
         component: CheckLearningProgress,
+        layout: DefaultParentLayout,
+    },
+    {
+        path: '/parent/profile',
+        component: ParentManageProfilePage,
         layout: DefaultParentLayout,
     },
 ];

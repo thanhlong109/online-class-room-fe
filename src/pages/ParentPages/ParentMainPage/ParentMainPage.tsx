@@ -29,7 +29,9 @@ const ParentMainPage = () => {
                     <div className="flex gap-4">
                         {!isLoading &&
                             childs &&
-                            childs.map((acc) => <ChildAccountCard childAccount={acc} />)}
+                            childs.map((acc, index) => (
+                                <ChildAccountCard childAccount={acc} key={index} />
+                            ))}
                         {isLoading && <Skeleton active />}
                     </div>
                 </div>

@@ -12,7 +12,7 @@ export default function ParentHeader() {
         {
             key: '1',
             icon: <UserOutlined></UserOutlined>,
-            label: <Link to={`/account`}>Thông tin cá nhân</Link>,
+            label: <Link to={`/parent/profile`}>Thông tin cá nhân</Link>,
         },
         {
             key: '2',
