@@ -1,17 +1,57 @@
 import './App.css';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { adminRoutes, publicRoutes, privateRoutes } from './routes';
-import { jwtDecode } from 'jwt-decode';
+import { adminRoutes, privateRoutes, publicRoutes } from './routes';
+import { getMessagingToken, onMessageListener } from './firebase/firebase';
+import { useState, useEffect } from 'react';
+import { message } from 'antd';
+import { useUpdateDeviceTokenMutation } from './services/notification.services';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from './store';
 import { LocalUserData } from './types/Account.type';
 import { DecodedToken } from './types/Auth.type';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useGetUserInfoQuery } from './services/auth.services';
+import { jwtDecode } from 'jwt-decode';
 import { RoleType, loadUser, setLoginRole } from './slices/authSlice';
+import { useGetUserInfoQuery } from './services/auth.services';
 import { setUserInfo } from './slices/userSlice';
-import { RootState } from './store';
 
 function App() {
+    const [show] = useState(false);
+    const [notification] = useState({ title: '', body: '' });
+    const [isDeviceTokenFound, setDeviceTokenFound] = useState(false);
+
+    useEffect(() => {
+        const handleMessage = async () => {
+            try {
+                const payload: any = await onMessageListener();
+                message.info(payload.notification.body);
+            } catch (err) {
+                console.log('failed: ', err);
+            }
+        };
+
+        handleMessage();
+    }, []); // Chạy một lần khi component được render lần đầu tiên
+
+    // console.log(show, notification);
+
+    const accountId = useSelector((state: RootState) => (state.user.id ? state.user.id : ''));
+    const [updateDeviceToken, { isSuccess: successUpdate }] = useUpdateDeviceTokenMutation();
+
+    useEffect(() => {
+        if (successUpdate) {
+            console.log('hihiii ');
+        }
+    }, [successUpdate]);
+
+    useEffect(() => {
+        const deviceToken = localStorage.getItem('deviceToken');
+
+        if (deviceToken) {
+            updateDeviceToken({ accountId: accountId, deviceToken });
+        }
+        getMessagingToken(setDeviceTokenFound);
+    }, [accountId]);
+
     const user = localStorage.getItem('user');
     const role = useSelector((state: RootState) => state.auth.currentRole);
     const dispatch = useDispatch();
@@ -59,15 +99,17 @@ function App() {
         }
     }, [user]);
 
-    const { data, isSuccess, refetch } = useGetUserInfoQuery(
-        userEmailState ? userEmailState : userEmailLocal,
-    );
+    const {
+        data,
+        isSuccess: isSuccessUserInfo,
+        refetch,
+    } = useGetUserInfoQuery(userEmailState ? userEmailState : userEmailLocal);
     useEffect(() => {
-        if (isSuccess && data) {
+        if (isSuccessUserInfo && data) {
             dispatch(loadUser());
             dispatch(setUserInfo({ ...data }));
         }
-    }, [isSuccess]);
+    }, [isSuccessUserInfo]);
 
     useEffect(() => {
         refetch();

@@ -25,3 +25,22 @@ export interface LocalUserData {
     email: string;
     refreshToken: string;
 }
+
+export interface UpdateDeviceToken {
+    accountId: string;
+    deviceToken: string;
+}
+
+export interface ForgetPassword {
+    id: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    email: string;
+    parentEmail: string;
+    role: string;
+    birthDate: string;
+    biography: string;
+    profileImg: string;
+    sex: string;
+}
