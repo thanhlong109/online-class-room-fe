@@ -71,6 +71,13 @@ export const coursesApi = createApi({
                 method: 'delete',
             }),
         }),
+        countTotalCourses: build.query<number, void>({
+            query: () => 'api/Course/CountTotalCourse',
+            transformResponse: (response) => {
+                const data = (response as any).dataObject;
+                return data;
+            },
+        }),
     }),
 });
 
@@ -83,4 +90,5 @@ export const {
     useUpdateCourseMutation,
     useGetAllCoursesQuery,
     useDeleteCourseMutation,
+    useCountTotalCoursesQuery,
 } = coursesApi;
