@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Tag, Typography } from 'antd';
+import { Button, Tag, Typography, Row, Col, Divider, Image } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import { useGetCourseIDQuery } from '../../../../services';
 import { Course, Section } from '../../../../types/Course.type';
@@ -7,7 +7,7 @@ import { FormatType, secondsToTimeString } from '../../../../utils/TimeFormater'
 import { formatNumberWithCommas } from '../../../../utils/NumberFormater';
 
 const ViewCourseDetails = () => {
-    const { Title } = Typography;
+    const { Title, Text } = Typography;
     const [courseId, setCourseId] = useState('');
     const location = useLocation();
     const [course, setCourse] = useState<Course | null>(null);
@@ -32,111 +32,100 @@ const ViewCourseDetails = () => {
         return totalLession;
     };
 
-    const truncateText = (text: string) => {
-        const words = text.split(' ');
-        if (words.length > 30) {
-            return words.slice(0, 30).join(' ') + '...';
-        } else {
-            return text;
+    const truncateText = (text: string, maxLength: number) => {
+        if (text.length > maxLength) {
+            return text.slice(0, maxLength) + '...';
         }
+        return text;
     };
     return (
         <>
             {course && (
-                <div className="mx-auto flex w-[98%] items-center justify-center">
-                    <div className="flex  w-[30%] flex-col items-center border-r border-gray-300">
-                        {/* Content for the left section */}
-                        <img
-                            src={course?.imageUrl}
-                            alt="Course Image"
-                            className="mb-5 h-52 w-52 rounded-full border-2 border-gray-300 object-cover"
-                        />
-                    </div>
-                    <div className="ml-5 flex w-[70%] flex-col items-start justify-between">
-                        <div className="flex w-full justify-center">
-                            <Title level={2}>Thông tin khóa học</Title>
+                <Row justify="center" gutter={[24, 24]}>
+                    <Col xs={24} sm={24} md={8}>
+                        <div className="mt-20 text-center">
+                            <Image
+                                src={course?.imageUrl}
+                                alt="Course Image"
+                                className="mb-4 rounded-full border-2 border-gray-300"
+                                width={208}
+                                height={208}
+                            />
                         </div>
-
-                        <div className="mx-auto grid w-[70%] grid-cols-1 gap-x-4 gap-y-2">
-                            <div className="flex items-center justify-between">
-                                <h4 className="text-base font-medium">Tên khóa học:</h4>
-                                <p className="text-sm">{course?.title}</p>
+                    </Col>
+                    <Col xs={24} sm={24} md={16}>
+                        <div>
+                            <Title level={2} className="text-center">
+                                Thông tin khóa học
+                            </Title>
+                            <Divider />
+                            <div>
+                                <Text strong>Tên khóa học: </Text>
+                                <Text>{course?.title}</Text>
                             </div>
-                            <div className="flex items-center justify-between">
-                                <h4 className="text-base font-medium">Giá khóa học:</h4>
-                                <p className="text-sm">
-                                    {' '}
-                                    {formatNumberWithCommas(course?.price)} ₫
-                                </p>
+                            <div>
+                                <Text strong>Giá khóa học: </Text>
+                                <Text>{formatNumberWithCommas(course?.price)} ₫</Text>
                             </div>
-                            <div className="flex items-center justify-between">
-                                <h4 className="text-base font-medium">Thể loại:</h4>
-                                <p className="text-sm">
+                            <div>
+                                <Text strong>Thể loại: </Text>
+                                <Text>
                                     {course?.courseCategories.map((category, index) => (
                                         <span key={category.courseCategoryId}>
                                             {category.category.name}
                                             {index < course.courseCategories.length - 1 && ', '}
                                         </span>
                                     ))}
-                                </p>
+                                </Text>
                             </div>
-                            <div className="flex items-start justify-between">
-                                <h4 className="text-base font-medium">Mô tả khóa học:</h4>
-                                <p className=" w-64 text-left text-sm">
-                                    {' '}
-                                    {truncateText(course?.description || '')}
-                                </p>
+                            <div>
+                                <Text strong>Mô tả khóa học: </Text>
+                                <Text>{truncateText(course?.description || '', 150)}</Text>
                             </div>
-                            <div className="flex items-start justify-between">
-                                <h4 className="text-base font-medium">
-                                    Kiến thức đạt được sau khóa học:
-                                </h4>
-                                {course?.knowdledgeDescription.split('|').map((text, index) => (
-                                    <p className=" w-64 text-left text-sm" key={index}>
-                                        {truncateText(text)}
-                                    </p>
-                                ))}
+                            <div>
+                                <Text strong>Kiến thức đạt được sau khóa học: </Text>
+                                {course?.knowdledgeDescription
+                                    .split('|')
+                                    .map((text, index) => (
+                                        <Text key={index}>{truncateText(text, 150)}</Text>
+                                    ))}
                             </div>
-                            <div className="flex items-center justify-between">
-                                <h4 className="text-base font-medium">Tổng thời gian khóa học:</h4>
-                                <p className="text-sm">
-                                    {' '}
-                                    {course != null && (
-                                        <>
-                                            {course?.sections?.length} học phần -{' '}
-                                            {handleCalLession(course?.sections)} bài học -{' '}
-                                            {formattedTime} tổng thời gian học
-                                        </>
-                                    )}
-                                </p>
+                            <div>
+                                <Text strong>Tổng thời gian khóa học: </Text>
+                                <Text>
+                                    {course?.sections?.length} học phần -{' '}
+                                    {handleCalLession(course?.sections || [])} bài học -{' '}
+                                    {formattedTime} tổng thời gian học
+                                </Text>
                             </div>
-                            <div className="flex items-center justify-between">
-                                <h4 className="text-base font-medium">
-                                    Thời gian tạo ra khóa học:
-                                </h4>
-                                <p className="text-sm">
+                            <div>
+                                <Text strong>Thời gian tạo ra khóa học: </Text>
+                                <Text>
                                     {course?.createAt ? course?.createAt.split('T')[0] : ''}
-                                </p>
+                                </Text>
                             </div>
-                            <div className="flex items-center justify-between">
-                                <h4 className="text-base font-medium">Trạng thái khóa học:</h4>
+                            <div>
+                                <Text strong>Trạng thái khóa học: </Text>
                                 <Tag color={course?.courseIsActive ? 'success' : 'error'}>
                                     {course?.courseIsActive ? 'Hoạt động' : 'Không hoạt động'}
                                 </Tag>
                             </div>
-                            <div className="mt-6 flex items-center justify-end">
+                            <div className="mt-6 flex justify-end">
                                 <Link to={'/admin/getAllCourse/'}>
                                     <Button danger>Quay lại</Button>
                                 </Link>
                                 <Link to={`/admin/updateCourse/${courseId}`}>
-                                    <Button className="ml-3 bg-[#1677ff] text-white hover:bg-[#a4ccf4ee]">
+                                    <Button
+                                        className="ml-3 bg-[#1677ff] text-white hover:bg-[#a4ccf4ee]"
+                                        type="primary"
+                                    >
                                         Thay đổi thông tin khóa học
                                     </Button>
                                 </Link>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </Col>
+                </Row>
             )}
         </>
     );
