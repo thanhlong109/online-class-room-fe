@@ -4,8 +4,8 @@ import PieChart from './chart/PieChart';
 
 const DashboardPage = () => {
     return (
-        <div className=" max-w-screen">
-            <div className="m-4 flex">
+        <div className=" max-w-[100vh]">
+            <div className="flex">
                 <PieChart />
                 <LineChart />
             </div>

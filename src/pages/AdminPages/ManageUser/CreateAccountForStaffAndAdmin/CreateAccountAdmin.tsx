@@ -1,4 +1,4 @@
-import { Button, Form, Input, Select, Typography } from 'antd';
+import { Button, Form, Input, Select, Typography, message } from 'antd';
 import { useRegisterAdminMutation } from '../../../../services/auth.services';
 
 type FieldType = {
@@ -41,9 +41,11 @@ const CreateAccountAdmin = () => {
             const { role, ...formData } = values;
             await registerAdmin({ formData, role });
             // Xử lý sau khi đăng ký thành công, ví dụ: điều hướng người dùng đến trang khác
+            message.success('Tạo tài khoản thành công');
         } catch (error) {
             // Xử lý khi gặp lỗi
             console.error('Đã xảy ra lỗi:', error);
+            message.error('Tạo tài khoản thất bại');
         }
     };
 

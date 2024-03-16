@@ -1,11 +1,12 @@
 import { Account } from '../../../../types/Account.type';
 import Table, { ColumnType } from 'antd/es/table';
-import { Button, Input, Pagination, Tag, Tooltip } from 'antd';
+import { Button, Input, Modal, Pagination, Tag, Tooltip, message } from 'antd';
 import { Link } from 'react-router-dom';
 import { DeleteOutlined } from '@ant-design/icons';
 import { PagingParam } from '../../../../types/TableParam';
 import { useAccountAll } from '../../../../hooks/useAccountAll';
 import { useEffect, useState } from 'react';
+import { useDeleteAccountMutation } from '../../../../services/account.services';
 
 type GetAllAccountProps = {
     pagination: { current: number; total: number };
@@ -16,7 +17,7 @@ const columns = ({
     pagination,
     displayData,
     handleDelete,
-}: GetAllAccountProps & { handleDelete: (id: number) => void }): ColumnType<Account>[] => [
+}: GetAllAccountProps & { handleDelete: (id: string) => void }): ColumnType<Account>[] => [
     {
         title: 'STT',
         dataIndex: 'stt',
@@ -43,17 +44,21 @@ const columns = ({
                 </div>
             );
         },
-        width: '10%',
+        width: '8%',
     },
     {
         title: 'Hình đại diện',
         dataIndex: 'profileImg',
         render: (profileImg) => (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src={profileImg} alt="Khóa học" style={{ maxWidth: '100%', height: 'auto' }} />
+                <img
+                    src={profileImg}
+                    alt="Khóa học"
+                    style={{ maxWidth: '100%', height: 'auto', borderRadius: '50%' }}
+                />
             </div>
         ),
-        width: '10%',
+        width: '8%',
     },
     {
         title: 'Email học sinh',
@@ -63,7 +68,7 @@ const columns = ({
                 <span>{email}</span>
             </div>
         ),
-        width: '7%',
+        width: '8%',
     },
     {
         title: 'Email phụ huynh',
@@ -73,7 +78,7 @@ const columns = ({
                 <span>{parentEmail}</span>
             </div>
         ),
-        width: '7%',
+        width: '8%',
     },
     {
         title: 'Số điện thoại',
@@ -83,7 +88,7 @@ const columns = ({
                 <span>{phoneNumber}</span>
             </div>
         ),
-        width: '12%',
+        width: '8%',
     },
     {
         title: 'Vai trò',
@@ -95,7 +100,7 @@ const columns = ({
                 </div>
             );
         },
-        width: '10%',
+        width: '4%',
     },
 
     {
@@ -111,9 +116,26 @@ const columns = ({
         width: '4%',
     },
     {
+        title: 'Trạng thái',
+        dataIndex: 'status',
+        render: (status) => {
+            const trimmedStatus = status.trim();
+            const statusText = trimmedStatus === 'Active' ? 'Hoạt động' : 'Không hoạt động';
+            const statusColor = trimmedStatus === 'Active' ? 'green' : 'red';
+            return (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <span>
+                        <Tag color={statusColor}>{statusText}</Tag>
+                    </span>
+                </div>
+            );
+        },
+        width: '4%',
+    },
+    {
         title: 'Hành động',
-        dataIndex: 'courseId',
-        width: '5%',
+        dataIndex: 'id',
+        width: '3%',
         render: (id) => {
             return (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -137,6 +159,9 @@ const GetAllAccount = () => {
         total: 0,
     });
     const { Search } = Input;
+    const [deleteModalVisible, setDeleteModalVisible] = useState(false); // State để điều khiển hiển thị của modal xác nhận xóa
+    const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
+    const [deleteAccount] = useDeleteAccountMutation();
 
     const input: PagingParam = {
         pageSize: displayData,
@@ -176,10 +201,34 @@ const GetAllAccount = () => {
         }
     };
 
-    const handleDelete = () => {
+    const handleDelete = (accountId: string) => {
         // Xử lý xóa ở đây
-        // setDeletingItemId(id); // Lưu id của item đang được chọn để xóa
-        // setDeleteModalVisible(true); // Hiển thị modal xác nhận xóa
+        setDeletingItemId(accountId); // Lưu id của item đang được chọn để xóa
+        setDeleteModalVisible(true); // Hiển thị modal xác nhận xóa
+    };
+
+    const confirmDelete = async () => {
+        // Xác nhận xóa ở đây
+        if (!deletingItemId) return;
+        // Sau khi xóa xong, đóng modal và cập nhật lại dữ liệu
+        setDeleteModalVisible(false);
+        // Gọi hàm xóa hoặc cập nhật dữ liệu ở đây
+        try {
+            await deleteAccount(deletingItemId);
+            const updatedAccounts = database.map((account) =>
+                account.id === deletingItemId ? { ...account, status: 'false' } : account,
+            );
+            setDatabase(updatedAccounts);
+            message.success('Bạn đã xóa thành công tài khoản này');
+        } catch (error) {
+            message.error('Xóa tài khoản thất bại');
+        }
+        // fetchData(); // Nếu cần refetch dữ liệu sau khi xóa
+    };
+
+    const cancelDelete = () => {
+        // Hủy xóa, đóng modal
+        setDeleteModalVisible(false);
     };
 
     const tableColumns: ColumnType<Account>[] = columns({ pagination, displayData, handleDelete });
@@ -223,6 +272,18 @@ const GetAllAccount = () => {
                     total={pagination.total}
                     onChange={handlePageChange}
                 />
+                <Modal
+                    title="Xác nhận xóa"
+                    open={deleteModalVisible}
+                    onOk={confirmDelete}
+                    onCancel={cancelDelete}
+                    okButtonProps={{ className: 'bg-blue-500 text-white' }}
+                    cancelButtonProps={{ className: 'bg-red-500 text-white' }}
+                    okText="Xác nhận"
+                    cancelText="Hủy"
+                >
+                    <p>Bạn có chắc chắn muốn xóa tài khoản này không?</p>
+                </Modal>
             </>
         </div>
     );

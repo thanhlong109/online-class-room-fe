@@ -72,9 +72,10 @@ const ViewCourseDetails = () => {
                             <div className="flex items-center justify-between">
                                 <h4 className="text-base font-medium">Thể loại:</h4>
                                 <p className="text-sm">
-                                    {course?.courseCategories.map((category) => (
+                                    {course?.courseCategories.map((category, index) => (
                                         <span key={category.courseCategoryId}>
-                                            {category.category.categoryName}
+                                            {category.category.name}
+                                            {index < course.courseCategories.length - 1 && ', '}
                                         </span>
                                     ))}
                                 </p>
