@@ -2,9 +2,10 @@ import { AccordionSection, RenderRichText, Video } from '../../../components';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useGetCourseIDQuery } from '../../../services';
-import { Skeleton } from 'antd';
+import { Skeleton, Typography } from 'antd';
 import { Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import congratulation1 from '../../../assets/congratulationAnimation1.json';
 import {
     LessionType,
     gotToNextStep,
@@ -21,6 +22,7 @@ import {
     useUpdateLastStepCompletedMutation,
 } from '../../../services/registrationCourse.services';
 import LearningQuiz from './LearningQuiz';
+import Lottie from 'lottie-react';
 
 const LearningCoursePage = () => {
     //
@@ -39,7 +41,9 @@ const LearningCoursePage = () => {
     const lastPosCompleted = useSelector(
         (state: RootState) => state.learningCourse.lastPostionCompleted,
     );
-    const { stepActive, stepActiveType } = useSelector((state: RootState) => state.learningCourse);
+    const { stepActive, stepActiveType, isDone } = useSelector(
+        (state: RootState) => state.learningCourse,
+    );
 
     //get course
     const {
@@ -103,41 +107,66 @@ const LearningCoursePage = () => {
 
     return (
         <>
-            <div className="flex bg-[#f7f9fa]">
-                <div className="flex-1  ">
-                    <div className="flex-1  px-2 py-8">
-                        {isLoading && <Skeleton active />}
-                        {!isLoading && stepActiveType === LessionType.VIDEO && (
-                            <Video src={stepActive?.videoUrl} />
-                        )}
-                        {!isLoading && stepActiveType === LessionType.QUIZ && <LearningQuiz />}
-                    </div>
-                    <div className="flex flex-col gap-4 px-4 py-4">
-                        <div className="bg-white ">
-                            <p className="mb-2 font-bold text-[#2d2f31] underline">Miêu tả</p>
-                            <RenderRichText
-                                jsonData={stepActive ? stepActive.stepDescription : ''}
+            <div className=" bg-[#f7f9fa]">
+                <div className="flex">
+                    {isDone && (
+                        <div className="flex-1 p-10">
+                            <div className="flex h-full bg-white p-10">
+                                <div className=" m-auto flex flex-col items-center">
+                                    <Lottie
+                                        className="w-[200px]"
+                                        animationData={congratulation1}
+                                        loop={false}
+                                    />
+
+                                    <Typography.Text className="text-xl italic text-[#ffba00]">
+                                        <strong>Chúc mừng bạn đã hoàn thành khóa học</strong>
+                                    </Typography.Text>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {!isDone && (
+                        <div className="flex-1  ">
+                            <div className="flex-1  px-2 py-8">
+                                {isLoading && <Skeleton active />}
+                                {!isLoading && stepActiveType === LessionType.VIDEO && (
+                                    <Video src={stepActive?.videoUrl} />
+                                )}
+                                {!isLoading && stepActiveType === LessionType.QUIZ && (
+                                    <LearningQuiz />
+                                )}
+                            </div>
+                            <div className="flex flex-col gap-4 px-4 py-4">
+                                <div className="bg-white ">
+                                    <p className="mb-2 font-bold text-[#2d2f31] underline">
+                                        Miêu tả
+                                    </p>
+                                    <RenderRichText
+                                        jsonData={stepActive ? stepActive.stepDescription : ''}
+                                    />
+                                </div>
+                                {stepActiveType === LessionType.VIDEO && (
+                                    <Button
+                                        className="self-end"
+                                        onClick={handleGoToNext}
+                                        variant="outlined"
+                                    >
+                                        Tiếp tục
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                    {data && stepActive && (
+                        <div className="py-2">
+                            <AccordionSection
+                                lastPosition={lastPosCompleted + 1}
+                                sections={data.sections}
                             />
                         </div>
-                        {stepActiveType === LessionType.VIDEO && (
-                            <Button
-                                className="self-end"
-                                onClick={handleGoToNext}
-                                variant="outlined"
-                            >
-                                Tiếp tục
-                            </Button>
-                        )}
-                    </div>
+                    )}
                 </div>
-                {data && stepActive && (
-                    <div className="py-2">
-                        <AccordionSection
-                            lastPosition={lastPosCompleted + 1}
-                            sections={data.sections}
-                        />
-                    </div>
-                )}
             </div>
         </>
     );

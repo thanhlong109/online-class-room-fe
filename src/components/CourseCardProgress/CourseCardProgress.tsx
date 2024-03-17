@@ -52,6 +52,11 @@ const CourseCardProgress = ({ registrationCourse }: Props) => {
                             </div>
                             <div className="text-[15px] font-bold">
                                 <Progress
+                                    status={
+                                        registrationCourse.learningProgress === 1
+                                            ? 'success'
+                                            : 'normal'
+                                    }
                                     percent={Math.round(registrationCourse.learningProgress * 100)}
                                 />{' '}
                             </div>

@@ -142,32 +142,36 @@ export const learningCourseSlice = createSlice({
             state.isShowAnswer = action.payload;
         },
         gotToNextStep: (state) => {
-            const stepIndex = state.temp.tempActiveStepIndex;
-            const sectionIndex = state.temp.tempActiveSectionIndex;
-            let step;
-            if (stepIndex < state.learningCourse.sections[sectionIndex].steps.length - 1) {
-                step = state.learningCourse.sections[sectionIndex].steps[stepIndex + 1];
-                state.stepActive = step;
-                state.temp.tempActiveSectionIndex = sectionIndex;
-                state.temp.tempActiveStepIndex = stepIndex + 1;
-            } else {
-                if (sectionIndex + 1 < state.learningCourse.sections.length) {
-                    step = state.learningCourse.sections[sectionIndex + 1].steps[0];
+            try {
+                const stepIndex = state.temp.tempActiveStepIndex;
+                const sectionIndex = state.temp.tempActiveSectionIndex;
+                let step;
+                if (stepIndex < state.learningCourse.sections[sectionIndex].steps.length - 1) {
+                    step = state.learningCourse.sections[sectionIndex].steps[stepIndex + 1];
                     state.stepActive = step;
-                    state.temp.tempActiveSectionIndex = sectionIndex + 1;
-                    state.temp.tempActiveStepIndex = 0;
+                    state.temp.tempActiveSectionIndex = sectionIndex;
+                    state.temp.tempActiveStepIndex = stepIndex + 1;
                 } else {
-                    state.isDone = true;
+                    if (sectionIndex + 1 < state.learningCourse.sections.length) {
+                        step = state.learningCourse.sections[sectionIndex + 1].steps[0];
+                        state.stepActive = step;
+                        state.temp.tempActiveSectionIndex = sectionIndex + 1;
+                        state.temp.tempActiveStepIndex = 0;
+                    } else {
+                        state.isDone = true;
+                    }
                 }
+                state.stepActiveType =
+                    step === undefined
+                        ? LessionType.DONE
+                        : step.quizId != 1
+                          ? LessionType.QUIZ
+                          : LessionType.VIDEO;
+                state.isShowAnswer = false;
+                state.quizAnswer = [];
+            } catch (e) {
+                console.log(e);
             }
-            state.stepActiveType =
-                step === undefined
-                    ? LessionType.DONE
-                    : step.quizId != 1
-                      ? LessionType.QUIZ
-                      : LessionType.VIDEO;
-            state.isShowAnswer = false;
-            state.quizAnswer = [];
         },
         tryAnswerAgain: (state) => {
             const step =
