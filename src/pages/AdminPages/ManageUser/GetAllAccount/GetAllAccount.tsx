@@ -54,11 +54,11 @@ const columns = ({
                 <img
                     src={profileImg}
                     alt="Khóa học"
-                    style={{ maxWidth: '100%', height: 'auto', borderRadius: '50%' }}
+                    style={{ width: 50, height: 50, borderRadius: '50%', overflow: 'hidden' }}
                 />
             </div>
         ),
-        width: '8%',
+        width: '10%',
     },
     {
         title: 'Email học sinh',
@@ -152,7 +152,7 @@ const columns = ({
 
 const GetAllAccount = () => {
     const [database, setDatabase] = useState<Account[]>([]);
-    const displayData = 8;
+    const displayData = 10;
     const [searchValue, setSearchValue] = useState('');
     const [pagination, setPagination] = useState({
         current: 1,

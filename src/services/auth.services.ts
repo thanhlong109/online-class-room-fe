@@ -44,6 +44,12 @@ export interface RegisterAdminRequest {
     confirmAccountPassword: string;
 }
 
+export interface LoginResponse {
+    jwtToken: string;
+    expired: string;
+    jwtRefreshToken: string;
+}
+
 export const authApi = createApi({
     reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({
@@ -55,18 +61,28 @@ export const authApi = createApi({
                 const userData = JSON.parse(user);
                 const accessToken = userData ? userData.accessToken : null;
                 headers.set('Authorization', `Bearer ${accessToken}`);
+                console.log('accessToken', accessToken);
+                console.log('headers', headers);
             }
             return headers;
         },
     }),
     refetchOnMountOrArgChange: true,
     endpoints: (build) => ({
-        loginUser: build.mutation({
+        loginUser: build.mutation<LoginResponse, LoginRequest>({
             query: (body: LoginRequest) => ({
                 url: 'api/account/signin',
                 method: 'post',
                 body,
             }),
+            transformResponse: (response: LoginResponse) => {
+                const { jwtToken, expired, jwtRefreshToken } = response;
+                return {
+                    jwtToken,
+                    expired,
+                    jwtRefreshToken,
+                };
+            },
         }),
         getUserInfo: build.query<UserInfoRequest, string>({
             query: (email: string) => {
