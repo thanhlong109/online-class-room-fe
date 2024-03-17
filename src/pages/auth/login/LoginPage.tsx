@@ -54,7 +54,9 @@ function LoginPage() {
                 refreshToken: loginData.jwtRefreshToken,
                 email: formData.accountEmail,
                 isLogin: true,
+                expired: loginData.expired,
             };
+            localStorage.setItem('user', JSON.stringify(userData));
             useDispach(setUser({ ...userData }));
             navigate('/');
         }

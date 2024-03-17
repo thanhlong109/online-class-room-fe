@@ -152,7 +152,7 @@ const columns = ({
 
 const GetAllAccount = () => {
     const [database, setDatabase] = useState<Account[]>([]);
-    const displayData = 8;
+    const displayData = 10;
     const [searchValue, setSearchValue] = useState('');
     const [pagination, setPagination] = useState({
         current: 1,

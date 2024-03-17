@@ -154,10 +154,10 @@ function RegisterPage() {
             <div className="w-full bg-white sm:w-[30%] sm:rounded-br-xl sm:rounded-tr-xl md:h-screen">
                 <form
                     onSubmit={handleOnSubmit}
-                    className="mt-8 flex flex-col items-center justify-center space-y-5"
+                    className="mt-2 flex flex-col items-center justify-center space-y-5"
                 >
-                    <section className="w-[70%] space-y-5 ">
-                        <div className="mb-12 ml-1 mt-[40%] ">
+                    <section className="w-[80%] space-y-5 ">
+                        <div className=" ml-1 mt-[10%] ">
                             <h1 className="text-3xl">Đăng ký</h1>
                             <p className="sm:max-xl:text-md mt-2 text-base text-grayLine">
                                 Mừng đến với hệ thống! Vui lòng điền thông tin bên dưới để tiếp tục
