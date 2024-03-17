@@ -7,7 +7,7 @@ import { Card } from 'antd';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const PieChart = () => {
-    const [userData, setUserData] = useState({
+    const [userData] = useState({
         labels: PieChartData.map((data) => data.category),
         datasets: [
             {

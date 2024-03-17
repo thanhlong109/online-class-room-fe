@@ -8,12 +8,16 @@ import { useEffect, useState } from 'react';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import { Notification } from '../../../components';
 import { RootState } from '../../../store';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useCountWishListByAccountIDQuery } from '../../../services/wishlist.services';
+import { setWishListCount } from '../../../slices/courseSlice';
 
 const Header: React.FC = () => {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
-
+    const dispatch = useDispatch();
+    const accid = useSelector((state: RootState) => state.user.id);
+    const { isSuccess, data: countData } = useCountWishListByAccountIDQuery(accid ? accid : '');
     const handleSearch = () => {
         // Kiểm tra nếu có dữ liệu tìm kiếm mới thực hiện chuyển hướng
         if (searchQuery.trim() !== '') {
@@ -36,6 +40,12 @@ const Header: React.FC = () => {
     const location = useLocation();
 
     useEffect(() => {
+        if (isSuccess && countData) {
+            dispatch(setWishListCount(countData));
+        }
+    }, [isSuccess]);
+
+    useEffect(() => {
         // Reset search input when not on the search page
         if (!location.pathname.startsWith('/search')) {
             setSearchQuery('');
@@ -44,7 +54,8 @@ const Header: React.FC = () => {
 
     const isLogin = useSelector((state: RootState) => state.auth.isLogin);
 
-    const wishlistState = useSelector((state: RootState) => state.course.wishList);
+    const wishListCount = useSelector((state: RootState) => state.course.wishListCount);
+
     //load user data
 
     /*const { data, isSuccess, refetch } = useGetUserInfoQuery(
@@ -153,10 +164,7 @@ const Header: React.FC = () => {
                         <div className="cursor-pointer ">
                             <Popover content={<FavoritePopover />} trigger="hover">
                                 <IconButton>
-                                    <Badge
-                                        count={wishlistState.length > 0 ? wishlistState.length : ''}
-                                        color="#a435f0"
-                                    >
+                                    <Badge count={wishListCount} color="#a435f0">
                                         <FavoriteBorderIcon />
                                     </Badge>
                                 </IconButton>

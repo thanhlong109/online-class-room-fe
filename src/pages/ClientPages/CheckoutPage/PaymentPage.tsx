@@ -20,6 +20,7 @@ import { setCreateOrderId, setOrderId } from '../../../slices/orderSlice';
 import { Divider, Typography } from 'antd';
 import { FormatType, secondsToTimeString } from '../../../utils/TimeFormater';
 import { Button } from '@mui/material';
+import { formatNumberWithCommas } from '../../../utils/NumberFormater';
 
 const PaymentPage = () => {
     const navigate = useNavigate();
@@ -87,7 +88,7 @@ const PaymentPage = () => {
                         )
                             .then((respone) => {
                                 if (!respone.ok) {
-                                    return respone.json().then((err) => {
+                                    return respone.json().then(() => {
                                         navigate('/payment/failed');
                                     });
                                 }
@@ -97,7 +98,7 @@ const PaymentPage = () => {
                                 dispatch(setOrderId(data.orderID));
                                 navigate('/payment/success');
                             })
-                            .catch((err) => {
+                            .catch(() => {
                                 navigate('/payment/failed');
                             });
                     }}
@@ -212,7 +213,9 @@ const PaymentPage = () => {
                         <div className="flex flex-col gap-4">
                             <div className="flex items-center justify-between">
                                 <div className="text-base font-medium text-[#007fff]">Giá gốc:</div>
-                                <div className="text-base ">{CourseData.price} VND</div>
+                                <div className="text-base ">
+                                    {formatNumberWithCommas(CourseData.price)} VND
+                                </div>
                             </div>
                             <div className="flex items-center justify-between">
                                 <div className="text-base font-medium text-[#007fff]">
@@ -242,7 +245,10 @@ const PaymentPage = () => {
                         <div className="flex items-center justify-between">
                             <div className="text-lg font-medium text-red-600">Tổng cộng:</div>
                             <div className="text-lg font-medium text-red-600">
-                                {CourseData.price - CourseData.price * CourseData.salesCampaign} VND
+                                {formatNumberWithCommas(
+                                    CourseData.price - CourseData.price * CourseData.salesCampaign,
+                                )}{' '}
+                                VND
                             </div>
                         </div>
                     </div>

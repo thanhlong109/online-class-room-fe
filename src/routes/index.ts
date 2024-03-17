@@ -22,6 +22,9 @@ import { RoleType } from '../slices/authSlice';
 import ParentMainPage from '../pages/ParentPages/ParentMainPage/ParentMainPage';
 import DefaultParentLayout from '../layouts/parentLayouts/DefaultParentLayout';
 import PaymentResult from '../pages/ClientPages/PaymentResult/PaymentResult';
+import ViewCourseListPage from '../pages/ClientPages/ViewCourseListPage';
+import CheckLearningProgress from '../pages/ParentPages/CheckLearningProgess/CheckLearningProgress';
+import ParentManageProfilePage from '../pages/ParentPages/ParentManageProfilePage';
 
 interface LayoutProps {
     childen: React.ReactNode;
@@ -42,7 +45,7 @@ const publicRoutes: RouteProps[] = [
     { path: '/register', component: RegisterPage, layout: LoginLayout },
     { path: '/search/:id', component: SearchPage, layout: DefaultLayout },
     { path: '*', component: NotFoundPage, layout: DefaultLayout },
-    { path: '/parent/', component: ParentMainPage, layout: DefaultParentLayout },
+    { path: '/courses/', component: ViewCourseListPage, layout: DefaultLayout },
 ];
 
 const privateRoutes: RouteProps[] = [
@@ -68,8 +71,18 @@ const adminRoutes: RouteProps[] = [
 
 const parentRoutes: RouteProps[] = [
     { path: '/parent/', component: ParentMainPage, layout: DefaultParentLayout },
+    {
+        path: '/parent/checkLearningProgress',
+        component: CheckLearningProgress,
+        layout: DefaultParentLayout,
+    },
+    {
+        path: '/parent/profile',
+        component: ParentManageProfilePage,
+        layout: DefaultParentLayout,
+    },
 ];
 
 const staffRoutes: RouteProps[] = [];
 
-export { publicRoutes, privateRoutes, adminRoutes, staffRoutes };
+export { publicRoutes, privateRoutes, adminRoutes, staffRoutes, parentRoutes };

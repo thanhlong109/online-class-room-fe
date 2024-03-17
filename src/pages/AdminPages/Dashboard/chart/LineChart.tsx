@@ -7,7 +7,7 @@ import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
 const LineChart = () => {
-    const [userData, setUserData] = useState({
+    const [userData] = useState({
         labels: LineChartData.map((data) => data.month),
         datasets: [
             {

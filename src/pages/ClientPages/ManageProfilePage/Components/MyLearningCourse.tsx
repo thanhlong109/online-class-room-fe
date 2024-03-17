@@ -15,11 +15,13 @@ const MyLearningCourses = () => {
                     Khóa học của tôi
                 </Typography.Title>
                 <Divider />
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+                <div className="flex flex-wrap gap-4">
                     {!isLoading &&
                         data &&
                         data.map((regisCourse) => (
-                            <CourseCardProgress registrationCourse={regisCourse} />
+                            <div className="h-[235px] w-[220px]">
+                                <CourseCardProgress registrationCourse={regisCourse} />
+                            </div>
                         ))}
                     {isLoading && <Skeleton active />}
                 </div>

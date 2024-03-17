@@ -21,7 +21,12 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             try {
                 contentState = convertFromRaw(JSON.parse(initialValue));
             } catch (e: any) {
-                return EditorState.createEmpty();
+                const text = `{\"blocks\":[{\"key\":\"2ds8j\",\"text\":\"${initialValue}\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}`;
+                try {
+                    contentState = convertFromRaw(JSON.parse(text));
+                } catch (e: any) {
+                    return EditorState.createEmpty();
+                }
             }
 
             return EditorState.createWithContent(contentState);

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AddOrderToDBReSpone } from '../types/Order.type';
+import { AddOrderToDBReSpone, GetOrderWithFilterRespone } from '../types/Order.type';
 import { Course } from '../types/Course.type';
 
 export interface OrderState {
@@ -11,6 +11,7 @@ export interface OrderState {
     OrderDone: {
         orderId: string;
     };
+    orderHistory: GetOrderWithFilterRespone[];
 }
 
 const initialState: OrderState = {
@@ -52,6 +53,7 @@ const initialState: OrderState = {
         orderId: '',
     },
     createOrderId: '',
+    orderHistory: [],
 };
 
 export const orderSlice = createSlice({
@@ -70,9 +72,13 @@ export const orderSlice = createSlice({
         setCreateOrderId: (state, action: PayloadAction<string>) => {
             state.createOrderId = action.payload;
         },
+        setOrdersHistory: (state, action: PayloadAction<GetOrderWithFilterRespone[]>) => {
+            state.orderHistory = action.payload;
+        },
     },
 });
 
-export const { setPreOrderData, setOrderId, setCreateOrderId } = orderSlice.actions;
+export const { setPreOrderData, setOrderId, setCreateOrderId, setOrdersHistory } =
+    orderSlice.actions;
 
 export default orderSlice.reducer;

@@ -31,6 +31,7 @@ import registrationCourseSlice from './slices/registrationCourseSlice';
 import { orderApi } from './services/order.services';
 import orderSlice from './slices/orderSlice';
 import learningCourseSlice from './slices/learningCourseSlice';
+import parentSlice from './slices/parentSlice';
 import { ratingCourseApi } from './services/ratingCourse.services';
 
 export const persistConfig = {
@@ -45,6 +46,7 @@ export const persistConfig = {
         'accountAll',
         'courseAll',
         'learningCourse',
+        'parent',
     ],
 };
 
@@ -55,6 +57,7 @@ const rootReducer = combineReducers({
     quiz: quizSlice,
     order: orderSlice,
     learningCourse: learningCourseSlice,
+    parent: parentSlice,
     [coursesApi.reducerPath]: coursesApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [wishlistApi.reducerPath]: wishlistApi.reducer,

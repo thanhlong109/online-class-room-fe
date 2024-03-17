@@ -5,6 +5,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Paper } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store';
+import { formatNumberWithCommas } from '../../../utils/NumberFormater';
+import { useEffect } from 'react';
+import notificationApi from '../../../services/notification.services';
+import { useAppDispatch } from '../../../hooks/appHook';
 
 export enum PaymentResultType {
     SUCCESS = 'success',
@@ -13,10 +17,19 @@ export enum PaymentResultType {
 
 const PaymentResult = () => {
     const location = useLocation();
+    const accountId = useSelector((state: RootState) => state.user.id);
     const result = location.pathname.split('/').pop();
     const navigate = useNavigate();
     const orderData = useSelector((state: RootState) => state.order);
+    const dispatch = useAppDispatch();
 
+    useEffect(() => {
+        dispatch(
+            notificationApi.endpoints.getNumberOfUnreadNotifications.initiate(
+                accountId ? accountId : '',
+            ),
+        );
+    }, []);
     return (
         <div>
             <div className="m-auto flex w-fit flex-col justify-center p-4">
@@ -64,7 +77,10 @@ const PaymentResult = () => {
                             <div className="flex items-center justify-between">
                                 <p className="text-base font-medium text-[#034892]">Tiền gốc:</p>
                                 <p className="text-sm font-medium italic text-[#373737] ">
-                                    {orderData.preOrderData.CourseData.price} VND
+                                    {formatNumberWithCommas(
+                                        orderData.preOrderData.CourseData.price,
+                                    )}{' '}
+                                    VND
                                 </p>
                             </div>
                             <div className="flex items-center justify-between">
@@ -81,9 +97,11 @@ const PaymentResult = () => {
                                     Tổng số tiền thanh toán:
                                 </p>
                                 <p className="text-sm font-medium italic text-[#373737]">
-                                    {orderData.preOrderData.CourseData.price -
-                                        orderData.preOrderData.CourseData.price *
-                                            orderData.preOrderData.CourseData.salesCampaign}{' '}
+                                    {formatNumberWithCommas(
+                                        orderData.preOrderData.CourseData.price -
+                                            orderData.preOrderData.CourseData.price *
+                                                orderData.preOrderData.CourseData.salesCampaign,
+                                    )}{' '}
                                     VND
                                 </p>
                             </div>

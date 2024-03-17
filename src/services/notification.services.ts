@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Notification } from '../types/Notification.type';
 import { PagingParam } from '../types/TableParam';
-import { Account, UpdateDeviceToken } from '../types/Account.type';
+import { UpdateDeviceToken } from '../types/Account.type';
 
 type NotificationQueryParams = PagingParam & { accountId: string };
 
@@ -55,3 +55,5 @@ export const {
     useMakeNotificationIsReadMutation,
     useUpdateDeviceTokenMutation,
 } = notificationApi;
+
+export default notificationApi;
