@@ -14,7 +14,7 @@ export interface AccordionSection {
 const AccordionSection = ({ sections, lastPosition }: AccordionSection) => {
     const dispatch = useDispatch();
     const selectingStepPos = useSelector(
-        (state: RootState) => state.learningCourse.stepActive.position,
+        (state: RootState) => state.learningCourse.stepActive.stepId,
     );
     const handleOnStepClick = (step: Step, sectionIndex: number, stepIndex: number) => {
         if (step.position <= lastPosition && selectingStepPos != step.position) {
@@ -42,7 +42,7 @@ const AccordionSection = ({ sections, lastPosition }: AccordionSection) => {
                             return (
                                 <div
                                     key={stepIndex}
-                                    className={`flex select-none justify-between ${step.position === selectingStepPos ? 'bg-[#edf5fb]' : ''}  text-sm ${lastPosition >= step.position ? 'cursor-pointer hover:bg-[#edf5fb]' : 'cursor-auto text-[#c6c6c6]'} py-4 pl-12 pr-8`}
+                                    className={`flex select-none justify-between ${step.stepId === selectingStepPos ? 'bg-[#edf5fb]' : ''}  text-sm ${lastPosition >= step.position ? 'cursor-pointer hover:bg-[#edf5fb]' : 'cursor-auto text-[#c6c6c6]'} py-4 pl-12 pr-8`}
                                     onClick={() => handleOnStepClick(step, sectionIndex, stepIndex)}
                                 >
                                     <span>

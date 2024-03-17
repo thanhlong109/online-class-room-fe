@@ -1,4 +1,4 @@
-import { Divider, Drawer, Table, TableProps, Tag, Typography } from 'antd';
+import { Divider, Drawer, Skeleton, Table, TableProps, Tag, Typography } from 'antd';
 import { GetOrderWithFilterRespone, OrderStatus } from '../../../../types/Order.type';
 import { useGetOrderWithFilterQuery } from '../../../../services/order.services';
 import { useDispatch, useSelector } from 'react-redux';
@@ -130,57 +130,61 @@ const PaymentHistory = () => {
                 onClose={onClose}
                 open={open}
             >
-                <div className="flex flex-col gap-2">
-                    <Typography.Text>
-                        <strong>Tài khoản thanh toán: </strong>{' '}
-                        <span className="italic">{selectedItem?.accountName}</span>
-                    </Typography.Text>
-                    <Typography.Text>
-                        <strong>Tên khóa học: </strong>{' '}
-                        <Link to={'/courses/' + selectedItem?.courseId}>
-                            <span className="italic">{selectedCourse?.title}</span>
-                        </Link>
-                    </Typography.Text>
-                    <Typography.Text>
-                        <strong>Phương thức: </strong>{' '}
-                        <span className="italic">{selectedItem?.paymentMethod}</span>
-                    </Typography.Text>
-                    <Typography.Text>
-                        <strong>Tổng tiền: </strong>{' '}
-                        <span className="italic">
-                            <strong className="text-red-500">
-                                {selectedItem?.totalPrice + ' ' + selectedItem?.currencyCode}
-                            </strong>
-                        </span>
-                    </Typography.Text>
+                {isCourseLoading && <Skeleton active />}
 
-                    <Typography.Text>
-                        <strong>Trạng thái: </strong>{' '}
-                        <span className="italic">
-                            <Tag
-                                color={
-                                    selectedItem?.status === OrderStatus.COMPLETED
-                                        ? 'green'
+                {!isCourseLoading && (
+                    <div className="flex flex-col gap-2">
+                        <Typography.Text>
+                            <strong>Tài khoản thanh toán: </strong>{' '}
+                            <span className="italic">{selectedItem?.accountName}</span>
+                        </Typography.Text>
+                        <Typography.Text>
+                            <strong>Tên khóa học: </strong>{' '}
+                            <Link to={'/courses/' + selectedItem?.courseId}>
+                                <span className="italic">{selectedCourse?.title}</span>
+                            </Link>
+                        </Typography.Text>
+                        <Typography.Text>
+                            <strong>Phương thức: </strong>{' '}
+                            <span className="italic">{selectedItem?.paymentMethod}</span>
+                        </Typography.Text>
+                        <Typography.Text>
+                            <strong>Tổng tiền: </strong>{' '}
+                            <span className="italic">
+                                <strong className="text-red-500">
+                                    {selectedItem?.totalPrice + ' ' + selectedItem?.currencyCode}
+                                </strong>
+                            </span>
+                        </Typography.Text>
+
+                        <Typography.Text>
+                            <strong>Trạng thái: </strong>{' '}
+                            <span className="italic">
+                                <Tag
+                                    color={
+                                        selectedItem?.status === OrderStatus.COMPLETED
+                                            ? 'green'
+                                            : selectedItem?.status === OrderStatus.PENDING
+                                              ? 'gold-inverse'
+                                              : 'volcano'
+                                    }
+                                >
+                                    {selectedItem?.status === OrderStatus.COMPLETED
+                                        ? 'Thành công'
                                         : selectedItem?.status === OrderStatus.PENDING
-                                          ? 'gold-inverse'
-                                          : 'volcano'
-                                }
-                            >
-                                {selectedItem?.status === OrderStatus.COMPLETED
-                                    ? 'Thành công'
-                                    : selectedItem?.status === OrderStatus.PENDING
-                                      ? 'Đang chờ'
-                                      : 'Thất bại'}
-                            </Tag>
-                        </span>
-                    </Typography.Text>
-                    <Typography.Text>
-                        <strong>Ngày thanh toán: </strong>{' '}
-                        <span className="italic">
-                            {moment(selectedItem?.paymentDate).locale('vi').format('L')}
-                        </span>
-                    </Typography.Text>
-                </div>
+                                          ? 'Đang chờ'
+                                          : 'Thất bại'}
+                                </Tag>
+                            </span>
+                        </Typography.Text>
+                        <Typography.Text>
+                            <strong>Ngày thanh toán: </strong>{' '}
+                            <span className="italic">
+                                {moment(selectedItem?.paymentDate).locale('vi').format('L')}
+                            </span>
+                        </Typography.Text>
+                    </div>
+                )}
             </Drawer>
         </div>
     );

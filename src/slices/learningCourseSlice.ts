@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Course, Step } from '../types/Course.type';
 import { CheckRegistrationCourseRespone } from '../types/RegistrationCourse.type';
+import { Question } from '../types/Question.type';
 
 export enum LessionType {
     QUIZ,
@@ -100,7 +101,8 @@ export const learningCourseSlice = createSlice({
             state.stepActive = step;
             state.temp.tempActiveSectionIndex = action.payload.sectionIndex;
             state.temp.tempActiveStepIndex = action.payload.stepIndex;
-            state.stepActiveType = step.quizId != 1 ? LessionType.QUIZ : LessionType.VIDEO;
+            state.stepActiveType =
+                step.quizId != 1 && step.quizId != null ? LessionType.QUIZ : LessionType.VIDEO;
             state.isShowAnswer = false;
             state.quizAnswer = [];
         },
@@ -124,9 +126,17 @@ export const learningCourseSlice = createSlice({
             );
             if (index >= 0) {
                 state.quizAnswer[index] = action.payload;
-            } else {
-                state.quizAnswer.push(action.payload);
             }
+        },
+
+        setQuestionList: (state, action: PayloadAction<Question[]>) => {
+            state.quizAnswer = action.payload.map((q) => {
+                return {
+                    correctAnswer: q.correctAnwser,
+                    questionId: q.questionId,
+                    userSelectedAnswer: -1,
+                };
+            });
         },
         setShowAnswer: (state, action: PayloadAction<boolean>) => {
             state.isShowAnswer = action.payload;
@@ -201,6 +211,7 @@ export const {
     setRegistrationData,
     setLastStepCompleted,
     setNextStepCompletedPos,
+    setQuestionList,
 } = learningCourseSlice.actions;
 
 export default learningCourseSlice.reducer;

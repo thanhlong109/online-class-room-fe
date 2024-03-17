@@ -1,6 +1,5 @@
 import { Radio, Typography } from 'antd';
 import { Question } from '../../types/Question.type';
-import { useEffect } from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,7 +22,8 @@ const QuestionUI = ({ question, seperator, position }: QuestionProps) => {
     const questionData = useSelector((state: RootState) =>
         state.learningCourse.quizAnswer.find((q) => q.questionId === question.questionId),
     );
-    useEffect(() => {
+
+    if (questionData === undefined) {
         dispatch(
             setQuestionAnswer({
                 correctAnswer: correctAnwser,
@@ -31,7 +31,7 @@ const QuestionUI = ({ question, seperator, position }: QuestionProps) => {
                 userSelectedAnswer: -1,
             }),
         );
-    }, [question]);
+    }
     return (
         <div className="flex flex-col gap-8">
             <p className="text-base font-medium text-[#1677ff]">{`Câu ${position}: ${questionTitle}`}</p>
