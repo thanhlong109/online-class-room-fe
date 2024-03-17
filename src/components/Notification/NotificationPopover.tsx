@@ -8,6 +8,7 @@ import {
 import { RootState } from '../../store';
 import moment from 'moment/min/moment-with-locales';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export interface NotificationPopoverProps {
     onMakeIsReadNoti: () => void;
@@ -22,8 +23,7 @@ const NotificationPopover = ({ onMakeIsReadNoti }: NotificationPopoverProps) => 
         pageSize: 30,
     });
     const [makeIsReadNoti, { isSuccess }] = useMakeNotificationIsReadMutation();
-
-    moment.locale('vi');
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (isSuccess) {
@@ -31,6 +31,20 @@ const NotificationPopover = ({ onMakeIsReadNoti }: NotificationPopoverProps) => 
             refetch();
         }
     }, [isSuccess]);
+
+    const handleOnClickFavorite = async (id: number, modelId: number, type: string) => {
+        if (type.includes('Course')) {
+            navigate(`/courses/${modelId}`);
+            console.log(id);
+            // } else if (type.includes('Service')) {
+            //     navigate(`/courses/${modelId}`);
+            // }else if (type.includes('Order')) {
+            //     navigate(`/courses/${modelId}`);
+            // }
+        } else {
+            navigate(`#`);
+        }
+    };
 
     return (
         <div className="w-[400px]">
@@ -47,6 +61,7 @@ const NotificationPopover = ({ onMakeIsReadNoti }: NotificationPopoverProps) => 
                             key={item.notificationId}
                             onClick={() => {
                                 if (!item.isRead) makeIsReadNoti(item.notificationId);
+                                handleOnClickFavorite(item.notificationId, item.modelId, item.type);
                             }}
                         >
                             <div style={{ flex: '1' }}>
