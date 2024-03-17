@@ -21,7 +21,11 @@ const CourseCardProgress = ({ registrationCourse }: Props) => {
     const [isHover, setIsHover] = useState(false);
     return (
         <>
-            <motion.div animate={{ scale: isHover ? 1.05 : 1 }} transition={{ duration: 0.3 }}>
+            <motion.div
+                className="h-full"
+                animate={{ scale: isHover ? 1.05 : 1 }}
+                transition={{ duration: 0.3 }}
+            >
                 <div onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)}>
                     <Paper
                         elevation={2}
@@ -34,10 +38,12 @@ const CourseCardProgress = ({ registrationCourse }: Props) => {
                                 src={registrationCourse.courseImg}
                             />
                         </div>
-                        <div className="flex flex-col gap-1 px-2 py-1">
-                            <p className="line-clamp-2 text-sm font-bold normal-case">
-                                {registrationCourse.courseTitle}
-                            </p>
+                        <div className="flex  flex-col gap-1 px-2 py-1">
+                            <div className="h-[40px]">
+                                <p className="line-clamp-2 text-sm font-bold normal-case">
+                                    {registrationCourse.courseTitle}
+                                </p>
+                            </div>
                             <div className="flex items-center gap-1 text-sm">
                                 <p className="flex-1 text-sm">Đã tham gia: </p>
                                 <p className="text-sm">

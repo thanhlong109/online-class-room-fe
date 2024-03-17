@@ -2,6 +2,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
     AddOrderToDBReSpone,
     GetOrderByTransactionIdRespone,
+    GetOrderWithFilterRequest,
+    GetOrderWithFilterRespone,
     OrderRequest,
 } from '../types/Order.type';
 
@@ -75,6 +77,12 @@ export const orderApi = createApi({
                 return data;
             },
         }),
+        getOrderWithFilter: build.query<GetOrderWithFilterRespone[], GetOrderWithFilterRequest>({
+            query: (para: GetOrderWithFilterRequest) => ({
+                url: `api/Order/GetOrderWithFilter?AccountId=${para.AccountId}${para.pageNumber ? '&PageNumber=' + para.pageNumber : ''}${para.pageSize ? '&PageSize=' + para.pageSize : ''}${para.Status ? '&Status=' + para.Status : ''}`,
+                method: 'get',
+            }),
+        }),
     }),
 });
 
@@ -83,4 +91,6 @@ export const {
     useGetClientIdQuery,
     useTotalIncomeQuery,
     useTotalOrderQuery,
+    useGetOrderByTransactionIdQuery,
+    useGetOrderWithFilterQuery,
 } = orderApi;
