@@ -46,7 +46,7 @@ const SearchPage = () => {
                                 Giá tiền: {course.price.toLocaleString()} VND
                             </p>
                             <p className="text-sm">
-                                Tổng thời gian: {Math.round(course.totalDuration / 60000)} phút
+                                Tổng thời gian: {Math.round(course.totalDuration / 60)} phút
                             </p>
                             <p className="text-sm">
                                 Cập nhật mới nhất: {
