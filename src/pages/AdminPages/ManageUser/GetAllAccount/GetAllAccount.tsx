@@ -54,11 +54,11 @@ const columns = ({
                 <img
                     src={profileImg}
                     alt="Khóa học"
-                    style={{ maxWidth: '100%', height: 'auto', borderRadius: '50%' }}
+                    style={{ width: 50, height: 50, borderRadius: '50%', overflow: 'hidden' }}
                 />
             </div>
         ),
-        width: '8%',
+        width: '10%',
     },
     {
         title: 'Email học sinh',
