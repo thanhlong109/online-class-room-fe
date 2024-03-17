@@ -2,25 +2,29 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 
 export interface UserInfo {
-    id: string | null;
-    firstName: string | null;
-    lastName: string | null;
-    phoneNumber: string | null;
-    birthDate: string | null;
-    biography: string | null;
-    profileImg: string | null;
-    sex: string | null;
+    id: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    birthDate: string;
+    biography: string;
+    profileImg: string;
+    sex: string;
+    deviceToken?: string;
+    parentEmail?: string;
 }
 
 const initialState: UserInfo = {
-    id: null,
-    firstName: null,
-    lastName: null,
-    phoneNumber: null,
-    birthDate: null,
-    biography: null,
-    profileImg: null,
-    sex: null,
+    id: '',
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    birthDate: '',
+    biography: '',
+    profileImg: '',
+    sex: '',
+    deviceToken: '',
+    parentEmail: '',
 };
 
 export const userSlice = createSlice({
@@ -36,6 +40,8 @@ export const userSlice = createSlice({
             state.profileImg = action.payload.profileImg;
             state.sex = action.payload.sex;
             state.birthDate = action.payload.birthDate;
+            if (action.payload.deviceToken) state.deviceToken = action.payload.deviceToken;
+            if (action.payload.parentEmail) state.parentEmail = action.payload.parentEmail;
         },
     },
 });

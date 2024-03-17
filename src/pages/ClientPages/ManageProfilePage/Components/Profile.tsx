@@ -24,16 +24,19 @@ const Profile = () => {
 
     const userLoaded = useSelector((state: RootState) => state.user);
     const [formData, setFormData] = useState<UserInfo>(userLoaded);
+    const user = useSelector((state: RootState) => state.user.firstName);
     useEffect(() => {
         setFormData(userLoaded);
     }, [userLoaded]);
     useEffect(() => {
         if (isSuccess && data) {
+            console.log(data);
             dispatch(setUserInfo(data));
             message.success('cập nhật thành công!');
         }
     }, [isSuccess]);
-
+    console.log('dada');
+    console.log(user);
     const handleOnBirthdateChange: DatePickerProps['onChange'] = (_, dateString) => {
         setFormData({ ...formData, birthDate: dateString });
     };

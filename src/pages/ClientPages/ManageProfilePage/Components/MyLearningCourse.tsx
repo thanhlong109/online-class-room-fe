@@ -18,8 +18,8 @@ const MyLearningCourses = () => {
                 <div className="flex flex-wrap gap-4">
                     {!isLoading &&
                         data &&
-                        data.map((regisCourse) => (
-                            <div className="h-[235px] w-[220px]">
+                        data.map((regisCourse, index) => (
+                            <div key={index} className="h-[235px] w-[220px]">
                                 <CourseCardProgress registrationCourse={regisCourse} />
                             </div>
                         ))}

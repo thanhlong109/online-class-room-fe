@@ -6,14 +6,16 @@ export interface LoginRequest {
     accountPassword: string;
 }
 export interface UserInfoRequest {
-    id: string | null;
-    firstName: string | null;
-    lastName: string | null;
-    phoneNumber: string | null;
-    birthDate: string | null;
-    biography: null | string;
-    profileImg: null | string;
-    sex: null | string;
+    id: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    birthDate: string;
+    biography: string;
+    profileImg: string;
+    sex: string;
+    deviceToken: string;
+    parentEmail: string;
 }
 
 export interface ChangePasswordRequest {
@@ -61,8 +63,6 @@ export const authApi = createApi({
                 const userData = JSON.parse(user);
                 const accessToken = userData ? userData.accessToken : null;
                 headers.set('Authorization', `Bearer ${accessToken}`);
-                console.log('accessToken', accessToken);
-                console.log('headers', headers);
             }
             return headers;
         },
@@ -94,7 +94,7 @@ export const authApi = createApi({
         }),
         updateUserInfo: build.mutation<UserInfo, UserInfo>({
             query: ({ id, ...data }: UserInfo) => ({
-                url: `api/account/UpdateProfile?accountId=${id}`,
+                url: `api/Account/UpdateProfile?accountId=${id}`,
                 method: 'put',
                 body: {
                     ...data,
@@ -104,14 +104,7 @@ export const authApi = createApi({
             transformResponse: (response) => {
                 const data = (response as any).dataObject;
                 return {
-                    id: data?.id,
-                    biography: data?.biography,
-                    birthDate: data?.birthDate,
-                    firstName: data?.firstName,
-                    lastName: data?.lastName,
-                    phoneNumber: data?.phoneNumber,
-                    profileImg: data?.profileImg,
-                    sex: data?.sex,
+                    ...data[0],
                 };
             },
         }),
