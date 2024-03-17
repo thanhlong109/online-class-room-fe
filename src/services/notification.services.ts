@@ -55,3 +55,5 @@ export const {
     useMakeNotificationIsReadMutation,
     useUpdateDeviceTokenMutation,
 } = notificationApi;
+
+export default notificationApi;

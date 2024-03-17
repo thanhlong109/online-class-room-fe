@@ -6,6 +6,9 @@ import { Button, Paper } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store';
 import { formatNumberWithCommas } from '../../../utils/NumberFormater';
+import { useEffect } from 'react';
+import notificationApi from '../../../services/notification.services';
+import { useAppDispatch } from '../../../hooks/appHook';
 
 export enum PaymentResultType {
     SUCCESS = 'success',
@@ -14,10 +17,19 @@ export enum PaymentResultType {
 
 const PaymentResult = () => {
     const location = useLocation();
+    const accountId = useSelector((state: RootState) => state.user.id);
     const result = location.pathname.split('/').pop();
     const navigate = useNavigate();
     const orderData = useSelector((state: RootState) => state.order);
+    const dispatch = useAppDispatch();
 
+    useEffect(() => {
+        dispatch(
+            notificationApi.endpoints.getNumberOfUnreadNotifications.initiate(
+                accountId ? accountId : '',
+            ),
+        );
+    }, []);
     return (
         <div>
             <div className="m-auto flex w-fit flex-col justify-center p-4">

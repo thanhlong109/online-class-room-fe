@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import { AddCourseRequest, Course, CourseCategory, Section, Step } from '../types/Course.type';
 import { StepProps } from 'antd';
-
 export enum CouseMode {
     CREATE,
     UPDATE,
@@ -10,6 +9,7 @@ export enum CouseMode {
 
 interface courseState {
     wishList: number[];
+    wishListCount: number;
     addCourse: {
         data: AddCourseRequest;
         currentStep: number;
@@ -76,6 +76,7 @@ const initialUpdateNavStatus: StepProps[] = [
 ];
 
 const initialState: courseState = {
+    wishListCount: 0,
     wishList: [],
     addCourse: {
         data: intitalAddCourseRequest,
@@ -94,12 +95,17 @@ export const courseSlice = createSlice({
     name: 'course',
     initialState,
     reducers: {
+        setWishListCount: (state, action: PayloadAction<number>) => {
+            state.wishListCount = action.payload;
+        },
         addWishList: (state, action: PayloadAction<number>) => {
+            state.wishListCount = state.wishList.length + 1;
             state.wishList = [...state.wishList, action.payload];
         },
         removeWishlist: (state, action: PayloadAction<number>) => {
             const courseIndex = state.wishList.findIndex((courseId) => courseId === action.payload);
             if (courseIndex != -1) {
+                state.wishListCount = state.wishList.length - 1;
                 state.wishList.splice(courseIndex, 1);
             }
         },
@@ -382,6 +388,7 @@ export const {
     setSaveAndQuit,
     addStepDuration,
     subtractStepDuration,
+    setWishListCount,
 } = courseSlice.actions;
 
 export default courseSlice.reducer;
