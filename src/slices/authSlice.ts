@@ -15,6 +15,7 @@ export interface AuthToken {
     email: string | null;
     isLogin: boolean;
     currentRole: RoleType;
+    expired: string | null;
 }
 
 const initialState: AuthToken = {
@@ -23,6 +24,7 @@ const initialState: AuthToken = {
     email: null,
     isLogin: false,
     currentRole: RoleType.GUESS,
+    expired: null,
 };
 
 export const authSlice = createSlice({
@@ -35,6 +37,7 @@ export const authSlice = createSlice({
                 accessToken: string | null;
                 refreshToken: string | null;
                 email: string | null;
+                expired: string | null;
                 isLogin: boolean;
             }>,
         ) => {
@@ -42,12 +45,14 @@ export const authSlice = createSlice({
             state.refreshToken = action.payload.refreshToken;
             state.email = action.payload.email;
             state.isLogin = action.payload.isLogin;
+            state.expired = action.payload.expired;
             localStorage.setItem(
                 'user',
                 JSON.stringify({
                     accessToken: action.payload.accessToken,
                     refreshToken: action.payload.refreshToken,
                     email: action.payload.email,
+                    expired: action.payload.expired,
                 }),
             );
         },
@@ -66,6 +71,7 @@ export const authSlice = createSlice({
                 state.accessToken = userData ? userData.accessToken : null;
                 state.email = userData ? userData.email : null;
                 state.refreshToken = userData ? userData.refreshToken : null;
+                state.expired = userData ? userData.expired : null;
             }
         },
         setLoginRole: (state, action: PayloadAction<RoleType>) => {

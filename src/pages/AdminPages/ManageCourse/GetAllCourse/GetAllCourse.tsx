@@ -148,7 +148,7 @@ const columns = ({
 ];
 const GetAllCourse = () => {
     const [database, setDatabase] = useState<Course[]>([]);
-    const displayData = 8;
+    const displayData = 10;
     const [searchValue, setSearchValue] = useState('');
     const [pagination, setPagination] = useState({
         current: 1,
@@ -175,7 +175,7 @@ const GetAllCourse = () => {
                 total: response.totalCourses,
             });
         }
-    }, [response]);
+    }, [response, pagination, response?.totalPages]);
 
     const handlePageChange = (page: number) => {
         setPagination({ ...pagination, current: page });

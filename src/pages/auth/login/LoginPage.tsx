@@ -54,7 +54,9 @@ function LoginPage() {
                 refreshToken: loginData.jwtRefreshToken,
                 email: formData.accountEmail,
                 isLogin: true,
+                expired: loginData.expired,
             };
+            localStorage.setItem('user', JSON.stringify(userData));
             useDispach(setUser({ ...userData }));
             navigate('/');
         }
@@ -99,8 +101,8 @@ function LoginPage() {
     return (
         <div className="flex bg-greenHome">
             <div className="w-full bg-white sm:w-[30%] sm:rounded-br-xl sm:rounded-tr-xl md:h-screen">
-                <form className="mt-8 flex flex-col items-center justify-center space-y-5">
-                    <section className="w-[70%] space-y-5 ">
+                <form className="mt-8 flex flex-col items-center justify-center space-y-4">
+                    <section className="w-[70%] space-y-4 ">
                         <div className="mb-12 ml-1 mt-[40%] ">
                             <h1 className="text-3xl">Đăng nhập</h1>
                             <p className="sm:max-xl:text-md mt-2 text-base text-grayLine">
@@ -135,6 +137,11 @@ function LoginPage() {
                             <p className="ml-2 mt-1 text-sm text-red-500">
                                 {passwordValidation.errorMessage}
                             </p>
+                            <div className="ml-2 mt-1 text-sm">
+                                <Link to={'#'} className="text-blue-500">
+                                    Quên mật khẩu
+                                </Link>
+                            </div>
                         </div>
                     </section>
                     <p className="ml-2 text-sm text-red-500">{errorMessage}</p>
