@@ -139,9 +139,11 @@ const Header: React.FC = () => {
                         </Link>
                     </h1>
                     <div className="hidden cursor-pointer text-[#2d2f31] hover:text-[#a435f0] md:block">
-                        <Typography.Title style={{ margin: '0', color: 'inherit' }} level={5}>
-                            khám phá
-                        </Typography.Title>
+                        <Link to={'/courses/'}>
+                            <Typography.Title style={{ margin: '0', color: 'inherit' }} level={5}>
+                                khám phá
+                            </Typography.Title>
+                        </Link>
                     </div>
                     <StyledSearch
                         allowClear

@@ -1,3 +1,5 @@
+import { PagingParam } from './TableParam';
+
 /////////////////////// Course ////////////////////////
 export interface Course {
     courseId: number;
@@ -66,6 +68,28 @@ export interface CountStudentPerCourse {
     courseId: number;
     courseTitle: string;
     totalStudents: number;
+}
+
+export type CourselistPaginationRequest = PagingParam & {
+    categoryIds?: number[];
+    minPrice?: number;
+    maxPrice?: number;
+};
+
+export interface CourseBase {
+    courseId: number;
+    title: string;
+    imageUrl: string;
+    price: number;
+    courseCategory: string;
+    totalDuration: number;
+    updateAt: string;
+    isPublic: boolean;
+    courseIsActive: boolean;
+}
+
+export interface CourselistPaginationRespone {
+    courses: CourseBase[];
 }
 /////////////////////// Section ////////////////////////
 export interface Section {

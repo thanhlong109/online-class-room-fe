@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useGetCourseIDQuery } from '../../../../services';
 import { useDispatch, useSelector } from 'react-redux';
 import { CouseMode, setCourseMode, setCourseUpdate } from '../../../../slices/courseSlice';
@@ -7,25 +7,17 @@ import CourseContent from '../AddCourse/CourseContent';
 import { Skeleton } from 'antd';
 
 const UpdateCoursePage = () => {
-    const [courseId, setCourseId] = useState('');
     const dispatch = useDispatch();
     const courseMode = useSelector((state: RootState) => state.course.currentMode);
-
+    const courseId = location.pathname.split('/').pop();
+    const { currentData, isSuccess, isLoading } = useGetCourseIDQuery(courseId ? courseId : '');
     useEffect(() => {
-        const getCourseId = location.pathname.split('/').pop();
-        if (getCourseId) {
-            setCourseId(getCourseId);
-        }
-    }, []);
-    const { data, isSuccess, isLoading } = useGetCourseIDQuery(courseId);
+        if (isSuccess && currentData) {
+            dispatch(setCourseUpdate(currentData));
 
-    useEffect(() => {
-        if (isSuccess && data) {
-            dispatch(setCourseUpdate(data));
-            console.log(data);
             dispatch(setCourseMode(CouseMode.UPDATE));
         }
-    }, [isSuccess]);
+    }, [isSuccess, courseId, currentData]);
 
     return (
         <div>

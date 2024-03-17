@@ -6,6 +6,8 @@ import {
     UpdateCourseRequest,
     GetAllCourse,
     CountStudentPerCourse,
+    CourselistPaginationRespone,
+    CourselistPaginationRequest,
 } from '../types/Course.type';
 
 export const coursesApi = createApi({
@@ -91,6 +93,19 @@ export const coursesApi = createApi({
                 return [...data];
             },
         }),
+        getCourselistPagination: build.query<
+            CourselistPaginationRespone,
+            CourselistPaginationRequest
+        >({
+            query: (input: CourselistPaginationRequest) => {
+                let categorys = '';
+                input.categoryIds?.forEach((id) => (categorys += '&CategoryIds=' + id));
+                return {
+                    url: `api/Course/CourselistPagination?MinPrice=${input.minPrice ? input.minPrice : ''}&MaxPrice=${input.maxPrice ? input.maxPrice : ''}${input.pageNumber ? '&PageNumber=' + input.pageNumber : ''}${input.pageSize ? '&PageSize=' + input.pageSize : ''}&${categorys}`,
+                    method: 'get',
+                };
+            },
+        }),
     }),
 });
 
@@ -105,4 +120,5 @@ export const {
     useDeleteCourseMutation,
     useCountTotalCoursesQuery,
     useCountStudentPerCourseQuery,
+    useGetCourselistPaginationQuery,
 } = coursesApi;

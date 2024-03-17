@@ -1,4 +1,4 @@
-import { Paper } from '@mui/material';
+import { Button, Paper } from '@mui/material';
 import { CourseTabs } from '../../components';
 import { Carousel } from 'antd';
 import { useEffect, useState } from 'react';
@@ -8,6 +8,8 @@ import {
     useGetCoursesBaseSalesQuery,
     useGetCoursesBaseStudentJoinedQuery,
 } from '../../services/course.services';
+import { Link } from 'react-router-dom';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 
 const imgBaner = [
     'https://img-b.udemycdn.com/notices/featured_carousel_slide/image/b677b28c-9faf-4439-b042-2a2add2828ef.jpg',
@@ -97,6 +99,11 @@ const HomePage = () => {
                         tabsTitle="Top các khóa học ưu đãi"
                         courseList={topCoursesSales}
                     />
+                </div>
+                <div className="self-end">
+                    <Link to={'/courses/'}>
+                        <Button endIcon={<ArrowRightAltIcon />}>Xem thêm</Button>
+                    </Link>
                 </div>
             </div>
         </>
